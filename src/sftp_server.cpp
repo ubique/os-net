@@ -86,7 +86,7 @@ static std::string process(std::vector<std::string> const &query,
                            user_state &state, Database &database)
 {
     if (query.empty()) {
-        return "";
+        return "-Empty query";
     }
     if (query[0] == "USER") {
         if (state.logged_in) {
@@ -245,8 +245,7 @@ void sftp_server::run()
 {
     while (true) {
         if (chdir(cwd.data()) == -1) {
-            std::cerr << "Could not reach start directory" << std::endl;
-            continue;
+            throw std::runtime_error("Could not reach start directory");
         }
         struct sockaddr_in client;
         size_t c = sizeof(struct sockaddr_in);
@@ -293,10 +292,8 @@ void sftp_server::run()
                 int new_fd = open(state.receiving.data(), O_CREAT | O_RDWR,
                                   S_IRUSR | S_IWUSR);
                 fd_wrapper write_wrapper(new_fd);
-                if (new_fd == -1) {
-                    std::cout << strerror(errno) << std::endl;
-                }
-                if (write(new_fd, storage.data(), storage.size()) == -1) {
+                if (new_fd == -1 ||
+                    write(new_fd, storage.data(), storage.size()) == -1) {
                     response = "-Could not save " + state.receiving + ": " +
                                strerror(errno);
                 } else {
@@ -325,4 +322,9 @@ void sftp_server::add_account(std::string const &uid,
     database.add(uid, account, password);
 }
 
-sftp_server::~sftp_server() { close(server_socket); }
+sftp_server::~sftp_server()
+{
+    if (server_socket != -1) {
+        close(server_socket);
+    }
+}

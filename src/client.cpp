@@ -75,7 +75,7 @@ void run(std::string const &address, std::string const &port)
             ssize_t result = recv(socket_fd, server_reply, BUFFER_SIZE, 0);
             if (result < 0) {
                 throw std::runtime_error(
-                    std::string{"Failure while sending. Disconnect. "} +
+                    std::string{"Failure while receiving. Disconnect. "} +
                     strerror(errno));
             }
             std::cout << std::string{server_reply, static_cast<size_t>(result)}
@@ -89,7 +89,7 @@ void run(std::string const &address, std::string const &port)
         }
         std::cout << "Enter command: ";
         getline(std::cin, query);
-        if (query == "EXIT") {
+        if (query == "EXIT" || !std::cin) {
             break;
         }
         if (send(socket_fd, query.data(), query.size(), 0) == -1) {
