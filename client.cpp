@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
             if (cnt_read != -1 || errno != EINTR) {
                 break;
             }
-            cnt_read = read(client_socket, rbuf, CMAX);
+            cnt_read = read(0, rbuf, CMAX);
         }
         if (cnt_read == 0) {
             break;
