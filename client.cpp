@@ -15,7 +15,8 @@ int client::send(const std::string &msg) {
 
     data_socket = socket(AF_UNIX, SOCK_SEQPACKET, 0);
     if (data_socket == -1) {
-        throw std::runtime_error(prerror_str("Unable to create socket"));
+        prerror("Unable to create socket");
+        return EXIT_FAILURE;
     }
 
     memset(&addr, 0, sizeof(struct sockaddr_un));
@@ -26,7 +27,8 @@ int client::send(const std::string &msg) {
     ret = connect(data_socket, (const struct sockaddr *) &addr,
                   sizeof(struct sockaddr_un));
     if (ret == -1) {
-        throw std::runtime_error(prerror_str("The server is down"));
+        prerror("The server is down");
+        return EXIT_FAILURE;
     }
 
     ret = write(data_socket, msg.data(), msg.size() + 1);
