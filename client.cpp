@@ -11,45 +11,19 @@ client::client(std::string host) : host(std::move(host)) {
 
 
 int client::send(const std::string &msg) {
-    int ret;
+    socket.create(host, Socket::FLAG_CLIENT);
 
-    data_socket = socket(AF_UNIX, SOCK_SEQPACKET, 0);
-    if (data_socket == -1) {
-        prerror("Unable to create socket");
-        return EXIT_FAILURE;
-    }
+    socket.connect();
 
-    memset(&addr, 0, sizeof(struct sockaddr_un));
+    socket.write(msg);
 
-    addr.sun_family = AF_UNIX;
-    strncpy(addr.sun_path, host.data(), sizeof(addr.sun_path) - 1);
-
-    ret = connect(data_socket, (const struct sockaddr *) &addr,
-                  sizeof(struct sockaddr_un));
-    if (ret == -1) {
-        prerror("The server is down");
-        return EXIT_FAILURE;
-    }
-
-    ret = write(data_socket, msg.data(), msg.size() + 1);
-    if (ret == -1) {
-        prerror("Unable to write data");
-        return EXIT_FAILURE;
-    }
 
     if (strcasecmp(msg.data(), "exit") != 0) {
-        ret = read(data_socket, buffer.data(), BUFFER_SIZE);
-        if (ret == -1) {
-            prerror("Unable to read");
-            return EXIT_FAILURE;
-        }
+        auto read_ans = socket.read();
 
-        buffer[BUFFER_SIZE - 1] = 0;
-
-        printf("Result = %s\n", buffer.data());
+        printf("Result = %s\n", read_ans.second.get());
 
     }
-    close(data_socket);
 
     return (EXIT_SUCCESS);
 }

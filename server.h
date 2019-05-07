@@ -8,12 +8,13 @@
 #include <sys/un.h>
 #include <array>
 #include "helper.h"
+#include "Socket.h"
 
 class server {
 public:
     server() = default;
 
-    explicit server(std::string soc_name);
+    explicit server(const std::string &soc_name);
 
     server &operator=(const server &) = delete;
 
@@ -28,11 +29,8 @@ public:
     ~server();
 
 private:
-    int connection_socket{};
-    int data_socket{};
-    std::array<char, BUFFER_SIZE> buffer{};
+    Socket socket{};
     const std::string adding = "Hello, ";
-    std::string soc_name;
 };
 
 

@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
             client1.send(request);
         }
     } catch (std::runtime_error &e) {
-        std::cerr << "Client wasn't created" << std::endl;
+        std::cerr << "Client failed" << std::endl;
+        std::cerr << e.what() << std::endl;
     }
 }

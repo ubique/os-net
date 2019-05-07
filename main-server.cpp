@@ -6,5 +6,6 @@
 
 int main(int argc, char **argv) {
     server server{(argc != 1 ? argv[1] : "/tmp/server.socket")};
+
     server.start();
 }

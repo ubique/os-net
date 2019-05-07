@@ -8,6 +8,7 @@
 #include <sys/un.h>
 #include <string>
 #include "helper.h"
+#include "Socket.h"
 #include <array>
 
 
@@ -30,9 +31,6 @@ public:
     client(const client &&) = delete;
 
 private:
-    struct sockaddr_un addr{};
-    int data_socket{};
-    std::array<char, BUFFER_SIZE> buffer{};
+    Socket socket{};
     std::string host;
 };
-

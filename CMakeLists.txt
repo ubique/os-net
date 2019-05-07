@@ -10,6 +10,6 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 endif ()
 
 
-add_executable(net-server server.cpp server.h main-server.cpp helper.h helper.cpp)
+add_executable(net-server server.cpp server.h main-server.cpp helper.h helper.cpp Socket.cpp )
 
-add_executable(net-client helper.h helper.cpp client.cpp client.h main-client.cpp)
+add_executable(net-client helper.h helper.cpp client.cpp client.h main-client.cpp Socket.cpp )
