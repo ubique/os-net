@@ -13,3 +13,5 @@ endif ()
 add_executable(net-server server.cpp server.h main-server.cpp helper.h helper.cpp Socket.cpp )
 
 add_executable(net-client helper.h helper.cpp client.cpp client.h main-client.cpp Socket.cpp )
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
