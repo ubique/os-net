@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "client.h"
 
-client::client(std::string host) : host(std::move(host)) {
+client::client(std::string m_host) : host(std::move(m_host)) {
 
 }
 

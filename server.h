@@ -26,10 +26,15 @@ public:
 
     int start();
 
+    void interrupt();
+
+    bool is_interrupted();
+
     ~server();
 
 private:
     Socket socket{};
+    bool interr = false;
     const std::string adding = "Hello, ";
 };
 

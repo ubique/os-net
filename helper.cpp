@@ -26,3 +26,9 @@ void checker(int ret, const char *msg, int error_code) {
         throw std::runtime_error(err_msg);
     }
 }
+
+
+void checker(int ret, const std::string &msg, int error_code) {
+    checker(ret, msg.data(), error_code);
+}
+

@@ -13,6 +13,8 @@ class Socket {
 public:
     Socket();
 
+    explicit Socket(int);
+
     void create(std::string name, int flag);
 
     void bind();
@@ -29,17 +31,22 @@ public:
 
     void close();
 
+    Socket(Socket &&) noexcept;
+
+    Socket &operator=(Socket &&) noexcept;
+
     ~Socket();
 
 public:
     static const int FLAG_SERVER = true;
     static const int FLAG_CLIENT = false;
+    static const int FLAG_DOWN = -1;
 
-private:
-    int m_flag{};
-    struct sockaddr_un addr{};
     int connection_socket{};
-    int data_socket{};
+    int data_socket = -1;
+private:
+    int m_flag = -1;
+    struct sockaddr_un addr{};
     int prev_data_socket = -1;
     std::string soc_name;
 

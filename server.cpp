@@ -18,7 +18,7 @@ int server::start() {
 
     socket.listen();
 
-    while (true) {
+    while (!is_interrupted()) {
 
         socket.accept();
 
@@ -37,5 +37,14 @@ int server::start() {
     }
     return EXIT_SUCCESS;
 }
+
+void server::interrupt() {
+    interr = true;
+}
+
+bool server::is_interrupted() {
+    return interr;
+}
+
 
 server::~server() = default;

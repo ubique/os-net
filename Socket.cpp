@@ -7,10 +7,37 @@
 #include "Socket.h"
 #include "helper.h"
 
+using Symb = Printer::Symbols;
 
 Socket::Socket() = default;
 
+Socket::Socket(int fd) {
+    data_socket = fd;
+}
+
+Socket::Socket(Socket &&soc) noexcept : connection_socket(soc.connection_socket), data_socket(soc.data_socket),
+                                        m_flag(soc.m_flag), prev_data_socket(soc.prev_data_socket),
+                                        soc_name(std::move(soc.soc_name)) {
+    soc.m_flag = FLAG_DOWN;
+    memcpy(&addr, &soc.addr, sizeof(struct sockaddr_un));
+}
+
+Socket &Socket::operator=(Socket &&soc) noexcept {
+    if (m_flag != FLAG_DOWN) {
+        close();
+    }
+    connection_socket = soc.connection_socket;
+    data_socket = soc.data_socket;
+    m_flag = soc.m_flag;
+    prev_data_socket = soc.prev_data_socket;
+    soc_name = std::move(soc.soc_name);
+    soc.m_flag = FLAG_DOWN;
+    memcpy(&addr, &soc.addr, sizeof(struct sockaddr_un));
+    return *this;
+}
+
 void Socket::create(std::string m_soc_name, int flag) {
+    Printer::print(std::cout, "Socket::create", Symb::End);
     soc_name = std::move(m_soc_name);
     m_flag = flag;
     std::cout << "Connecting to : " << soc_name << std::endl;
@@ -23,6 +50,7 @@ void Socket::create(std::string m_soc_name, int flag) {
 }
 
 void Socket::bind() {
+    Printer::print(std::cout, "Socket::bind", Symb::End);
     struct sockaddr_un name{};
     memset(&name, 0, sizeof(struct sockaddr_un));
 
@@ -34,14 +62,16 @@ void Socket::bind() {
 }
 
 Socket::~Socket() {
-    try {
-        close();
-    } catch (...) {
-        std::cerr << "Fail" << std::endl;
-    }
+    if (m_flag != FLAG_DOWN)
+        try {
+            close();
+        } catch (...) {
+            std::cerr << "Fail" << std::endl;
+        }
 }
 
 void Socket::connect() {
+    Printer::print(std::cout, "Socket::connect", Symb::End);
     memset(&addr, 0, sizeof(struct sockaddr_un));
 
     addr.sun_family = AF_UNIX;
@@ -52,6 +82,7 @@ void Socket::connect() {
 }
 
 int Socket::accept() {
+    Printer::print(std::cout, "Socket::accept", Symb::End);
     if (prev_data_socket != -1) {
         checker(::close(prev_data_socket), "Unable to close data socket");
     }
@@ -62,6 +93,7 @@ int Socket::accept() {
 }
 
 std::pair<ssize_t, std::unique_ptr<char[]>> Socket::read() {
+    Printer::print(std::cout, "Socket::read", Symb::End);
     std::unique_ptr<char[]> buffer(new char[BUFFER_SIZE + 1]);
     ssize_t bytes_read = ::read(data_socket, buffer.get(), BUFFER_SIZE);
     checker(bytes_read, "Error while reading");
@@ -70,20 +102,25 @@ std::pair<ssize_t, std::unique_ptr<char[]>> Socket::read() {
 }
 
 void Socket::write(const std::string &data) {
-    int ret_write = ::write(data_socket, data.data(), BUFFER_SIZE);
+    Printer::print(std::cout, "Socket::write", Symb::End);
+    int ret_write = ::write(data_socket, data.data(), std::min(BUFFER_SIZE, data.length() + 1));
     checker(ret_write, "Unable to write");
 }
 
 void Socket::close() {
+    Printer::print(std::cout, "Socket::close", Symb::End);
     if (m_flag == Socket::FLAG_SERVER) {
         checker(::close(connection_socket), "Unable to close connection socket");
-        checker(::close(data_socket), "Unable to close data socket");
+        if (prev_data_socket != -1 && data_socket != -1) {
+            ::close(data_socket);
+        }
         checker(::unlink(soc_name.data()), "Unable to unlink");
     }
     std::cout << "Socket down" << std::endl;
 }
 
 void Socket::listen() {
+    Printer::print(std::cout, "Socket::listen", Symb::End);
     int ret = ::listen(connection_socket, 100);
     checker(ret, "Unable to listen to the socket");
 }
