@@ -12,13 +12,13 @@ int main(int argc, char* argv[]) {
         client client(argv[1], static_cast<uint16_t>(std::stoul(argv[2])));
         std::cout << "It's echo-client, type anything. Type exit to end it."
                   << std::endl;
+        std::string text;
         while (!std::cin.eof()) {
             std::cout << "Request: ";
             std::cout.flush();
-            std::string text;
+            std::getline(std::cin, text);
             if (text == "exit")
                 break;
-            std::getline(std::cin, text);
             std::cout << "Responce: " << client.request(text) << std::endl;
         }
     } catch (client_exception& e) {

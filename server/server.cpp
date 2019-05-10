@@ -29,26 +29,32 @@ server::server(char* address, uint16_t port)
 
 [[noreturn]] void server::run() {
     while (true) {
+        std::cout << "Waiting for connection..." << std::endl;
         sockaddr_in peer;
         socklen_t peer_size;
-
         fd_wrapper infd(accept(socket_fd.value(),
                                reinterpret_cast<sockaddr*>(&peer), &peer_size));
-
         if (infd.bad()) {
             print_error("Cannot accept peer");
             continue;
         }
-
-        std::vector<char> buffer(BUFFER_SIZE);
-        ssize_t was_read = read(infd.value(), buffer.data(), BUFFER_SIZE);
-        if (was_read == -1) {
-            print_error("Cannot read file descriptor");
-        } else {
-            while (send(infd.value(), buffer.data(),
-                        static_cast<size_t>(was_read), 0) != was_read) {
-                print_error("Cannot send echo");
-                std::cerr << "Retrying..." << std::endl;
+        std::cout << inet_ntoa(peer.sin_addr) << " connected!" << std::endl;
+        while (true) {
+            std::vector<char> buffer(BUFFER_SIZE);
+            ssize_t was_read =
+                recv(infd.value(), buffer.data(), BUFFER_SIZE, 0);
+            if (was_read == -1) {
+                print_error("Unable to recieve");
+                continue;
+            } else if (was_read == 0) {
+                print_error("Client disconnected");
+                break;
+            } else {
+                while (send(infd.value(), buffer.data(),
+                            static_cast<size_t>(was_read), 0) != was_read) {
+                    print_error("Cannot send echo");
+                    std::cerr << "Retrying..." << std::endl;
+                }
             }
         }
     }
