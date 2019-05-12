@@ -1,19 +1,38 @@
-# Знакомство с сокетами
+# A basic SNTP implementation
 
-Необходимо попробовать клиент-серверное взаимодействие через синхронные сокеты.
-Помимо этого нужен Makefile, с помощью которого можно будет собрать клиент и сервер.
-Семейство протоколов для использования на выбор: AF_UNIX, AF_INET, AF_INET6.
+## Goal
+This is an educational project, aimed at understanding how to interact with
+POSIX socket APIs to implement a client-server architecture.
 
-## Сервер должен:
- * В качестве аргументов принимать адрес, на котором будет ожидать входящих соединений
- * Стартовать, делать bind(2) на заданный адрес и ожидать входящих соединений
- * При получении соединения, выполнять серверную часть придуманного вами протокола
- * После обработки принятого соединения возвращаться в режим ожидания входящих соединений
+## Features:
+* A client that requests timestamp seconds
+* A server which sends system time in response
+* Both are IPv4 & IPv6 compatible
 
-## Клиент должен:
- * Принимать параметром адрес, к которому стоит подключиться
- * Выполнять клиентскую часть придуманного вами протокола
- * Завершаться
+## Building
+```
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
 
-Для сильных духом предлагается выбрать какой-то существующий протокол и имплементировать его, или его разумное подмножество.
-Сильность духа будет оцениваться в два балла, при условии что выбранный протокол сложнее чем ECHO(https://tools.ietf.org/html/rfc862).
+Requires a C++14 compiler.
+
+## Usage
+**Server:**  
+`ntp-server [<port number>]`  
+E.g. `./ntp-server 8080`
+
+**Client:**  
+`ntp-client [<server hostname or address> [<server port>]]`  
+E.g. `./ntp-client localhost 8080`, `ntp-client`
+
+## Testing
+Tested by hand on Linux 4.12.
+
+## Copyright
+Ilya Bizyaev, 2019 (<me@ilyabiz.com>)
+
+Licensed under MIT terms.
+
