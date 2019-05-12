@@ -122,7 +122,7 @@ void NTPServer::log_connection(const sockaddr_storage &peer_addr)
 
 void NTPServer::fill_packet(ntp_packet &packet)
 {
-    packet.li_vn_mode = 0b11'011'100; // li = 3 (unknown), vn = 3 (version), mode = 3 (server)
+    packet.li_vn_mode = 0b11'011'100; // li = 3 (unknown), vn = 3 (version), mode = 4 (server)
     packet.stratum    = 0b00001111;   // class 15; embracing our imperfections.
     // Only setting seconds from a system clock
     packet.txTm_s = htonl(static_cast<uint32_t>(NTPServer::current_ntp_time()));
