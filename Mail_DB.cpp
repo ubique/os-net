@@ -36,6 +36,8 @@ bool Mail_DB::open_inbox(std::string const& user) {
     dirent* entry;
     while ((entry = readdir(dir)) != nullptr) {
         std::string filename = entry->d_name;
+        if (filename == "." || filename == "..") { continue; }
+
         base.emplace_back(filename, calc_size(filename), false);
     }
 
@@ -101,7 +103,7 @@ std::vector<std::pair<size_t, size_t >> Mail_DB::list() {
 
 //TODO check if deleted
 std::pair<size_t, size_t> Mail_DB::list(size_t n) {
-    return {n, base[n].size};
+    return {n + 1, base[n].size};
 }
 
 //TODO check if deleted

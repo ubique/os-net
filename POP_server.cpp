@@ -19,7 +19,7 @@ std::string get_error_message(const std::string &comment) {
     return comment + ": " + strerror(errno);
 }
 
-POP_server::POP_server(std::string address, std::string port) : state(State::WAIT), socket_fd(), current_user() {
+POP_server::POP_server(std::string address, std::string port) : state(State::WAIT), socket_fd(), current_user(), mail_db("/home/rsbat/os_course/mail") {
     socket_fd.set(socket(AF_INET, SOCK_STREAM, 0));
     if (socket_fd == -1) {
         throw std::runtime_error(get_error_message("Could not create socket"));
@@ -80,6 +80,13 @@ POP_server::POP_server(std::string address, std::string port) : state(State::WAI
             process_command(buffer);
         }
 
+        if (state == State::UPDATE) {
+            mail_db.apply_delete();
+        }
+        mail_db.close_inbox();
+        current_user.clear();
+        state = State::WAIT;
+
         client_socket.close();
     }
 #pragma clang diagnostic pop
@@ -88,7 +95,7 @@ POP_server::POP_server(std::string address, std::string port) : state(State::WAI
 void POP_server::process_command(std::string command_line) {
     auto pos = command_line.find(' ');
     auto command = command_line.substr(0, pos);
-    auto argument = (pos == std::string::npos) ? "" : command_line.substr(pos);
+    auto argument = (pos == std::string::npos) ? "" : command_line.substr(pos + 1);
     while (!command.empty() && isspace(command.back())) {
         command.pop_back();
     }
@@ -113,6 +120,7 @@ void POP_server::process_command(std::string command_line) {
                 send_ERR("User name must be sent first");
             } else {
                 state = State::TRANSACTION;
+                mail_db.open_inbox(current_user);
                 send_OK();
             }
         } else if (command == "quit") {
@@ -122,9 +130,60 @@ void POP_server::process_command(std::string command_line) {
             send_ERR("Illegal command");
         }
     } else if (state == State::TRANSACTION) {
-        //TODO
-        send_ERR("");
-        state = State::WAIT;
+        if (command == "stat") {
+            auto data = mail_db.stat();
+            send_OK(std::to_string(data.first) + " " + std::to_string(data.second));
+        } else if (command == "list") {
+            if (argument.empty()) {
+                auto data = mail_db.list();
+                std::string response = std::to_string(data.size()) + " messages\r\n";
+                for (auto entry : data) {
+                    response += std::to_string(entry.first);
+                    response += " ";
+                    response += std::to_string(entry.second);
+                    response += "\r\n";
+                }
+                response += ".";
+                send_OK(response);
+            } else {
+                try {
+                    size_t n = std::stoul(argument);
+                    auto data = mail_db.list(n - 1);
+                    send_OK(std::to_string(data.first) + " " + std::to_string(data.second));
+                } catch (std::logic_error& error) {
+                    send_ERR(argument + " is not a valid email number");
+                }
+            };
+        } else if (command == "retr") {
+            try {
+                size_t n = std::stoul(argument);
+                auto data = mail_db.retr(n - 1);
+                data.pop_back();//TODO
+                data.pop_back();
+                size_t size = mail_db.list(n - 1).second;
+                send_OK(std::to_string(size) + " octets\r\n" + data);
+            } catch (std::logic_error& error) {
+                send_ERR(argument + " is not a valid email number");
+            }
+        } else if (command == "dele") {
+            try {
+                size_t n = std::stoul(argument);
+                mail_db.dele(n - 1);
+                send_OK();
+            } catch (std::logic_error& error) {
+                send_ERR(argument + " is not a valid email number");
+            }
+        } else if (command == "noop") {
+            send_OK();
+        } else if (command == "rset") {
+            mail_db.rset();
+            send_OK();
+        } else if (command == "quit") {
+            state = State::UPDATE;
+            send_OK();
+        } else {
+            send_ERR("Illegal command");
+        }
     } else {
         throw std::logic_error("When processing commands state must be AUTH or TRANSACTION");
     }
