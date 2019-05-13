@@ -1,14 +1,12 @@
 all: buildAll
 
-build: server.cpp client.cpp
-	buildServer
-	buildClient
-
 buildServer: server.cpp
 	g++ -o server server.cpp
 
 buildClient: client.cpp
 	g++ -o client client.cpp
+
+buildAll: buildServer buildClient
 
 runServer: buildServer
 	./server 127.0.0.1 8080
