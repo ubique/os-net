@@ -93,7 +93,7 @@ std::vector<std::pair<size_t, size_t >> Mail_DB::list() {
 
     for (size_t i = 0; i < base.size(); i++) {
         if (!base[i].is_deleted) {
-            result.emplace_back(i, base[i].size);
+            result.emplace_back(i + 1, base[i].size);
         }
     }
     return result;
