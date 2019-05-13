@@ -18,8 +18,15 @@ private:
     enum class State { WAIT, AUTH, TRANSACTION, UPDATE };
     static constexpr int MAX_BACKLOG = 50;
     Fd_wrapper socket_fd;
+    Fd_wrapper client_socket;
     State state;
     std::string current_user;
+
+    void send_OK(std::string const& message);
+    void send_OK();
+    void send_ERR(std::string const& message);
+    void process_command(std::string command);
+    void send_all(const char* data, size_t size);
 };
 
 
