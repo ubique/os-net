@@ -1,3 +1,11 @@
+# Simple echo server implementation.
+
+# make - сборка;
+# Запуск сервера: ./server [host [port]]
+# Запуск клиента и отправка сообщения message: ./client [host [port [message]]]
+# Запуск сервера с аргументами 127.0.0.1 8080: make runServer
+# Отправка сообщения "Hello world!" клиентом: make runClient
+
 # Знакомство с сокетами
 
 Необходимо попробовать клиент-серверное взаимодействие через синхронные сокеты.
