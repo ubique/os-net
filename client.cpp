@@ -42,10 +42,7 @@ int main(int argc, char** argv)
         perror("recv");
         exit(EXIT_FAILURE);
     }
-    if (strncmp(buffer, "exit", strlen(buffer)) != 0)
-    {
-        std::cout << "answer from the server: " << buffer << std::endl;
-    }
+    std::cout << "answer from the server: " << buffer << std::endl;
     close(sockd);
     return 0;
 }
