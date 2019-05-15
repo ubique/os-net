@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         static int msglen;
         char buffer[1024];
         bzero(buffer, 1024);
-
+        std::cout << "Server is running..\n";
         if ((clientSockd = accept(sockd, (sockaddr*) &client_addr, &client_len)) == -1)
         {
             perror("accept");
@@ -62,11 +62,14 @@ int main(int argc, char** argv)
 
         if (strncmp(buffer, "exit", msglen) == 0)
         {
+            if ((send(clientSockd, "Server has stopped.\n", 21, 0)) == -1)
+            {
+                perror("send");
+            }
             close(clientSockd);
-            std::cout << "Server has stopped.\n";
+            std::cout << "Shutdown server.\n";
             return 0;
         }
-
         if ((send(clientSockd, &buffer, msglen, 0)) == -1)
         {
             perror("send");
