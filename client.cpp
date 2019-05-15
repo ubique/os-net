@@ -46,6 +46,17 @@ int main(int argc, char** argv) {
         close(socket_fd);
         return 0;
     }
-    std::cout << "hello" << std::endl;
+    char* msg = "hi!";
+    if(send(socket_fd, "", 1, 0) == -1) {
+        print_error("bad!");
+        close(socket_fd);
+    }
+
+    char buf[1024];
+    if (recv(socket_fd, &buf, 1024, 0) == -1) {
+        print_error("Can't read!");
+    }
+    std::cout << buf << std::endl;
+
     return 0;
 }

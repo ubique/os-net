@@ -7,10 +7,7 @@ int main(int argc, char** argv) {
         std::cerr << "Incorrect count of arguments!" << std::endl;
         exit(EXIT_FAILURE);
     }
-    POP3Server server;
-    if (!server.run(argc == 1 ? argv[0] : argv[1],  8888)) {
-        std::cerr << "Can't run a server" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    POP3Server server(argc == 1 ? argv[0] : argv[1],  8888);
+    server.run();
 }
 

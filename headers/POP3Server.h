@@ -12,8 +12,9 @@
 
 class POP3Server {
 public:
-    int run(const std::string& host_name, int port);
-    void execute();
+    int run();
+    POP3Server(const std::string& host_name, int port);
+    ~POP3Server();
 private:
     const int FAIL = 0;
     const int SUCCESS = 1;
