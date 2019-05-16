@@ -50,6 +50,12 @@ int POP3Server::run() {
             if (msg_len != -1) {
                 if (strncmp(buf, "exit", msg_len) == 0) {
                     break;
+                } else if () {
+
+                } else if () {
+
+                } else if () {
+
                 }
                 std::cout << msg_len << std::endl;
                 char* msg_to_client = "hello";
