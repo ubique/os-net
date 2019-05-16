@@ -12,7 +12,7 @@ bool User::cmp_password(const std::string &password) {
     return this->password == password;
 }
 
-User::User() : login(nullptr), password(nullptr)
+User::User() : login(""), password("")
 {
 }
 

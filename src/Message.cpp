@@ -5,7 +5,7 @@
 
 #include "Message.h"
 
-Message::Message(): user_login(nullptr), text(nullptr)
+Message::Message(): user_login(""), text("")
 {
 }
 

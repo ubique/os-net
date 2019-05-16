@@ -43,6 +43,7 @@ void POP3Server::print_error(const std::string &msg) {
 int POP3Server::run() {
     States state = AUTHORIZATION;
     DBase data_base;
+    User user;
     while(true) {
         sockaddr_in client{};
         socklen_t client_len;
@@ -63,14 +64,25 @@ int POP3Server::run() {
                 send_msg("-ERR", client_fd, "Error in send msg to client!");
             }
             if (state == AUTHORIZATION) {
-                if (request[0] == "") {
-
-                } else if (request[1] == "") {
-
+                if (request[0] == "USER") {
+                    if (data_base.is_user_by_login(request[1])) {
+                        send_msg("+OK, user was found", client_fd, "Error in sending");
+                        user = data_base.get_user_by_login(request[1]);
+                    } else {
+                        send_msg("-ERR, can't find user", client_fd, "Error in sending");
+                    }
+                } else if (request[0] == "PASS") {
+                    if (user.get_login().empty()) {
+                        send_msg("-ERR, haven't user session", client_fd, "Error in sending");
+                    } else if (user.cmp_password(request[1])){
+                        send_msg("+OK, authorization success", client_fd, "Error in sending");
+                        state = TRANSACTION;
+                    } else {
+                        send_msg("-ERR, password is incorrect", client_fd, "Error in sending");
+                    }
                 } else {
-
+                    send_msg("-ERR, unknown command", client_fd, "Error in sending");
                 }
-                state = TRANSACTION;
             } else if (state == TRANSACTION) {
                 state = UPDATE;
             } else {
