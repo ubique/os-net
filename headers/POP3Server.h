@@ -18,8 +18,11 @@ public:
 private:
     const int FAIL = 0;
     const int SUCCESS = 1;
+    const size_t BUFFER_LENGHT = 1024;
+    enum States {AUTHORIZATION, TRANSACTION, UPDATE};
     int socket_fd{};
     struct sockaddr_in server_addr{};
 
     void print_error(const std::string &msg);
+    void send_msg(std::string msg, int fd, std::string msg_error);
 };

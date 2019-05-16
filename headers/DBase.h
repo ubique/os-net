@@ -1,12 +1,7 @@
 //
 // Created by utusi on 16.05.19.
 //
-
-#ifndef CLIENT_SERVER_DBASE_H
-#define CLIENT_SERVER_DBASE_H
-
-#endif //CLIENT_SERVER_DBASE_H
-
+#pragma once
 #include <vector>
 #include <map>
 #include "User.h"

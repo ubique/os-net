@@ -1,16 +1,20 @@
 #include "POP3Server.h"
 #include <iostream>
+#include <vector>
+#include <Utils.h>
+#include <DBase.h>
+
 POP3Server::POP3Server(const std::string &host_name, int port = 110) {
     struct hostent *server;
 
     socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (socket_fd < 0) {
-        print_error("ERROR opening socket\n");
+        print_error("ERROR opening socket");
     }
 
     server = gethostbyname(host_name.c_str());
     if (server == nullptr) {
-        print_error("ERROR, no such host\n");
+        print_error("ERROR, no such host");
         close(socket_fd);
     }
 
@@ -20,12 +24,12 @@ POP3Server::POP3Server(const std::string &host_name, int port = 110) {
     server_addr.sin_port = htons(port);
 
     if (bind(socket_fd, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr)) == -1) {
-        print_error("ERROR bind a socket\n");
+        print_error("ERROR bind a socket");
         close(socket_fd);
     }
 
     if (listen(socket_fd, 16) == -1) {
-        print_error("ERROR listen socket\n");
+        print_error("ERROR listen socket");
         close(socket_fd);
     }
 }
@@ -37,37 +41,40 @@ void POP3Server::print_error(const std::string &msg) {
 
 
 int POP3Server::run() {
+    States state = AUTHORIZATION;
+    DBase data_base;
     while(true) {
         sockaddr_in client{};
         socklen_t client_len;
-        int cur_fd = accept(socket_fd, reinterpret_cast<sockaddr*>(&client), &client_len);
-        if (cur_fd != -1) {
-            size_t buf_len = 4096;
-            char buf[buf_len];
-            size_t msg_len;
-            memset(buf, 0, buf_len);
-            msg_len = recv(cur_fd, &buf, buf_len, 0);
-            if (msg_len != -1) {
-                if (strncmp(buf, "exit", msg_len) == 0) {
-                    break;
-                } else if () {
-
-                } else if () {
-
-                } else if () {
-
-                }
-                std::cout << msg_len << std::endl;
-                char* msg_to_client = "hello";
-                if (send(cur_fd, msg_to_client, 5, 0) == -1) {
-                    print_error("Error in send msg to client!\n");
-                    close(cur_fd);
-                    close(socket_fd);
-                }
-            } else {
-                close(cur_fd);
+        int client_fd = accept(socket_fd, reinterpret_cast<sockaddr*>(&client), &client_len);
+        if (client_fd != -1) {
+            send_msg("+OK POP3 server ready", client_fd, "Error in send hello to client!");
+            char buffer[BUFFER_LENGHT];
+            memset(buffer, 0, BUFFER_LENGHT);
+            size_t msg_len = recv(client_fd, &buffer, BUFFER_LENGHT, 0);
+            if (msg_len == -1) {
+                print_error("Error to receive a message");
+                close(client_fd);
                 close(socket_fd);
                 break;
+            }
+            std::vector<std::string> request = Utils::split(buffer);
+            if (request.size() != 2) {
+                send_msg("-ERR", client_fd, "Error in send msg to client!");
+            }
+            if (state == AUTHORIZATION) {
+                if (request[0] == "") {
+
+                } else if (request[1] == "") {
+
+                } else {
+
+                }
+                state = TRANSACTION;
+            } else if (state == TRANSACTION) {
+                state = UPDATE;
+            } else {
+                state = AUTHORIZATION;
             }
         } else {
             print_error("Can't accept a client!");
@@ -81,6 +88,14 @@ int POP3Server::run() {
 POP3Server::~POP3Server() {
     if (close(socket_fd) == -1) {
         print_error("Can't close a socket\n");
+    }
+}
+
+void POP3Server::send_msg(std::string msg, int fd, std::string msg_error) {
+    if (send(fd, msg.c_str(), sizeof(msg.c_str()), 0) == -1) {
+        print_error(msg_error);
+        close(fd);
+        close(socket_fd);
     }
 }
 

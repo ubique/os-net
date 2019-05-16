@@ -1,13 +1,9 @@
 //
 // Created by utusi on 16.05.19.
 //
-
+#pragma once
 #include "User.h"
 
-#ifndef CLIENT_SERVER_SESSION_H
-#define CLIENT_SERVER_SESSION_H
-
-#endif //CLIENT_SERVER_SESSION_H
 
 
 class Session {
