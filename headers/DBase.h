@@ -13,6 +13,7 @@ public:
     bool is_user_by_login(const std::string &login) const;
     std::vector<Message> get_messages_by_login(const std::string &login);
     User get_user_by_login(const std::string &login);
+    void update(const std::string &login);
 private:
     std::map<std::string, std::vector<Message>> messages;
     std::map<std::string, User> users;

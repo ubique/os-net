@@ -44,6 +44,7 @@ int POP3Server::run() {
     States state = AUTHORIZATION;
     DBase data_base;
     User user;
+    bool was_quit = false;
     while(true) {
         sockaddr_in client{};
         socklen_t client_len;
@@ -60,8 +61,9 @@ int POP3Server::run() {
                 break;
             }
             std::vector<std::string> request = Utils::split(buffer);
-            if (request.size() != 2) {
-                send_msg("-ERR", client_fd, "Error in send msg to client!");
+            if (request.empty() || request.size() > 2) {
+                send_msg("-ERR, incorrect format", client_fd, "Error in send msg to client!");
+                continue;
             }
             if (state == AUTHORIZATION) {
                 if (request[0] == "USER") {
@@ -80,13 +82,36 @@ int POP3Server::run() {
                     } else {
                         send_msg("-ERR, password is incorrect", client_fd, "Error in sending");
                     }
+                } else if (request[0] == "QUIT"){
+                    send_msg("+OK, session closed", client_fd, "Error in sending");
+                    break;
                 } else {
                     send_msg("-ERR, unknown command", client_fd, "Error in sending");
                 }
             } else if (state == TRANSACTION) {
-                state = UPDATE;
+                if (request[0] == "QUIT") {
+                    was_quit = true;
+                    state = UPDATE;
+                } else if (request[0] == "STAT"){
+
+                } else if (request[0] == "LIST") {
+
+                } else if (request[0] == "RETR") {
+
+                } else if (request[0] == "DELE") {
+
+                } else if (request[0] == "NOOP") {
+
+                } else if (request[0] == "RSET") {
+
+                } else {
+                    send_msg("-ERR, unknown command", client_fd, "Error in sending");
+                }
             } else {
-                state = AUTHORIZATION;
+                if (was_quit) {
+                    send_msg("+OK, all messages updated", client_fd, "Error in updating");
+                    data_base.update();
+                }
             }
         } else {
             print_error("Can't accept a client!");

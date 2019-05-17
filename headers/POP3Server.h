@@ -16,8 +16,6 @@ public:
     POP3Server(const std::string& host_name, int port);
     ~POP3Server();
 private:
-    const int FAIL = 0;
-    const int SUCCESS = 1;
     const size_t BUFFER_LENGHT = 1024;
     enum States {AUTHORIZATION, TRANSACTION, UPDATE};
     int socket_fd{};
