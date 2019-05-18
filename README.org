@@ -1,0 +1,20 @@
+#+TITLE: TFTP
+
+Implementation of TFTP protocol. See [[https://tools.ietf.org/html/rfc1350][RFC 1350.]] This repository provides TFTP
+server and TFTP client programs, as well as library to use protocol in other
+applications.
+
+* build and run
+  #+BEGIN_SRC sh
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
+    ./run-server # to see server usage
+    ./run-client # to see client usage
+  #+END_SRC
+* usage example
+  #+BEGIN_SRC sh
+    ./run-server 127.0.0.1 &
+    ./run-client -w /home/me/file-to-transfer.txt transferred-file.txt 127.0.0.1
+  #+END_SRC
