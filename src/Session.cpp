@@ -18,9 +18,7 @@ bool Session::is_limit() {
 }
 
 Session::Session() : user(), time(0)
-{
-}
+{}
 
 Session::Session(User user) : user(user), time(0)
-{
-}
+{}

@@ -9,6 +9,7 @@
 #include <string>
 #include <stdio.h>
 #include <iostream>
+#include <Utils.h>
 
 void print_error(const std::string &msg) {
     perror(msg.c_str());
@@ -46,17 +47,28 @@ int main(int argc, char** argv) {
         close(socket_fd);
         return 0;
     }
-    char* msg = "hi!";
-    if(send(socket_fd, "", 1, 0) == -1) {
-        print_error("bad!");
-        close(socket_fd);
-    }
-
-    char buf[1024];
-    if (recv(socket_fd, &buf, 1024, 0) == -1) {
+    const int size_buf = 1024;
+    char buf[size_buf];
+    memset(buf, 0, sizeof(buf));
+    if (recv(socket_fd, &buf, size_buf, 0) == -1) {
         print_error("Can't read!");
     }
     std::cout << buf << std::endl;
-
+    while(true) {
+        std::string command;
+        std::getline(std::cin , command);
+        if (command == "exit") {
+            break;
+        }
+        if(send(socket_fd, command.c_str(), command.size() + 1, 0) == -1) {
+            print_error("bad!");
+            close(socket_fd);
+        }
+        memset(buf, 0, sizeof(buf));
+        if (recv(socket_fd, &buf, size_buf, 0) == -1) {
+            print_error("Can't read!");
+        }
+        std::cout << buf << std::endl;
+    }
     return 0;
 }

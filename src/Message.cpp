@@ -42,5 +42,11 @@ void Message::remove() {
 }
 
 size_t Message::get_size() {
-    return sizeof(text.c_str());
+    return text.size();
+}
+
+void Message::unremove() {
+    if (this->removed) {
+        this->removed = false;
+    }
 }

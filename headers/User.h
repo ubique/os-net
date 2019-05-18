@@ -7,7 +7,7 @@
 class User {
 public:
     User();
-    User(const std::string &login, const std::string &password);
+    User(std::string login, std::string password);
     std::string get_login();
     bool cmp_password(const std::string &password);
 private:

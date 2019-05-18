@@ -1,3 +1,7 @@
+#include <utility>
+
+#include <utility>
+
 //
 // Created by utusi on 11.05.19.
 //
@@ -16,6 +20,6 @@ User::User() : login(""), password("")
 {
 }
 
-User::User(const std::string &login, const std::string &password): login(login), password(password)
+User::User(std::string login, std::string password): login(std::move(login)), password(std::move(password))
 {
 }

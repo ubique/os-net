@@ -14,6 +14,7 @@ public:
     std::string get_user_login() const;
     bool is_removed();
     void remove();
+    void unremove();
     size_t get_size();
 private:
     std::string text;
