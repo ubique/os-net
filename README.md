@@ -23,10 +23,10 @@
 * RSET - удаляет предыдущие команды.
 
 #### Сборка и запуск:
-make - собрать.
-make runServer - запустить сервер.
-make runClient - запустить клиент.
-make clean - очистить.
+* make - собрать.
+* make runServer - запустить сервер.
+* make runClient - запустить клиент.
+* make clean - очистить.
 
 @ OlegUtusikov
 
