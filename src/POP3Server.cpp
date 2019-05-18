@@ -103,7 +103,7 @@ int POP3Server::run() {
                     send_msg("+OK, session closed", client_fd, "Error in sending");
                     break;
                 } else {
-                    send_msg("-ERR, unknown command", client_fd, "Error in sending");
+                    send_msg("-ERR, unknown command. You must authorization", client_fd, "Error in sending");
                 }
             } else {
                 if (request[0] == "QUIT") {

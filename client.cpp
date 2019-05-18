@@ -47,14 +47,16 @@ int main(int argc, char** argv) {
         close(socket_fd);
         return 0;
     }
+    std::cout << "Client started!" << std::endl;
     const int size_buf = 1024;
     char buf[size_buf];
     memset(buf, 0, sizeof(buf));
     if (recv(socket_fd, &buf, size_buf, 0) == -1) {
-        print_error("Can't read!");
+        print_error("Can't read a response!");
     }
     std::cout << buf << std::endl;
     while(true) {
+        std::cout << "Pleas, print a command:" << std::endl;
         std::string command;
         std::getline(std::cin , command);
         if (command == "exit") {

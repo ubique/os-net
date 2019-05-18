@@ -11,14 +11,14 @@
 Для теста в локальной базе данных сохранён пользователь с login: test, password: test. 
 
 ###### Авторизация:
-* USER login
-* PASS password
+* USER [login]
+* PASS [password]
 
 ###### После авторизации:
 * STAT  - количество и суммарный размер сообщений пользователя.
 * LIST [index_of_message] - список размеров каждого сообщения или конкретного.
-* RETR index_of_message - текст конкретного сообщения.
-* DELE index_of_message - удалить сообщение.
+* RETR [index_of_message] - текст конкретного сообщения.
+* DELE [index_of_message] - удалить сообщение.
 * NOOP - ничего не делает.
 * RSET - удаляет предыдущие команды.
 
