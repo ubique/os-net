@@ -22,6 +22,12 @@
 * NOOP - ничего не делает.
 * RSET - удаляет предыдущие команды.
 
+#### Сборка и запуск:
+make - собрать.
+make runServer - запустить сервер.
+make runClient - запустить клиент.
+make clean - очистить.
+
 @ OlegUtusikov
 
 [link]: https://rfc2.ru/1939.rfc
