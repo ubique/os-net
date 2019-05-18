@@ -2,7 +2,7 @@
 
 ---
 
-### POP3 server(easy variant)
+### POP3 server
 
 Постарался имплементировать POP3 server в согласовании с [rfc][link].
 
@@ -29,5 +29,7 @@ make runClient - запустить клиент.
 make clean - очистить.
 
 @ OlegUtusikov
+
+PS: приветствуется поиск багов и ошибок).
 
 [link]: https://rfc2.ru/1939.rfc
