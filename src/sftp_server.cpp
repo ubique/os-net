@@ -126,33 +126,33 @@ static std::string process(std::vector<std::string> const &query,
         return "! Only binary type is supported";
     }
     if (query[0] == "LIST") {
-        DIR *d;
         errno = 0;
         std::string directory_name = query.size() > 2 ? query[2] : ".";
-        d = opendir(directory_name.data());
-        std::string response;
-        if (d) {
-            struct dirent *dir;
-            while ((dir = readdir(d)) != nullptr) {
-                response += std::string{"+"} + dir->d_name + '\n';
+        DIR *dir_pointer = opendir(directory_name.data());
+        std::string directory_contents;
+        if (dir_pointer) {
+            struct dirent *dir_entry;
+            while ((dir_entry = readdir(dir_pointer)) != nullptr) {
+                directory_contents +=
+                    std::string{"+"} + dir_entry->d_name + '\n';
             }
-            closedir(d);
+            closedir(dir_pointer);
         }
         if (errno != 0) {
             return std::string{"- Error:"} + strerror(errno);
         } else {
-            return response;
+            return directory_contents;
         }
     }
     if (query[0] == "CDIR") {
-        std::string response;
-        if (query.size() == 1 || chdir(query[1].data()) == -1) {
-            response = std::string{"-Can't connect to directory because: "} +
-                       strerror(errno);
+        if (query.size() == 1)
+            return "-Please, provide target directory";
+        else if (chdir(query[1].data()) == -1) {
+            return std::string{"-Can't connect to directory because: "} +
+                   strerror(errno);
         } else {
-            response = "!Changed working dir to " + query[1];
+            return "!Changed working dir to " + query[1];
         }
-        return response;
     }
     if (query[0] == "KILL") {
         if (query.size() == 1) {
@@ -183,13 +183,12 @@ static std::string process(std::vector<std::string> const &query,
         }
     }
     if (query[0] == "SEND") {
-        int fd = open(state.retrieving.data(), O_RDONLY);
-        fd_wrapper wrapper(fd);
+        fd_wrapper wrapper(open(state.retrieving.data(), O_RDONLY));
         std::string result;
-        if (fd != -1) {
+        if (wrapper.fd != -1) {
             char buffer[BUFFER_SIZE];
             while (true) {
-                ssize_t received = read(fd, buffer, BUFFER_SIZE);
+                ssize_t received = read(wrapper.fd, buffer, BUFFER_SIZE);
                 if (received == -1) {
                     return "-Error occurred while reading a file";
                 } else if (received == 0) {
@@ -210,7 +209,7 @@ static std::string process(std::vector<std::string> const &query,
         return "+ok, RETR aborted";
     }
     if (query[0] == "STOR") {
-        if (query.size() == 1 || query[1] != "OLD") {
+        if (query.size() < 3 || query[1] != "OLD") {
             return "-Server supports only STOR OLD command";
         } else {
             state.receiving = query[2];
@@ -228,7 +227,7 @@ static std::string process(std::vector<std::string> const &query,
                 throw std::runtime_error("");
             }
             size_t size = stoull(query[1]);
-            if (size > 4096) {
+            if (size > BUFFER_SIZE) {
                 return "-Not enough room, don't send it";
             } else {
                 state.receiving_size = stoull(query[1]);
@@ -248,17 +247,16 @@ void sftp_server::run()
             throw std::runtime_error("Could not reach start directory");
         }
         struct sockaddr_in client;
-        size_t c = sizeof(struct sockaddr_in);
-        int client_socket =
+        size_t socket_size = sizeof(struct sockaddr_in);
+        fd_wrapper client_socket(
             accept(server_socket, reinterpret_cast<sockaddr *>(&client),
-                   reinterpret_cast<socklen_t *>(&c));
-        fd_wrapper wrapper(client_socket);
-        if (client_socket == -1) {
+                   reinterpret_cast<socklen_t *>(&socket_size)));
+        if (client_socket.fd == -1) {
             throw std::runtime_error(std::string{"accept: "} + strerror(errno));
         }
         std::cout << "Connected" << std::endl;
-        char message_buffer[4096];
-        if (write(client_socket, GREETING.data(), GREETING.size()) == -1) {
+        char message_buffer[BUFFER_SIZE];
+        if (write(client_socket.fd, GREETING.data(), GREETING.size()) == -1) {
             // so we can do nothing other than trying to accept new connections.
             std::cout << "Error while sending: " << strerror(errno)
                       << std::endl;
@@ -267,8 +265,9 @@ void sftp_server::run()
         user_state state;
         std::string storage;
         while (true) {
-            memset(message_buffer, 0, 4096);
-            int read_size = recv(client_socket, message_buffer, 4096, 0);
+            memset(message_buffer, 0, BUFFER_SIZE);
+            int read_size =
+                recv(client_socket.fd, message_buffer, BUFFER_SIZE, 0);
             if (read_size == -1) {
                 std::cerr << "[ERROR]: " << strerror(errno) << std::endl;
                 break;
@@ -278,6 +277,7 @@ void sftp_server::run()
                 break;
             }
             if (state.receiving_size != 0) {
+                // we are in the state of accepting new file
                 size_t write_size = std::min(static_cast<size_t>(read_size),
                                              state.receiving_size);
                 state.receiving_size -= write_size;
@@ -289,11 +289,10 @@ void sftp_server::run()
             }
             std::string response;
             if (state.receiving_size == 0 && storage.size() != 0) {
-                int new_fd = open(state.receiving.data(), O_CREAT | O_RDWR,
-                                  S_IRUSR | S_IWUSR);
-                fd_wrapper write_wrapper(new_fd);
-                if (new_fd == -1 ||
-                    write(new_fd, storage.data(), storage.size()) == -1) {
+                fd_wrapper new_file(open(state.receiving.data(),
+                                         O_CREAT | O_RDWR, S_IRUSR | S_IWUSR));
+                if (new_file.fd == -1 ||
+                    write(new_file.fd, storage.data(), storage.size()) == -1) {
                     response = "-Could not save " + state.receiving + ": " +
                                strerror(errno);
                 } else {
@@ -303,12 +302,11 @@ void sftp_server::run()
                 state.receiving.clear();
             } else {
                 std::cout << "[INFO] Received:" << message_buffer << std::endl;
-                std::string query = message_buffer;
-                std::vector<std::string> queries = parse_string(query);
+                std::vector<std::string> queries = parse_string(message_buffer);
                 response = process(queries, state, database);
             }
-            if (state.disconnect ||
-                write(client_socket, response.data(), response.size()) == -1) {
+            if (state.disconnect || write(client_socket.fd, response.data(),
+                                          response.size()) == -1) {
                 break;
             }
         }
