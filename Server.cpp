@@ -73,8 +73,8 @@ bool Server::runServer(std::string const& argument) {
 }
 
 void printHelpMessage() {
-    std::cout << "server <address> -- run server; \n "
-                 "server help | -help | --help -- print this message.\n";
+    std::cout << "os-net-server <address> -- run server; \n "
+                 "os-net-server help | -help | --help -- print this message.\n";
 }
 
 int main(int argc, char** argv) {

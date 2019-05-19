@@ -56,8 +56,8 @@ bool Client::connectSocket(int socket, int address) {
 }
 
 void printHelpMessage() {
-    std::cout << "client <address> -- run client; \n "
-                 "client help | -help | --help -- print this message.\n";
+    std::cout << "os-net-client <address> -- run client; \n "
+                 "os-net-client help | -help | --help -- print this message.\n";
 }
 
 
