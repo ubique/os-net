@@ -2,8 +2,8 @@
 // Created by Павел Пономарев on 2019-05-19.
 //
 
+#include "Server.h"
 #include <iostream>
-#include <string>
 #include <sstream>
 #include <unistd.h>
 #include <sys/types.h>
@@ -11,27 +11,7 @@
 #include <netinet/in.h>
 #include <fcntl.h>
 
-void printHelpMessage() {
-    std::cout << "server <address> <requestsNum> -- run server (requestsNum is optional); \n "
-                 "server help | -help | --help -- print this message.\n";
-}
-
-void printErrorMessage(std::string const& message, bool error = true) {
-    std::cout << "Error occurred: " << message << ". ";
-    if (error) {
-        std::cout << std::strerror(errno);
-    }
-    std::cout << std::endl;
-}
-
-int parseInt(std::string const& str) {
-    int value;
-    std::istringstream stream(str);
-    stream >> value;
-    return value;
-}
-
-int openSocket() {
+int Server::openSocket() {
     int listener = socket(AF_INET, SOCK_STREAM, 0);
     if (listener < 0) {
         return -1;
@@ -43,7 +23,7 @@ int openSocket() {
     return listener;
 }
 
-bool bindSocket(int listener, int address) {
+bool Server::bindSocket(int listener, int address) {
     sockaddr_in addr{};
     addr.sin_port = htons(address);
     addr.sin_family = AF_INET;
@@ -51,17 +31,54 @@ bool bindSocket(int listener, int address) {
     return bind(listener, (struct sockaddr *) &addr, sizeof(addr)) >= 0;
 }
 
-void execute(int sock) {
+void Server::execute(int socket) {
     char buf[1024];
-    ssize_t bytes = recv(sock, buf, 1024, 0);
+    ssize_t bytes = recv(socket, buf, 1024, 0);
     buf[bytes] = '\0';
-    send(sock, buf, bytes, 0);
-    close(sock);
+    send(socket, buf, bytes, 0);
+    close(socket);
+}
+
+bool Server::runServer(std::string const& argument) {
+    int address = parseInt(argument);
+
+    int listener = openSocket();
+    if (listener < 0) {
+        if (listener == -1) {
+            printErrorMessage("can't create an endpoint for communication");
+            return false;
+        } else {
+            printErrorMessage("can't get/set options on socket");
+        }
+    }
+
+    if (!bindSocket(listener, address)) {
+        printErrorMessage("can't bind socket");
+        return false;
+    }
+
+    listen(listener, 1);
+
+    for (size_t i = 0; i < 7; ++i) {
+        int sock = accept(listener, nullptr, nullptr);
+        if (sock < 0) {
+            printErrorMessage("can't accept connection on a socket");
+            return false;
+        }
+        execute(sock);
+    }
+
+    close(listener);
+    return true;
+}
+
+void printHelpMessage() {
+    std::cout << "server <address> <requestsNum> -- run server (requestsNum is optional); \n "
+                 "server help | -help | --help -- print this message.\n";
 }
 
 int main(int argc, char** argv) {
-    int requestsNumber = 10;
-    if (argc < 2) {
+    if (argc != 2) {
         printErrorMessage("incorrect number of arguments", false);
         printHelpMessage();
         return EXIT_FAILURE;
@@ -72,39 +89,7 @@ int main(int argc, char** argv) {
         printHelpMessage();
         return EXIT_SUCCESS;
     }
+    Server server;
 
-    int address = parseInt(argument);
-    if (argc > 2) {
-        std::string request(argv[2]);
-        requestsNumber = parseInt(request);
-    }
-
-    int listener = openSocket();
-    if (listener < 0) {
-        if (listener == -1) {
-            printErrorMessage("can't create an endpoint for communication");
-            return EXIT_FAILURE;
-        } else {
-            printErrorMessage("can't get/set options on socket");
-        }
-    }
-
-    if (!bindSocket(listener, address)) {
-        printErrorMessage("can't bind socket");
-        return EXIT_FAILURE;
-    }
-
-    listen(listener, 1);
-
-    for (size_t i = 0; i < requestsNumber; ++i) {
-        int sock = accept(listener, nullptr, nullptr);
-        if (sock < 0) {
-            printErrorMessage("can't accept connection on a socket");
-            return EXIT_FAILURE;
-        }
-        execute(sock);
-    }
-
-    close(listener);
-    return EXIT_SUCCESS;
+    return server.runServer(argument) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
