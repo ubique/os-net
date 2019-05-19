@@ -1,0 +1,7 @@
+Simple blocking TCP client and server
+
+Server usage:
+    os_server <port>
+
+Client usage:
+    os_client <server> <port> <message>
