@@ -1,1 +1,0 @@
-/usr/bin/c++   -Wall -Wextra -Wshadow -pedantic -D_GLIBCXX_DEBUG  -rdynamic CMakeFiles/TCPclient.dir/TCPclient.cpp.o CMakeFiles/TCPclient.dir/utils.cpp.o  -o TCPclient 
