@@ -14,7 +14,7 @@
 void printErrorMessage(std::string const& message, bool error = true) {
     std::cout << "Error occurred: " << message << ". ";
     if (error) {
-        std::cout << std::strerror(errno);
+        std::cout << strerror(errno);
     }
     std::cout << std::endl;
 }
