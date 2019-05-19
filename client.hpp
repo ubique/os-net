@@ -8,18 +8,23 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 class tftp_client {
 
 public:
 
-    tftp_client(std::string const &address, size_t server_port);
+    tftp_client();
+
     ~tftp_client();
 
-    bool send_file(std::string const &path);
-    bool request_file(std::string const &path);
+    void connect(std::string const &address, uint16_t port);
 
-    void close();
+    void send(std::string const &local_path, std::string const &remote_path);
+
+    void request(std::string const &path, std::string const &remote_path);
+
+    void disconnect();
 
 private:
 
