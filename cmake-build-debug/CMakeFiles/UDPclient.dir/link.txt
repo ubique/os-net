@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -Wshadow -Werror -pedantic -fsanitize=address,undefined -D_GLIBCXX_DEBUG -g  -rdynamic CMakeFiles/UDPclient.dir/UDPclient.cpp.o CMakeFiles/UDPclient.dir/utils.cpp.o  -o UDPclient 

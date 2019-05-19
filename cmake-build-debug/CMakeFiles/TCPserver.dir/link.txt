@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -Wshadow -pedantic -D_GLIBCXX_DEBUG -g  -rdynamic CMakeFiles/TCPserver.dir/TCPserver.cpp.o CMakeFiles/TCPserver.dir/utils.cpp.o  -o TCPserver 

@@ -1,0 +1,4 @@
+/home/domonion/Desktop/github/Domonion/os/net/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/domonion/Desktop/github/Domonion/os/net/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/domonion/Desktop/github/Domonion/os/net/cmake-build-debug/CMakeFiles/TCPserver.dir
+/home/domonion/Desktop/github/Domonion/os/net/cmake-build-debug/CMakeFiles/TCPclient.dir

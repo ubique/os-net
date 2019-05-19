@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+..//utils.hpp
+string
+-
+
+/home/domonion/Desktop/github/Domonion/os/net/TCPserver.cpp
+sys/types.h
+-
+sys/socket.h
+-
+arpa/inet.h
+-
+netinet/in.h
+-
+iostream
+-
+errno.h
+-
+zconf.h
+-
+cstring
+-
+string
+-
+vector
+-
+utils.hpp
+-
+
