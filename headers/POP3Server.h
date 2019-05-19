@@ -18,7 +18,7 @@ public:
     POP3Server(const std::string& host_name, int port);
     ~POP3Server();
 private:
-    const std::string CRLF = "\n";
+    const std::string CRLF = "\r\n";
     const size_t BUFFER_LENGHT = 1024;
     enum States {AUTHORIZATION, TRANSACTION, UPDATE};
     int socket_fd{};

@@ -48,6 +48,7 @@ int main(int argc, char** argv) {
         return 0;
     }
     std::cout << "Client started!" << std::endl;
+    std::cout << "For exit print \"exit\"" << std::endl;
     const int size_buf = 1024;
     char buf[size_buf];
     memset(buf, 0, sizeof(buf));
