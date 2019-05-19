@@ -2,7 +2,7 @@
 
 Modified version of echo.
 
-##Usage:
+## Usage:
 
 ### Commands in current repository:
 + `make` — creates server and client executable files
