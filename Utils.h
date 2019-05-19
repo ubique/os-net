@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <iterator>
 #include <sstream>
 #include <string.h>
 
