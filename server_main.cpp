@@ -6,11 +6,22 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-    hello_server server;
-    try {
-        server.start(argv[1], std::atoi(argv[2]));
-    } catch (std::runtime_error& error) {
-        std::cerr << error.what() << std::endl;
+    if (argc != 3) {
+        std::cout << "server [Internet host address] [port]" << std::endl;
+        return 0;
     }
+    try {
+        hello_server server;
+        try {
+            server.start(argv[1], std::atoi(argv[2]));
+        } catch (std::runtime_error &error) {
+            std::cerr << error.what() << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    } catch (std::runtime_error &constr_er) {
+        std::cerr << constr_er.what() << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
     return 0;
 }

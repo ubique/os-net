@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <iostream>
+#include <chrono>
 
 using std::runtime_error;
 using std::cout;
@@ -69,6 +70,8 @@ void hello_server::start(const char *hostAddress, const in_port_t port) {
                 }
                 make_response();
                 size_t response_len = sizeof(response_len) + readed - 1;
+
+                usleep(1000000);
                 if (send(client_fd, buffer, response_len, 0) != response_len) {
                     cerr << "cannot send request" << std::endl;
                     //do not drop server
