@@ -19,6 +19,8 @@ class vector;
 
 class Server {
 public:
+    Server() = default;
+
     Server(char* address, uint16_t port) {
         memset(&server_addr, 0, sizeof(sockaddr_in));
         server_addr.sin_family = AF_INET;
@@ -83,7 +85,7 @@ public:
 
 private:
     struct sockaddr_in server_addr{};
-    int socket_fd;
+    int socket_fd{};
 
 
     const int BUFFER_SIZE = 2048;

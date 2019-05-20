@@ -17,6 +17,8 @@ struct client_exception : std::runtime_error {
 
 class Client {
 public:
+    Client() = default;
+
     Client(char* address, uint16_t port) {
         memset(&server_addr, 0, sizeof(sockaddr));
         server_addr.sin_family = AF_INET;
@@ -33,19 +35,19 @@ public:
         }
     }
 
-    std::string * request(const std::string &text) {
+    std::string request(const std::string &text) {
         if (send(socket_fd, text.c_str(),  text.length(), 0) == -1) {
             throw client_exception("Cannot send request");
         }
 
-        std::vector<std::string>  ans((unsigned long) BUFFER_SIZE);
+        std::vector<char> ans((unsigned long) BUFFER_SIZE);
         ssize_t sz = recv(socket_fd, ans.data(), (size_t) BUFFER_SIZE, 0);
         if (sz == -1) {
             throw client_exception("Cannot read from socket");
         }
         ans.resize(static_cast<unsigned long>(sz));
 
-        return ans.data();
+        return std::string(ans.data());
     }
 
     ~Client() {
@@ -55,7 +57,7 @@ public:
 
 private:
     struct sockaddr_in server_addr{};
-    int socket_fd;
+    int socket_fd{};
 
     const int BUFFER_SIZE = 2048;
 };
