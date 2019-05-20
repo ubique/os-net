@@ -7,7 +7,7 @@ project(tftp)
 add_executable(server "server.cpp")
 add_executable(client "client.cpp")
 
-add_library(socket_handler STATIC "socket_handler.cpp" "socket_handler.h")
+add_library(utils STATIC "utils.cpp" "utils.h")
 
-target_link_libraries(server socket_handler)
-target_link_libraries(client socket_handler)
+target_link_libraries(server utils)
+target_link_libraries(client utils)
