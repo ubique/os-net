@@ -1,5 +1,5 @@
 Usage:
 
-./server <port> <ip address>
+./server [port] [ip address]
 
-./client <port> <ip address>
+./client [port] [ip address]
