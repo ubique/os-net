@@ -3,9 +3,15 @@
 //
 
 #include "POP_server.h"
+#include <iostream>
 
 int main(int argc, char* argv[]) {
-    POP_server server("127.0.0.1", "12345");
+    if (argc != 3) {
+        std::cout << "Usage: server address port";
+        return 0;
+    }
+
+    POP_server server(argv[1], argv[2]);
 
     server.run();
 }

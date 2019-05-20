@@ -96,8 +96,12 @@ void send_message(int socket_fd, const string &message) {
 }
 
 int main(int argc, char* argv[]) {
-    string address = "127.0.0.1";
-    string port = "12345";
+    if (argc != 3) {
+        cout << "Usage client address port" << endl;
+        return 0;
+    }
+    string address = argv[1];
+    string port = argv[2];
 
     cout << "Connecting" << endl;
 
