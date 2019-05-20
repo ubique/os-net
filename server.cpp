@@ -14,19 +14,17 @@
 static const int LISTEN_BACKLOG = 50;
 static const int BUF_SIZE = 4096;
 
-static void print_err(const std::string &message) {
-    std::cerr << "\033[31m" << message;
-    if (errno) {
-        std::cerr << ": " << std::strerror(errno);
-    }
-    std::cerr << "\033[0m" << std::endl;
-}
+void print_err(const std::string &);
 
-int start(std::string &address, uint16_t port) {
+uint16_t get_port(const std::string &);
+
+void send_all(int, const char *, int);
+
+int start_server(std::string &address, uint16_t port) {
 
     int sfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sfd == -1) {
-        return -1;
+        throw std::runtime_error("Can't create socket");
     }
 
     sockaddr_in addr{};
@@ -35,60 +33,56 @@ int start(std::string &address, uint16_t port) {
     addr.sin_addr.s_addr = inet_addr(address.c_str());
 
     if (bind(sfd, reinterpret_cast<sockaddr *>(&addr), sizeof(sockaddr_in)) == -1) {
-        print_err("Bind failed: ");
-        return -1;
+        throw std::runtime_error("Bind failed");
     }
 
     return sfd;
 }
 
-int listen(int listener) {
+void echo(int reader) {
+    char buf[BUF_SIZE];
+    int bytes_read;
+
+    while (true) {
+        bytes_read = recv(reader, buf, BUF_SIZE, 0);
+
+        if (bytes_read == -1) {
+            throw std::runtime_error("Recv failed");
+        }
+
+        if (bytes_read == 0) {
+            break;
+        }
+
+        send_all(reader, buf, bytes_read);
+    }
+}
+
+
+void wait_for_connections(int listener) {
+
     if (listen(listener, LISTEN_BACKLOG) == -1) {
-        print_err("Bind failed: ");
-        return -1;
+        throw std::runtime_error("Listen failed");
     }
 
     while (true) {
-        int exc = accept(listener, nullptr, nullptr);
-        if (exc == -1) {
-            return -1;
+        int reader = accept(listener, nullptr, nullptr);
+
+        if (reader == -1) {
+            throw std::runtime_error("Accept failed");
         }
 
-        char buf[BUF_SIZE];
-        int bytes_read;
-
-        std::string message;
-        while (true) {
-            bytes_read = recv(exc, buf, BUF_SIZE, 0);
-
-            if (bytes_read == -1) {
-                break;
-            }
-
-            if (bytes_read == 0) {
-                break;
-            }
-
-            for (int i = 0; i < bytes_read; ++i) {
-                message += buf[i];
-            }
-        }
-        close(exc);
-
-        exc = accept(listener, nullptr, nullptr);
-        auto m = message.c_str();
-        int size = message.length();
-        int total = 0;
-        while (total < size) {
-            int was_send = send(exc, m + total, size - total, 0);
-            if (was_send == -1) {
-                return -1;
-            }
-
-            total += was_send;
+        int pid = fork();
+        if (pid == -1) {
+            throw std::runtime_error("Fork failed");
         }
 
-        close(exc);
+        if (pid == 0) {
+            echo(reader);
+            close(reader);
+        } else {
+            close(reader);
+        }
     }
 }
 
@@ -96,11 +90,37 @@ int listen(int listener) {
 int main(int argc, char **argv) {
 
     std::string address = "127.0.0.1";
-    uint16_t port = 8005;
+    uint16_t port = 3456;
 
-    int listener = start(address, port);
-    if (listener != -1) {
-        listen(listener);
+    if (argc > 1) {
+        try {
+            port = get_port(std::string(argv[1]));
+        } catch (std::invalid_argument &e) {
+            print_err(e.what());
+            return EXIT_FAILURE;
+        } catch (std::out_of_range &e) {
+            print_err("Port is too big");
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (argc > 2) {
+        address = std::string(argv[2]);
+    }
+
+    if (argc > 3) {
+        print_err("Wrong arguments, use help");
+        return EXIT_FAILURE;
+    }
+
+
+    int listener;
+    try {
+        listener = start_server(address, port);
+        wait_for_connections(listener);
+    } catch (std::runtime_error &e) {
+        print_err(e.what());
+        return EXIT_FAILURE;
     }
 }
 

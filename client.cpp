@@ -11,11 +11,15 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-static const int LISTEN_BACKLOG = 50;
 static const int BUF_SIZE = 4096;
 
+void print_err(const std::string &);
 
-int start(std::string &address, uint16_t port) {
+uint16_t get_port(const std::string &);
+
+void send_all(int, const char *, int);
+
+int open_connection(std::string &address, uint16_t port) {
 
     int sfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sfd == -1) {
@@ -34,30 +38,20 @@ int start(std::string &address, uint16_t port) {
     return sfd;
 }
 
-int send_and_receive(int sender, int listener, std::string &message) {
+void send_and_receive(int sender, std::string &message) {
 
     auto m = message.c_str();
     int size = message.length();
-    int total = 0;
-
-    while (total < size) {
-        int was_send = send(sender, m + total, size - total, 0);
-        if (was_send == -1) {
-            return -1;
-        }
-
-        total += was_send;
-    }
-
-    close(sender);
+    send_all(sender, m, size);
 
     char buf[BUF_SIZE];
     int bytes_read;
-    while (true) {
-        bytes_read = recv(listener, buf, BUF_SIZE, 0);
+    int sum = 0;
+    while (sum < size) {
+        bytes_read = recv(sender, buf, BUF_SIZE, 0);
 
         if (bytes_read == -1) {
-            break;
+            throw std::runtime_error("Recv failed");
         }
 
         if (bytes_read == 0) {
@@ -67,27 +61,50 @@ int send_and_receive(int sender, int listener, std::string &message) {
         for (int i = 0; i < bytes_read; ++i) {
             std::cout << buf[i];
         }
+        sum += bytes_read;
     }
 
-    close(listener);
-
     std::cout << std::endl;
-
-    return true;
 }
 
 
 int main(int argc, char **argv) {
 
     std::string address = "127.0.0.1";
-    uint16_t port = 8005;
+    uint16_t port = 3456;
+
+    if (argc > 1) {
+        try {
+            port = get_port(std::string(argv[1]));
+        } catch (std::invalid_argument &e) {
+            print_err(e.what());
+            return EXIT_FAILURE;
+        } catch (std::out_of_range &e) {
+            print_err("Port is too big");
+            return EXIT_FAILURE;
+        }
+    }
+
+    if (argc > 2) {
+        address = std::string(argv[2]);
+    }
+
+    if (argc > 3) {
+        print_err("Wrong arguments, use help");
+        return EXIT_FAILURE;
+    }
 
 
     std::string message;
     while (getline(std::cin, message)) {
-        int sender = start(address, port);
-        int listener = start(address, port);
-        send_and_receive(sender, listener, message);
+        try {
+            int sender = open_connection(address, port);
+            send_and_receive(sender, message);
+            close(sender);
+        } catch (std::runtime_error &e) {
+            print_err(e.what());
+            return EXIT_FAILURE;
+        }
     }
 
 }
