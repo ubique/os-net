@@ -38,8 +38,8 @@ void Server::run() {
         }
         std::cout << "Connected" << std::endl;
         while (true) {
-            std::vector<char> buffer(2048);
-            int read = recv(connection, buffer.data(), 2048, 0);
+            std::vector<char> buffer(SIZE);
+            int read = recv(connection, buffer.data(), SIZE, 0);
             if (read == -1) {
                 std::cerr << "Can't read info: " << strerror(errno) << std::endl;
                 continue;

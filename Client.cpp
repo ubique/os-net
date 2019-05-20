@@ -26,8 +26,8 @@ std::string Client::request(const std::string& text) {
     if (send(socket, text.c_str(), text.length(), 0) != text.length()) {
         throw client_exception("Сan't send request");
     }
-    std::vector<char> response(2048);
-    int read = recv(socket, response.data(), 2048, 0);
+    std::vector<char> response(SIZE);
+    int read = recv(socket, response.data(), SIZE, 0);
     if (read == -1) {
         throw client_exception("Can't read from file descriptor");
     }

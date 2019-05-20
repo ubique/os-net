@@ -17,6 +17,8 @@ struct client_exception : std::runtime_error {
 class Client {
     int socket;
     sockaddr_in address{};
+    const int SIZE = 2048;
+
 public:
     Client(char* clientAddress, uint16_t port);
     std::string request(const std::string& text);

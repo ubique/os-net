@@ -18,6 +18,7 @@ struct server_exception : std::runtime_error {
 class Server {
     sockaddr_in address{};
     int socket{};
+    const int SIZE = 2048;
 
 public:
     Server() = default;
