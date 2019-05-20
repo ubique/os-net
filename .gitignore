@@ -1,0 +1,8 @@
+./server/cmake-build-debug
+./server/CMakeLists.txt
+./client/cmake-build-debug
+./client/CMakeLists.txt
+CMakeLists.txt
+cmake-build-debug
+.idea
+tmp
