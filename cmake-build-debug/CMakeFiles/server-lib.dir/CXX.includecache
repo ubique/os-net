@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/miketerentyev/itmo/2-year/os-course/os-net/server-lib/server.cpp
+server.h
+/Users/miketerentyev/itmo/2-year/os-course/os-net/server-lib/server.h
+server_execption.h
+/Users/miketerentyev/itmo/2-year/os-course/os-net/server-lib/server_execption.h
+
+/Users/miketerentyev/itmo/2-year/os-course/os-net/server-lib/server.h
+iostream
+-
+stdexcept
+-
+vector
+-
+arpa/inet.h
+-
+cstring
+-
+errno.h
+-
+netinet/in.h
+-
+sys/socket.h
+-
+sys/types.h
+-
+unistd.h
+-
+
+/Users/miketerentyev/itmo/2-year/os-course/os-net/server-lib/server_execption.h
+stdexcept
+-
+cstring
+-
+errno.h
+-
+

@@ -1,0 +1,6 @@
+/Users/miketerentyev/itmo/2-year/os-course/os-net/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/miketerentyev/itmo/2-year/os-course/os-net/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/miketerentyev/itmo/2-year/os-course/os-net/cmake-build-debug/CMakeFiles/server-lib.dir
+/Users/miketerentyev/itmo/2-year/os-course/os-net/cmake-build-debug/CMakeFiles/client-lib.dir
+/Users/miketerentyev/itmo/2-year/os-course/os-net/cmake-build-debug/CMakeFiles/client.dir
+/Users/miketerentyev/itmo/2-year/os-course/os-net/cmake-build-debug/CMakeFiles/server.dir

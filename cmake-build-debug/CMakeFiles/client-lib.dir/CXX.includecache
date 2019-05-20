@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/miketerentyev/itmo/2-year/os-course/os-net/client-lib/client.cpp
+string
+-
+vector
+-
+client.h
+/Users/miketerentyev/itmo/2-year/os-course/os-net/client-lib/client.h
+client_exception.h
+/Users/miketerentyev/itmo/2-year/os-course/os-net/client-lib/client_exception.h
+
+/Users/miketerentyev/itmo/2-year/os-course/os-net/client-lib/client.h
+cstdint
+-
+netinet/in.h
+-
+sys/socket.h
+-
+sys/types.h
+-
+arpa/inet.h
+-
+cstring
+-
+netinet/in.h
+-
+zconf.h
+-
+
+/Users/miketerentyev/itmo/2-year/os-course/os-net/client-lib/client_exception.h
+exception
+-
+
