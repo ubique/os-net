@@ -78,8 +78,13 @@ void wait_for_connections(int listener) {
         }
 
         if (pid == 0) {
-            echo(reader);
+            try {
+                echo(reader);
+            } catch (std::runtime_error &e) {
+                print_err(e.what());
+            }
             close(reader);
+            exit(EXIT_SUCCESS);
         } else {
             close(reader);
         }
@@ -114,12 +119,14 @@ int main(int argc, char **argv) {
     }
 
 
-    int listener;
+    int listener = 0;
     try {
         listener = start_server(address, port);
         wait_for_connections(listener);
+        close(listener);
     } catch (std::runtime_error &e) {
         print_err(e.what());
+        close(listener);
         return EXIT_FAILURE;
     }
 }

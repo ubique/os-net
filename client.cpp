@@ -23,7 +23,7 @@ int open_connection(std::string &address, uint16_t port) {
 
     int sfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sfd == -1) {
-        return -1;
+        throw std::runtime_error("Can't create socket");
     }
 
     sockaddr_in addr{};
@@ -32,7 +32,7 @@ int open_connection(std::string &address, uint16_t port) {
     addr.sin_addr.s_addr = inet_addr(address.c_str());
 
     if (connect(sfd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == -1) {
-        return -1;
+        throw std::runtime_error("Can't connect to the server");
     }
 
     return sfd;
