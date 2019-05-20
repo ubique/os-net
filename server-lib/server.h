@@ -18,12 +18,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-struct socket_wrapper {
-    explicit socket_wrapper(int fd) : discriptor(fd) {}
+struct wrapper {
+    explicit wrapper(int fd) : discriptor(fd) {}
 
-    socket_wrapper(socket_wrapper const &) = delete;
+    wrapper(wrapper const &) = delete;
 
-    socket_wrapper &operator=(socket_wrapper const &) = delete;
+    wrapper &operator=(wrapper const &) = delete;
 
     bool isBroken() {
         return discriptor == -1;
@@ -33,7 +33,7 @@ struct socket_wrapper {
         return discriptor;
     }
 
-    ~socket_wrapper() {
+    ~wrapper() {
         close(discriptor);
     }
 
@@ -52,10 +52,9 @@ struct server {
 
 private:
     sockaddr_in saddress;
-    socket_wrapper d_socket;
+    wrapper d_socket;
 
-    const int BACKLOG = 3;
-    const size_t BUFFER_SIZE = 1024;
+    const size_t BZ_SZ = 1024;
 
     void fillAddress(char *address, uint16_t port);
 };

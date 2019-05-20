@@ -16,7 +16,7 @@ server::server(char *address, uint16_t port) : d_socket(socket(AF_INET, SOCK_STR
 
     if (listen(
             d_socket.getDiscriptor(),
-            BACKLOG) == -1) {
+            3) == -1) {
         throw server_exception("Can't listen socket");
     }
 }
@@ -25,19 +25,19 @@ server::server(char *address, uint16_t port) : d_socket(socket(AF_INET, SOCK_STR
     while (true) {
         std::cout << "Trying to connect....." << std::endl;
         sockaddr_in peer{};
-        socklen_t peer_size;
-        socket_wrapper infd(accept(d_socket.getDiscriptor(),
-                                   reinterpret_cast<sockaddr *>(&peer),
-                                   &peer_size
+        socklen_t peer_sz;
+        wrapper fd(accept(d_socket.getDiscriptor(),
+                            reinterpret_cast<sockaddr *>(&peer),
+                            &peer_sz
         ));
-        if (infd.isBroken()) {
+        if (fd.isBroken()) {
             std::cerr << "Cannot accept peer";
             continue;
         }
         std::cout << inet_ntoa(peer.sin_addr) << " connected!" << std::endl;
         while (true) {
-            std::vector<char> buffer(BUFFER_SIZE);
-            ssize_t receivedStatus = recv(infd.getDiscriptor(), buffer.data(), BUFFER_SIZE, 0);
+            std::vector<char> buffer(BZ_SZ);
+            ssize_t receivedStatus = recv(fd.getDiscriptor(), buffer.data(), BZ_SZ, 0);
             if (receivedStatus == 0) {
                 std::cout << "Client disconnected\n";
                 break;
@@ -45,9 +45,9 @@ server::server(char *address, uint16_t port) : d_socket(socket(AF_INET, SOCK_STR
                 std::cerr << "Can't receive information";
                 continue;
             } else {
-                while (send(infd.getDiscriptor(), buffer.data(),
-                            static_cast<size_t>(receivedStatus), 0) != receivedStatus) {
-                    std::cerr << "Cannot send echo\n\"Tring to send again...\n";
+                while (send(fd.getDiscriptor(), buffer.data(),
+                        static_cast<size_t>(receivedStatus), 0) != receivedStatus) {
+                    std::cerr << "Cannot send echo\n\"Trying to send again...\n";
                 }
             }
         }

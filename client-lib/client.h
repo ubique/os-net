@@ -16,22 +16,22 @@
 
 using namespace std;
 
-struct socket_wrapper {
-    explicit socket_wrapper(int discriptor) : discriptor(discriptor) {}
+struct wrapper {
+    explicit wrapper(int discriptor) : discriptor(discriptor) {}
 
 
-    ~socket_wrapper() {
+    ~wrapper() {
         close(discriptor);
     }
 
-    socket_wrapper(socket_wrapper const &) = delete;
+    wrapper(wrapper const &) = delete;
 
-    socket_wrapper &operator=(int fd) {
+    wrapper &operator=(int fd) {
         this->discriptor = fd;
         return *this;
     }
 
-    socket_wrapper &operator=(socket_wrapper const &) = delete;
+    wrapper &operator=(wrapper const &) = delete;
 
     bool isBroken() {
         return discriptor == -1;
@@ -55,7 +55,7 @@ public:
 private:
     static const size_t BF_SZ = 1024;
     sockaddr_in addr_socket;
-    socket_wrapper d_socket;
+    wrapper d_socket;
 };
 
 
