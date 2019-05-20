@@ -1,4 +1,6 @@
 GCC := g++ -std=c++14
+Host := 8080
+Msg := exit
 
 all: server client
 
@@ -10,10 +12,10 @@ client: client.cpp
 	$(GCC) client.cpp -o client
 
 runServer: server
-	./server
+	./server $(Host)
 
 runClient: client
-	./client
-	
+	./client $(Host) $(Msg)
+
 clean:
 	rm server client
