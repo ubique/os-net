@@ -14,19 +14,21 @@ class client {
 
 public:
 
+    static unsigned int const REPEAT;
+
     client();
 
     ~client();
 
     void connect(std::string const &address, uint16_t port);
 
-    void send(std::string const &local_path, std::string const &remote_path);
-
-    void receive(std::string const &path, std::string const &remote_path);
+    void send(std::string const &message);
 
     void disconnect();
 
 private:
+
+    void receive();
 
     socket_wrapper socket_desc;
     sockaddr_in server_address;

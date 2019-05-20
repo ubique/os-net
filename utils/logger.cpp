@@ -9,10 +9,10 @@ int logger::fail(std::string const &message, int err) {
     if (err != 0) {
         out << ": " << std::strerror(errno);
     }
-    out << std::endl << _DEFAULT;
+    out <<  _DEFAULT << std::endl;
     return 0;
 }
 
 void logger::success(std::string const &message) {
-    out << _LOG << message << std::endl << _DEFAULT;
+    out << _LOG << message << _DEFAULT << std::endl;
 }

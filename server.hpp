@@ -9,7 +9,7 @@ class server {
 
 public:
 
-    server();
+    server(std::string const &address, uint16_t port);
 
     ~server();
 
