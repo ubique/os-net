@@ -20,15 +20,16 @@ struct mail_info {
 
 class Mail_DB {
 public:
-    explicit Mail_DB(std::string const& mail_dir);
+    Mail_DB() = default;
 
-    bool open_inbox(std::string const& user); //THINK return more information
+    void set_mail_dir(std::string const& mail_dir);
+    bool open_inbox(std::string const& user);
     void close_inbox();
     std::pair<size_t , size_t > stat();
     std::vector<std::pair<size_t , size_t >> list();
     std::pair<size_t , size_t> list(size_t n);
     std::string retr(size_t n);
-    bool dele(size_t n); //THINK return more information
+    bool dele(size_t n);
     void rset();
     void apply_delete();
 private:

@@ -19,7 +19,14 @@ std::string get_error_message(const std::string &comment) {
     return comment + ": " + strerror(errno);
 }
 
-POP_server::POP_server(std::string address, std::string port) : state(State::WAIT), socket_fd(), current_user(), mail_db("/home/rsbat/os_course/mail") {
+POP_server::POP_server(std::string address, std::string port) : state(State::WAIT), socket_fd(), current_user(), mail_db() {
+    char* working_dir = get_current_dir_name();
+    if (working_dir == nullptr) {
+        throw std::runtime_error(get_error_message("Could not get name of current directory"));
+    }
+    mail_db.set_mail_dir(working_dir);
+    free(working_dir);
+
     socket_fd.set(socket(AF_INET, SOCK_STREAM, 0));
     if (socket_fd == -1) {
         throw std::runtime_error(get_error_message("Could not create socket"));
@@ -48,10 +55,8 @@ POP_server::POP_server(std::string address, std::string port) : state(State::WAI
 }
 
 [[noreturn]] void POP_server::run(){
-    char buffer[512];
+    char buffer[BUFFER_SIZE];
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
     for(;;) {
         sockaddr_in client{};
         socklen_t sz = sizeof(sockaddr_in);
@@ -63,17 +68,17 @@ POP_server::POP_server(std::string address, std::string port) : state(State::WAI
         }
 
         state = State::AUTH;
-        std::string greeting = "+OK Simple synchronous POP3 server\r\n";
+        std::string greeting = "+OK Simple synchronous POP3 server (username: user, password: empty)\r\n";
         write(client_socket, greeting.c_str(), greeting.size());
 
         while (state != State::WAIT && state != State::UPDATE) {
-            memset(buffer, 0, 512);
-            ssize_t bytes_read = read(client_socket, buffer, 512);
+            memset(buffer, 0, BUFFER_SIZE);
+            ssize_t bytes_read = read(client_socket, buffer, BUFFER_SIZE);
             if (bytes_read == -1) {
                 cerr << get_error_message("Could not read data from client") << endl;
                 state = State::WAIT;
                 break;
-            } else if (bytes_read == 512) {
+            } else if (bytes_read == BUFFER_SIZE) {
                 send_ERR("Command is too long");
                 state = State::WAIT;
             }
@@ -86,10 +91,11 @@ POP_server::POP_server(std::string address, std::string port) : state(State::WAI
         mail_db.close_inbox();
         current_user.clear();
         state = State::WAIT;
+        
+        send_OK("Inbox closed");
 
         client_socket.close();
     }
-#pragma clang diagnostic pop
 }
 
 void POP_server::process_command(std::string command_line) {
@@ -115,13 +121,15 @@ void POP_server::process_command(std::string command_line) {
                 send_ERR("User name was already sent");
             }
         } else if (command == "pass") {
-            //TODO check login/password
             if (current_user.empty()) {
                 send_ERR("User name must be sent first");
             } else {
-                state = State::TRANSACTION;
-                mail_db.open_inbox(current_user);
-                send_OK();
+                if (mail_db.open_inbox(current_user)) {
+                    state = State::TRANSACTION;
+                    send_OK();
+                } else {
+                    send_ERR("Could not open inbox");
+                }
             }
         } else if (command == "quit") {
             state = State::WAIT;
@@ -158,8 +166,6 @@ void POP_server::process_command(std::string command_line) {
             try {
                 size_t n = std::stoul(argument);
                 auto data = mail_db.retr(n - 1);
-                data.pop_back();//TODO
-                data.pop_back();
                 size_t size = mail_db.list(n - 1).second;
                 send_OK(std::to_string(size) + " octets\r\n" + data);
             } catch (std::logic_error& error) {
@@ -180,7 +186,6 @@ void POP_server::process_command(std::string command_line) {
             send_OK();
         } else if (command == "quit") {
             state = State::UPDATE;
-            send_OK();
         } else {
             send_ERR("Illegal command");
         }
@@ -209,7 +214,6 @@ void POP_server::send_ERR(std::string const& message) {
  * @param data
  * @param size
  */
-//THINK throw exception instead of setting state
 void POP_server::send_all(const char *data, size_t size) {
     auto ptr = data;
     do {

@@ -5,6 +5,8 @@
 #ifndef OS_NET_POP_SERVER_H
 #define OS_NET_POP_SERVER_H
 
+static const int BUFFER_SIZE = 512;
+
 #include "fd_wrapper.h"
 #include "Mail_DB.h"
 
@@ -24,7 +26,7 @@ private:
     State state;
     std::string current_user;
 
-    void send_OK(std::string const& message); //THINK make multiline version
+    void send_OK(std::string const& message);
     void send_OK();
     void send_ERR(std::string const& message);
     void process_command(std::string command);

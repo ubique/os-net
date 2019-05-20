@@ -1,0 +1,8 @@
+Hello
+.
+This is a tricky
+multiline message. Hope
+it will
+....
+be OK!
+

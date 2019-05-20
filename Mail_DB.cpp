@@ -10,12 +10,6 @@
 #include "Mail_DB.h"
 #include "fd_wrapper.h"
 
-Mail_DB::Mail_DB(std::string const& mail_dir) : mail_dir(mail_dir) {
-    if (this->mail_dir.back() != '/') {
-        this->mail_dir += '/';
-    }
-}
-
 /**
  * Initializes DB
  * Assumes there are no folders in inbox folder
@@ -29,7 +23,7 @@ bool Mail_DB::open_inbox(std::string const& user) {
     DIR* dir = opendir(dir_name.c_str());
 
     if (dir == nullptr) {
-        //TODO
+        std::cerr << "Could not open inbox " << dir_name << ": " << strerror(errno) << std::endl;
         return false;
     }
 
@@ -53,7 +47,6 @@ bool Mail_DB::open_inbox(std::string const& user) {
  * @param filename
  * @return
  */
- //THINK more efficient
 size_t Mail_DB::calc_size(std::string const &filename) {
     std::cerr << mail_dir << user << "/" << filename << std::endl;
     std::ifstream file(mail_dir + user + "/" + filename);
@@ -74,7 +67,6 @@ size_t Mail_DB::calc_size(std::string const &filename) {
 void Mail_DB::close_inbox() {
     user.clear();
     base.clear();
-    //TODO
 }
 
 std::pair<size_t, size_t> Mail_DB::stat() {
@@ -101,12 +93,10 @@ std::vector<std::pair<size_t, size_t >> Mail_DB::list() {
     return result;
 }
 
-//TODO check if deleted
 std::pair<size_t, size_t> Mail_DB::list(size_t n) {
     return {n + 1, base[n].size};
 }
 
-//TODO check if deleted
 std::string Mail_DB::retr(size_t n) {
     std::string result;
     std::ifstream file(mail_dir + user + "/" + base[n].filename);
@@ -123,7 +113,6 @@ std::string Mail_DB::retr(size_t n) {
     return result;
 }
 
-//TODO check if deleted
 bool Mail_DB::dele(size_t n) {
     base[n].is_deleted = true;
     return true;
@@ -144,5 +133,13 @@ void Mail_DB::apply_delete() {
                     << ": " << strerror(errno) << std::endl;
             }
         }
+    }
+}
+
+void Mail_DB::set_mail_dir(std::string const& mail_dir) {
+    close_inbox();
+    this->mail_dir = mail_dir;
+    if (this->mail_dir.back() != '/') {
+        this->mail_dir += '/';
     }
 }
