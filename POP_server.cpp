@@ -128,6 +128,7 @@ void POP_server::process_command(std::string command_line) {
                     state = State::TRANSACTION;
                     send_OK();
                 } else {
+                    current_user.clear();
                     send_ERR("Could not open inbox");
                 }
             }

@@ -138,19 +138,23 @@ int main(int argc, char* argv[]) {
     cout << "Connected" << endl;
     cout << get_message(socket_fd, buffer);
 
-    cout << "Input username:" << endl;
-    memset(buffer, 0, BUFFER_SIZE);
-    cin.getline(buffer, 256);
-    send_message(socket_fd, "user " + string(buffer) + "\r\n");
+    string auth_response = "-ERR";
+    do {
+        cout << "Input username:" << endl;
+        memset(buffer, 0, BUFFER_SIZE);
+        cin.getline(buffer, 256);
+        send_message(socket_fd, "user " + string(buffer) + "\r\n");
 
-    cout << get_message(socket_fd, buffer);
+        cout << get_message(socket_fd, buffer);
 
-    cout << "Input password:" << endl;;
-    memset(buffer, 0, BUFFER_SIZE);
-    cin.getline(buffer, 256);
-    send_message(socket_fd, "pass " + string(buffer) + "\r\n");
+        cout << "Input password:" << endl;;
+        memset(buffer, 0, BUFFER_SIZE);
+        cin.getline(buffer, 256);
+        send_message(socket_fd, "pass " + string(buffer) + "\r\n");
 
-    cout << get_message(socket_fd, buffer);
+        auth_response = get_message(socket_fd, buffer);
+        cout << auth_response;
+    } while (auth_response[0] != '+');
 
     cout << "Getting mail stat" << endl;
     send_message(socket_fd, "stat\r\n");
