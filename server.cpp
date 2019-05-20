@@ -20,6 +20,10 @@ uint16_t get_port(const std::string &);
 
 void send_all(int, const char *, int);
 
+void print_help() {
+    std::cout << "Usage: ./server [port] [address]" << std::endl;
+}
+
 int start_server(std::string &address, uint16_t port) {
 
     int sfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -98,6 +102,12 @@ int main(int argc, char **argv) {
     uint16_t port = 3456;
 
     if (argc > 1) {
+
+        if (std::string(argv[1]) == "help") {
+            print_help();
+            return EXIT_SUCCESS;
+        }
+
         try {
             port = get_port(std::string(argv[1]));
         } catch (std::invalid_argument &e) {
