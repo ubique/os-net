@@ -48,9 +48,10 @@ int main() {
             std::cerr << "Can't send message" << std::endl;
             break;
         }
-
+        memset(buf, 0, sizeof(buf));
         if (recv(sock, buf, bufSize, 0) == -1) {
             std::cerr << "Can't read" << std::endl;
+            break;
         }
         std::cout << buf << std::endl;
     }
