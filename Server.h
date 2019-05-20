@@ -11,7 +11,7 @@
 class Server {
 public:
     Server() = default;
-    bool runServer(std::string const&);
+    bool run(std::string const&);
 private:
     int openSocket();
     bool bindSocket(int, int);

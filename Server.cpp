@@ -39,7 +39,7 @@ void Server::execute(int socket) {
     close(socket);
 }
 
-bool Server::runServer(std::string const& argument) {
+bool Server::run(std::string const& argument) {
     int address = parseInt(argument);
 
     int listener = openSocket();
@@ -91,5 +91,5 @@ int main(int argc, char** argv) {
     }
     Server server;
 
-    return server.runServer(argument) ? EXIT_SUCCESS : EXIT_FAILURE;
+    return server.run(argument) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
