@@ -10,19 +10,19 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-class tftp_client {
+class client {
 
 public:
 
-    tftp_client();
+    client();
 
-    ~tftp_client();
+    ~client();
 
     void connect(std::string const &address, uint16_t port);
 
     void send(std::string const &local_path, std::string const &remote_path);
 
-    void request(std::string const &path, std::string const &remote_path);
+    void receive(std::string const &path, std::string const &remote_path);
 
     void disconnect();
 

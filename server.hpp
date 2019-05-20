@@ -5,19 +5,19 @@
 
 #include <netinet/in.h>
 
-class tftp_server {
+class server {
 
 public:
 
-    tftp_server();
+    server();
 
-    ~tftp_server();
+    ~server();
 
-    [[ noreturn ]] void await();
-
-    void respond();
+    [[ noreturn ]] void await_and_respond();
 
 private:
+
+    void respond(sockaddr_in &client_address, char *buf, ssize_t n, socklen_t len);
 
     socket_wrapper socket_desc;
     sockaddr_in server_address;

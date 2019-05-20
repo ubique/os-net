@@ -1,7 +1,7 @@
 #include <arpa/inet.h>
 #include "server.hpp"
 
-tftp_server::tftp_server() : socket_desc(), server_address{0} {
+server::server() : socket_desc(), server_address{0} {
     memset(&server_address, 0, sizeof(sockaddr_in));
 
     server_address.sin_family = AF_INET;
@@ -14,32 +14,35 @@ tftp_server::tftp_server() : socket_desc(), server_address{0} {
     logger().success("Server binded");
 }
 
-tftp_server::~tftp_server() {
+server::~server() {
     server_address = sockaddr_in{0};
     socket_desc.close();
 }
 
-[[ noreturn ]] void tftp_server::await() {
+[[ noreturn ]] void server::await_and_respond() {
+    sockaddr_in client_address{};
     while (true) {
-        sockaddr_in client_address;
         memset(&client_address, 0, sizeof(sockaddr_in));
-        char *buf = reinterpret_cast<char *>(malloc(30));
+        char *buf = reinterpret_cast<char *>(malloc(2048));
         ssize_t n;
         socklen_t len;
-        n = recvfrom(socket_desc.get_descriptor(), reinterpret_cast<void *>(buf), 30, 0,
+        n = recvfrom(socket_desc.get_descriptor(), reinterpret_cast<void *>(buf), 2048, 0,
                      reinterpret_cast<sockaddr *>(&client_address), &len);
         if (n != -1) {
             buf[n] = '\0';
             logger().success("Received '" + std::string(buf) + "' of size " + std::to_string(n));
+            respond(client_address, buf, n, len);
         }
     }
 }
 
-void tftp_server::respond() {
 
+void server::respond(sockaddr_in &client_address, char *buf, ssize_t n, socklen_t len) {
+    sendto(socket_desc.get_descriptor(), buf, static_cast<size_t>(n), 0,
+           reinterpret_cast<sockaddr*>(&client_address), len);
 }
 
 int main() {
-    tftp_server server;
-    server.await();
+    server server;
+    server.await_and_respond();
 }

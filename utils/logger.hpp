@@ -10,7 +10,7 @@ public:
 
     std::string const _ERROR = "\033[31;1m";
     std::string const _HELP = "\033[32;1m";
-    std::string const _LOG = "\033[33;1m";
+    std::string const _LOG = "\033[34;1m";
     std::string const _DEFAULT = "\033[0m";
 
     logger();
