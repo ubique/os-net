@@ -12,7 +12,8 @@
 #include <iostream>
 #include <cstring>
 
-char buf[1024];
+const size_t bufSize = 4096;
+char buf[bufSize];
 
 int main() {
     int sock;
@@ -20,36 +21,38 @@ int main() {
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
-        perror("socket");
+        perror("Can't create socket");
         exit(1);
     }
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(110);
+    addr.sin_port = htons(8888);
     addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     if (connect(sock, (struct sockaddr*) &addr, sizeof(addr)) < 0) {
-        perror("connect");
+        perror("Can't connect");
         exit(2);
     }
 
-    char message[1024];
-    int bytes_read;
+    char message[bufSize];
+
+    std::cout << "Print exit to close program" << std::endl;
 
     while (true) {
 
-        std::cin.getline(message, 1024);
-//        std::cin >> message;
-        send(sock, message, sizeof(message), 0);
-        bytes_read = recv(sock, buf, 1024, 0);
-        printf("%s", buf);
-        while (bytes_read == 1024) {
-//            bytes_read = recv(sock, buf, 1024, 0);
-            bytes_read = read(sock, buf, 1024);
-            printf("%s", buf);
-        }
-        if (strcmp(message, "QUIT") == 0) {
+        std::cin.getline(message, bufSize);
+        if (strcmp(message, "exit") == 0) {
             break;
         }
+
+        if (send(sock, message, sizeof(message), 0) == -1) {
+            std::cerr << "Can't send message" << std::endl;
+            break;
+        }
+
+        if (recv(sock, buf, bufSize, 0) == -1) {
+            std::cerr << "Can't read" << std::endl;
+        }
+        std::cout << buf << std::endl;
     }
 
     close(sock);

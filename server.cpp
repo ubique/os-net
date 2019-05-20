@@ -11,28 +11,26 @@
 #include <string.h>
 #include <netdb.h>
 
-
-#import "POP3Server.h"
+const size_t bufSize = 4096;
 
 int main() {
     int sock, listener;
     struct sockaddr_in addr;
-    char buf[1024];
+    char buf[bufSize];
     int bytes_read;
-    POP3Server pop3Server;
 
     listener = socket(AF_INET, SOCK_STREAM, 0);
     if (listener < 0) {
-        perror("socket");
+        perror("Can't create socket");
         exit(1);
     }
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(110);
+    addr.sin_port = htons(8888);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(listener, (struct sockaddr*) &addr, sizeof(addr)) < 0) {
-        perror("bind");
+        perror("Can't bind");
         exit(2);
     }
 
@@ -41,16 +39,14 @@ int main() {
     while (true) {
         sock = accept(listener, NULL, NULL);
         if (sock < 0) {
-            perror("accept");
+            perror("Can't accept");
             exit(3);
         }
 
         while (true) {
-            bytes_read = recv(sock, buf, 1024, 0);
+            bytes_read = recv(sock, buf, bufSize, 0);
             if (bytes_read <= 0) break;
-            std::string response = pop3Server.processCommand(buf);
-//            printf("%s", response.c_str());
-            send(sock, response.c_str(), response.size(), 0);
+            send(sock, buf, bufSize, 0);
         }
 
         close(sock);
