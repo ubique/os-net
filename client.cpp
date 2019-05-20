@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     std::cout << "Message has been sent" << std::endl;
-    auto request_len = recv(descriptor, &buffer, BUFFER_SIZE, 0);
+    auto request_len = recv(descriptor, &buffer, BUFFER_SIZE - 1, 0);
     if (request_len == -1) {
         freeaddrinfo(result);
         close_socket(descriptor);

@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <netdb.h>
 #include "utils.h"
+#include <cstring>
 
 const size_t BUFFER_SIZE = 65508;
 
@@ -51,17 +52,19 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     char buffer[BUFFER_SIZE];
-    struct sockaddr_in client_address{};
-    socklen_t len;
     while (true) {
-        auto request_len = recvfrom(descriptor, &buffer, BUFFER_SIZE, 0, (struct sockaddr *)&client_address, &len);
-        if (request_len == -1) {
+        struct sockaddr_in client_address{};
+        socklen_t len =  sizeof (client_address);
+        auto request_len = recvfrom(descriptor, buffer, BUFFER_SIZE - 1, 0, (struct sockaddr *)&client_address, &len);
+        if (request_len < 0) {
+            print_error("recvfrom failed: ");
             continue;
         }
         buffer[request_len] = 0;
         std::cout << "received: " << buffer << std::endl;
-        auto response_len = sendto(descriptor, &buffer, request_len, 0, (struct sockaddr *)&client_address, len);
+        auto response_len = sendto(descriptor, buffer, request_len, 0, (struct sockaddr *)&client_address, len);
         if (response_len == -1) {
+            print_error("sendto failed: ");
             continue;
         }
     }
