@@ -16,7 +16,7 @@ struct ServerException: std::runtime_error {
 
 
 struct Server {
-    explicit Server(uint16_t port = 119);
+    explicit Server(uint16_t port);
     ~Server();
 
     void run();

@@ -20,7 +20,7 @@ struct ClientSocketClosed: std::runtime_error {
 
 
 Server::Server(uint16_t port) : port(port),
-sfd(socket(AF_INET, SOCK_STREAM, 0 /* or IPPROTO_TCP*/)) {
+        sfd(socket(AF_INET, SOCK_STREAM, 0 /* or IPPROTO_TCP*/)) {
     if (sfd == -1) {
         throw ServerException("Socket creation failed");
     }
@@ -131,7 +131,7 @@ bool Server::readSingleLineRequest(int cfd) {
     if (textBuffer[read - 1] == '\r') {
         len--;
     }
-    std::cout << "[C]" << std::string(textBuffer, len) << std::endl;
+    std::cout << "[C] hellARTI" << std::string(textBuffer, len) << std::endl;
     processSingleLineRequest(std::string(textBuffer, len)); // request must ends with \r\n
     return true;
 }
@@ -158,7 +158,7 @@ void Server::group(int fd) {
         return;
     }
     selectedGroup = requestArgument;
-    currentArticle = 0;
+    currentArticle = 1;
     sendMessage(getCurrentGroupRepresentation(), fd);
 }
 
@@ -214,18 +214,20 @@ void Server::post(int cfd) {
     std::string articleText(articleBuffer, read);
     articles.push_back(articleText);
     const size_t id = articles.size();
-    size_t groupsPos = articleText.find("Newgroups:");
-    size_t endGroupsPos = articleText.find("\r\n", groupsPos);
-    std::stringstream groupsList(articleText.substr(groupsPos + 10, endGroupsPos - groupsPos - 10));
-    std::string group;
-    while (groupsList >> group) {
-        auto it = groups.find(group);
-        if (it == groups.end()) {
-            groups.insert({group, {id}});
-        } else {
-            it->second.push_back(id);
+    size_t groupsPos = articleText.find("Newsgroups:");
+    if (groupsPos != std::string::npos) {
+        size_t endGroupsPos = articleText.find("\r\n", groupsPos);
+        std::stringstream groupsList(articleText.substr(groupsPos + 11, endGroupsPos - groupsPos - 11));
+        std::string group;
+        while (groupsList >> group) {
+            auto it = groups.find(group);
+            if (it == groups.end()) {
+                groups.insert({group, {id}});
+            } else {
+                it->second.push_back(id);
+            }
+            std::cout << "Article " << id << " added to group " << group << std::endl;
         }
-        std::cout << "Article " << id << " added to group " << group << std::endl;
     }
     sendMessage("240\tArticle received OK\r\n", cfd);
 }
@@ -248,6 +250,6 @@ void Server::article(int fd) {
     }
     std::stringstream ans;
     ans << "202\t" << id << "\r\n";
-    ans << articles[id];
+    ans << articles[id - 1];
     sendMessage(ans.str(), fd);
 }

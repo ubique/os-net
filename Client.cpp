@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <cstring>
+#include <string.h>
 #include <unistd.h>
 
 #include <string>
@@ -9,12 +9,14 @@
 
 #include "Client.h"
 
-Client::Client(uint16_t port) : port(port), cfd(socket(AF_INET, SOCK_STREAM, 0)) {
-
+Client::Client(uint16_t port) : port(port), sfd(socket(AF_INET, SOCK_STREAM, 0)) {
+    if (sfd == -1) {
+        throw ClientException("Socket was not created");
+    }
 }
 
 Client::~Client() {
-    close(cfd);
+    close(sfd);
 }
 
 void Client::run() {
@@ -22,36 +24,27 @@ void Client::run() {
     memset(&addr, 0, sizeof(struct sockaddr_in));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK); // TODO
-    if (connect(cfd, (struct sockaddr*) &addr, sizeof(addr)) == -1) {
-        // TODO
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    if (connect(sfd, (struct sockaddr*) &addr, sizeof(addr)) == -1) {
+        throw ClientException("Connection failed");
     }
 
-    char buf[1024];
-    ssize_t received = 0;
-    if ((received = recv(cfd, (char*)&buf, 1024, 0)) != -1) {
-        std::cout << received << std::endl;
-        for (size_t i = 0; i < received; i++)
-            std::cout << buf[i];
-
-        std::cout << std::endl;
-    } else {
-
+    auto greeting = getResponse();
+    if (greeting[0] != '2') {
+        throw ClientException("Server did not send greeting with 2** code :(");
     }
-
-
-
+    std::cout << greeting;
 }
 
 void Client::sendRequest(std::string const& data) {
-    if (send(cfd, data.data(), data.length(), 0) == -1) {
+    if (send(sfd, data.data(), data.length(), 0) == -1) {
         std::cout << "ERROR: Request was not sent" << std::endl;
     }
 }
 
 std::string Client::getResponse() {
     ssize_t received;
-    if ((received = recv(cfd, buffer, BUFFER_SIZE, 0)) != -1) {
+    if ((received = recv(sfd, buffer, BUFFER_SIZE, 0)) != -1) {
         return std::string(buffer, received);
     } else {
         return "ERROR: Response was not received";
