@@ -72,7 +72,6 @@ void Server::run() {
                 unsupportedOperation(cfd);
                 continue;
             }
-            std::cout << requestTypeName << std::endl;
             Token token = requestType.find(requestTypeName)->second;
             switch (token) {
                 case Token::QUIT:
@@ -131,7 +130,7 @@ bool Server::readSingleLineRequest(int cfd) {
     if (textBuffer[read - 1] == '\r') {
         len--;
     }
-    std::cout << "[C] hellARTI" << std::string(textBuffer, len) << std::endl;
+    std::cout << "[C] " << std::string(textBuffer, len) << std::endl;
     processSingleLineRequest(std::string(textBuffer, len)); // request must ends with \r\n
     return true;
 }

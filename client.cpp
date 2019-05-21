@@ -44,6 +44,9 @@ int main(int argc, char* argv[]) {
                 response = client.getResponse();
                 std::cout << response;
             }
+            if (line == "QUIT\r\n") {
+                return 0;
+            }
         }
     } catch (ClientException const& e) {
         std::cout << "ERROR: " << e.what() << std::endl;
