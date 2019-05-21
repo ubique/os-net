@@ -6,7 +6,7 @@
 POP3Server::POP3Server(const std::string &host_name, int port = 110) {
     struct hostent *server;
 
-    socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd < 0) {
         print_error("ERROR opening socket");
     }
@@ -14,7 +14,7 @@ POP3Server::POP3Server(const std::string &host_name, int port = 110) {
     server = gethostbyname(host_name.c_str());
     if (server == nullptr) {
         print_error("ERROR, no such host");
-        close(socket_fd);
+        stop();
     }
 
     memset(&server_addr, 0, sizeof(server_addr));
@@ -24,34 +24,39 @@ POP3Server::POP3Server(const std::string &host_name, int port = 110) {
 
     if (bind(socket_fd, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr)) == -1) {
         print_error("ERROR bind a socket");
-        close(socket_fd);
+        stop();
     }
 
     if (listen(socket_fd, 16) == -1) {
         print_error("ERROR listen socket");
-        close(socket_fd);
+        stop();
     }
 }
 
 void POP3Server::print_error(const std::string &msg) {
     perror(msg.c_str());
-    exit(EXIT_FAILURE);
 }
 
 
 int POP3Server::run() {
-    States state = AUTHORIZATION;
     DBase data_base;
-    User user;
-    sockaddr_in client{};
-    socklen_t client_len;
-    int client_fd = accept(socket_fd, reinterpret_cast<sockaddr*>(&client), &client_len);
-    send_msg("+OK POP3 server ready", client_fd, "Error in send hello to client!");
-    while(true) {
-        if (client_fd != -1) {
+    while (true) {
+        States state = AUTHORIZATION;
+        User user;
+        sockaddr_in client{};
+        socklen_t client_len;
+        int client_fd = accept(socket_fd, reinterpret_cast<sockaddr *>(&client), &client_len);
+        if (client_fd == -1) {
+            print_error("Can't accept a client!\n");
+            continue;
+        } else {
+            send_msg("+OK POP3 server ready", client_fd, "Error in send hello to client!");
+        }
+        while (true) {
             if (state == UPDATE) {
                 send_msg("+OK, all messages updated", client_fd, "Error in updating");
                 data_base.update(user.get_login());
+                close(client_fd);
                 break;
             }
             std::cout << "state: " << state << std::endl;
@@ -60,9 +65,7 @@ int POP3Server::run() {
             size_t msg_len = recv(client_fd, &buffer, BUFFER_LENGHT, 0);
             if (msg_len == -1) {
                 print_error("Error to receive a message");
-                close(client_fd);
-                close(socket_fd);
-                break;
+                continue;
             }
             std::vector<std::string> request = Utils::split(buffer);
             if (request.empty() || request.size() > 2) {
@@ -90,7 +93,7 @@ int POP3Server::run() {
                     if (request.size() == 2) {
                         if (user.get_login().empty()) {
                             send_msg("-ERR, haven't user session", client_fd, "Error in sending");
-                        } else if (user.cmp_password(request[1])){
+                        } else if (user.cmp_password(request[1])) {
                             send_msg("+OK, authorization success", client_fd, "Error in sending");
                             state = TRANSACTION;
                         } else {
@@ -99,7 +102,7 @@ int POP3Server::run() {
                     } else {
                         send_msg("-ERR no password", client_fd, "Error in sending");
                     }
-                } else if (request[0] == "QUIT"){
+                } else if (request[0] == "QUIT") {
                     send_msg("+OK, session closed", client_fd, "Error in sending");
                     break;
                 } else {
@@ -130,7 +133,8 @@ int POP3Server::run() {
                             }
                         } else {
                             for (size_t i = 0; i < messages.size(); i++) {
-                                response  += std::to_string(i + 1) + " " + std::to_string(messages[i].get_size()) + (messages.size() - 1 == i ? "" : CRLF);
+                                response += std::to_string(i + 1) + " " + std::to_string(messages[i].get_size()) +
+                                            (messages.size() - 1 == i ? "" : CRLF);
                             }
                         }
                     }
@@ -182,19 +186,12 @@ int POP3Server::run() {
                     send_msg("-ERR, unknown command", client_fd, "Error in sending");
                 }
             }
-        } else {
-            print_error("Can't accept a client!");
-            close(socket_fd);
-            break;
         }
-
     }
 }
 
 POP3Server::~POP3Server() {
-    if (close(socket_fd) == -1) {
-        print_error("Can't close a socket\n");
-    }
+    stop();
 }
 
 void POP3Server::send_msg(const std::string& msg, int fd, const std::string& msg_error) {
@@ -210,4 +207,11 @@ size_t POP3Server::get_size_of_vector(std::vector<Message> &messages) {
         res += msg.get_size();
     }
     return res;
+}
+
+void POP3Server::stop() {
+    if (close(socket_fd) == -1) {
+        print_error("Can't stop a server\n");
+    }
+    // some operations
 }

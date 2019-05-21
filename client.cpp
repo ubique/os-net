@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     const char* host_name = argc == 1 ? argv[0] : argv[1];
     struct hostent *server;
     int socket_fd;
-    socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd < 0) {
         print_error("ERROR opening socket");
         return 0;
@@ -61,7 +61,8 @@ int main(int argc, char** argv) {
         std::string command;
         std::getline(std::cin , command);
         if (command == "exit") {
-            break;
+            close(socket_fd);
+            exit(EXIT_SUCCESS);
         }
         if(send(socket_fd, command.c_str(), command.size() + 1, 0) == -1) {
             print_error("bad!");
@@ -71,7 +72,6 @@ int main(int argc, char** argv) {
         if (recv(socket_fd, &buf, size_buf, 0) == -1) {
             print_error("Can't read!");
         }
-        std::cout << buf << std::endl;
+        std::cout << "Response from server: " << buf << std::endl;
     }
-    return 0;
 }

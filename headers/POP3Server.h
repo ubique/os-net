@@ -27,4 +27,5 @@ private:
     void print_error(const std::string &msg);
     void send_msg(const std::string& msg, int fd, const std::string& msg_error);
     size_t get_size_of_vector(std::vector<Message> & messages);
+    void stop();
 };
