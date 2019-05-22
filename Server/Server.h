@@ -6,26 +6,21 @@
 
 class Server {
 public:
-    explicit Server(const char*);
+    explicit Server(const char *);
+
+    ~Server();
 
     void createBinding();
 
     void run();
 
 private:
+    int mServerSocket;
+    int mPort;
 
-    const char* mPort;
-    int serverSocketDescr;
-
-    addrinfo serverHint;
-    addrinfo *result;
-
-    addrinfo *serverAddrInfo;
+    struct sockaddr_in mSocketAddress;
 
     Database mDatabase;
 
-    void findSuitableAddrs();
-
     std::string processGivenCommand(const char *);
-
 };

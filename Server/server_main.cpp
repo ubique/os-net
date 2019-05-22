@@ -3,15 +3,12 @@
 //
 
 #include <iostream>
-#include <stdexcept>
+#include <sstream>
 #include <vector>
 #include <map>
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <netdb.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -21,15 +18,14 @@
 #include "../Database/Database.h"
 #include "Server.h"
 
-void showUsage(const char* filename) {
-    std::cerr << "Usage: " << filename << " <port>";
+void showUsage(const char *filename) {
+    std::cerr << "Usage: " << filename << " <port>" << std::endl;
 }
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         std::cerr << "Wrong arguments. ";
         showUsage(argv[0]);
-	std::cerr << std::endl;
         exit(EXIT_FAILURE);
     }
 

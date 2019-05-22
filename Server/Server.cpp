@@ -3,16 +3,12 @@
 //
 
 #include <iostream>
-#include <stdexcept>
 #include <sstream>
 #include <vector>
 #include <map>
 
 #include <unistd.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <netdb.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -33,68 +29,70 @@ const std::string serverCommands = "INSERT <person_firstName> <person_lastName> 
                                    "ECHO <some_message> - Echo the message given\n"
                                    "OPTIONS - Returns server options\n";
 
-Server::Server(const char *mPort) : mPort(mPort), serverSocketDescr(-1),
-                                    serverHint(), result(nullptr),
-                                    serverAddrInfo(nullptr) {
-
+Server::Server(const char *port) : mServerSocket(-1), mSocketAddress(), mDatabase() {
     std::cout << serverCommands << std::endl;
 
     try {
-        int numericPort = std::stoi(mPort);
+        int numericPort = std::stoi(port);
         if (numericPort < MIN_PORT || numericPort > MAX_PORT) {
             std::cerr << "Invalid port. Port must be decimal value between "
                       << MIN_PORT << " and " << MAX_PORT << "." << std::endl;
 
             exit(EXIT_FAILURE);
         }
+
+        mPort = numericPort;
     } catch (std::invalid_argument &e) {
         std::cerr << "Invalid port." << std::endl;
         exit(EXIT_FAILURE);
     }
 
+    memset(&mSocketAddress, 0, sizeof(sockaddr_in));
+    mSocketAddress.sin_family = AF_INET;
+    mSocketAddress.sin_port = htons(mPort);
+    mSocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+}
+
+Server::~Server() {
+    if (mServerSocket != -1) {
+        shutdown(mServerSocket, SHUT_RDWR);
+        close(mServerSocket);
+    }
+
+    std::cout << "Terminate server!" << std::endl;
 }
 
 void Server::createBinding() {
-    findSuitableAddrs();
-
-    serverSocketDescr = -1;
-    serverAddrInfo = result;
-    for (; serverAddrInfo != nullptr; serverAddrInfo = serverAddrInfo->ai_next) {
-
-        serverSocketDescr = socket(serverAddrInfo->ai_family, serverAddrInfo->ai_socktype, serverAddrInfo->ai_protocol);
-        if (serverSocketDescr == -1) {
-            continue;
-        }
-
-        int bindResult = bind(serverSocketDescr, serverAddrInfo->ai_addr, serverAddrInfo->ai_addrlen);
-        if (bindResult == 0) {
-            std::cout << "Successful binding!" << std::endl;
-            break;
-        }
-
-        int closeResult = close(serverSocketDescr);
-        if (closeResult == -1) {
-            perror("Socket close error.");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    if (serverAddrInfo == nullptr) {
-        std::cerr << "Binding failed!" << std::endl;
+    mServerSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (mServerSocket == -1) {
+        perror("Socket creation");
         exit(EXIT_FAILURE);
     }
 
-    freeaddrinfo(result);
+    int bindResult = bind(mServerSocket, (struct sockaddr *) &mSocketAddress, sizeof(mSocketAddress));
+    if (bindResult == -1) {
+        perror("Binding creation");
+        close(mServerSocket);
+        exit(EXIT_FAILURE);
+    }
+
+    if (bindResult == 0) {
+        std::cout << "Binding successful!" << std::endl;
+    }
 }
 
 void Server::run() {
-    listen(serverSocketDescr, 1);
+    listen(mServerSocket, SOMAXCONN);
+
+    std::cout << "Waiting for incoming socket..." << std::endl;
 
     while (true) {
-        int receivedSocket = accept(serverSocketDescr, nullptr, nullptr);
+        int receivedSocket = accept(mServerSocket, nullptr, nullptr);
         if (receivedSocket == -1) {
             continue;
         }
+
+        std::cout << "Process incoming socket..." << std::endl;
 
         char message[MESSAGE_BUFFER_SIZE];
         memset(message, 0, MESSAGE_BUFFER_SIZE);
@@ -115,28 +113,11 @@ void Server::run() {
             continue;
         }
 
+        shutdown(receivedSocket, SHUT_RDWR);
         close(receivedSocket);
+
+        std::cout << "Waiting for incoming socket..." << std::endl;
         sleep(1);
-    }
-}
-
-void Server::findSuitableAddrs() {
-    memset(&serverHint, 0, sizeof(addrinfo));
-    serverHint.ai_family = AF_UNSPEC;
-    serverHint.ai_socktype = SOCK_STREAM;
-    serverHint.ai_flags = AI_PASSIVE;
-    serverHint.ai_protocol = 0;
-
-    serverHint.ai_addrlen = 0;
-    serverHint.ai_addr = nullptr;
-    serverHint.ai_next = nullptr;
-    serverHint.ai_canonname = nullptr;
-
-    int getAddrResult = getaddrinfo(nullptr, mPort, &serverHint, &result);
-
-    if (getAddrResult != 0) {
-        std::cerr << gai_strerror(getAddrResult) << std::endl;
-        exit(EXIT_FAILURE);
     }
 }
 

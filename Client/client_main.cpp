@@ -4,26 +4,25 @@
 
 #include <iostream>
 
+#include <unistd.h>
 #include <string.h>
 #include <netdb.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 
 #include "Client.h"
 
-void showUsage(const char* filename) {
-    std::cerr << "Usage: " << filename << " <address> <port> <command> [message]";
+void showUsage(const char *filename) {
+    std::cerr << "Usage: " << filename << " <address> <port> <command> [message]" << std::endl;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
 
     if (argc < 4) {
         std::cerr << "Wrong arguments. ";
         showUsage(argv[0]);
-	std::cerr << std::endl;
         exit(EXIT_FAILURE);
     }
 
@@ -41,7 +40,7 @@ int main(int argc, char* argv[]) {
 
     myClient.createConnection();
 
-    myClient.run();
+    myClient.sendInfo();
 
     char *response = myClient.getResponse();
 

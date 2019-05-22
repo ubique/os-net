@@ -6,27 +6,23 @@
 
 class Client {
 public:
-    explicit Client(const char *, const char *, const std::string &);
+    explicit Client(const char *, const char *, std::string );
+
+    ~Client();
 
     void createConnection();
 
-    void run();
+    void sendInfo();
 
     char* getResponse() const;
 
 private:
-    const char *mAddress;
-    const char *mPort;
-    int serverSocketDescr;
+    int mClientSocket;
+    int mPort;
 
-    addrinfo serverHint;
-    addrinfo *result;
-
-    addrinfo *serverAddrInfo;
+    struct sockaddr_in mSocketAddress;
 
     std::string message;
     char *response;
-
-    void findSuitableAddrs();
 
 };

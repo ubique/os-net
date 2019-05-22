@@ -1,16 +1,11 @@
 //
 // Created by Noname Untitled on 20.05.19.
 //
+
 #include <iostream>
-#include <stdexcept>
-#include <sstream>
-#include <vector>
-#include <map>
 
 #include <unistd.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <netdb.h>
 
 #include <sys/types.h>
@@ -23,56 +18,59 @@
 #define MAX_PORT    65'534
 #define MESSAGE_BUFFER_SIZE 1024
 
-Client::Client(const char *address, const char *port, const std::string &message) : mAddress(address),
-                                                                                    mPort(port), serverHint(),
-                                                                                    result(nullptr),
-                                                                                    serverAddrInfo(nullptr),
-                                                                                    message(message) {
+Client::Client(const char *addr, const char *port, std::string msg) : mClientSocket(-1), mSocketAddress(),
+                                                                      response(nullptr), message(std::move(msg)) {
+
     try {
-        int numericPort = std::stoi(mPort);
+        int numericPort = std::stoi(port);
         if (numericPort < MIN_PORT || numericPort > MAX_PORT) {
             std::cerr << "Invalid port. Port must be decimal value between "
                       << MIN_PORT << " and " << MAX_PORT << "." << std::endl;
 
             exit(EXIT_FAILURE);
         }
+
+        mPort = numericPort;
     } catch (std::invalid_argument &e) {
         std::cerr << "Invalid port." << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    memset(&mSocketAddress, 0, sizeof(mSocketAddress));
+    mSocketAddress.sin_family = AF_INET;
+    mSocketAddress.sin_port = htons(mPort);
+    int addrConvertResult = inet_pton(AF_INET, addr, &(mSocketAddress.sin_addr));
+    if (addrConvertResult != 1) {
+        std::cerr << "Invalid address." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+}
+
+Client::~Client() {
+    if (mClientSocket != -1) {
+        shutdown(mClientSocket, SHUT_RDWR);
+        close(mClientSocket);
+    }
 }
 
 void Client::createConnection() {
-    findSuitableAddrs();
+    mClientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-    serverSocketDescr = -1;
-    serverAddrInfo = result;
-    for (; serverAddrInfo != nullptr; serverAddrInfo = serverAddrInfo->ai_next) {
-        serverSocketDescr = socket(serverAddrInfo->ai_family, serverAddrInfo->ai_socktype, serverAddrInfo->ai_protocol);
-        if (serverSocketDescr == -1) {
-            continue;
-        }
-
-        int connectionResult = connect(serverSocketDescr, serverAddrInfo->ai_addr, serverAddrInfo->ai_addrlen);
-
-        if (connectionResult == 0) {
-            std::cout << "Connected!" << std::endl;
-            break;
-        }
-
-        close(serverSocketDescr);
-    }
-
-    if (serverAddrInfo == nullptr) {
-        std::cout << "Connection failed" << std::endl;
+    int connectResult = connect(mClientSocket, (struct sockaddr *) &mSocketAddress, sizeof(mSocketAddress));
+    if (connectResult == -1) {
+        perror("Connection creation");
+        shutdown(mClientSocket, SHUT_RDWR);
+        close(mClientSocket);
         exit(EXIT_FAILURE);
     }
 
-    freeaddrinfo(result);
+    if (connectResult == 0) {
+        std::cout << "Connection created!" << std::endl;
+    }
 }
 
-void Client::run() {
-    int sendResult = send(serverSocketDescr, message.c_str(), message.length() + 1, 0);
+void Client::sendInfo() {
+    int sendResult = send(mClientSocket, message.c_str(), message.length() + 1, 0);
     if (sendResult == -1) {
         perror("Send message error");
         exit(EXIT_FAILURE);
@@ -81,34 +79,13 @@ void Client::run() {
     response = new char[MESSAGE_BUFFER_SIZE];
     memset(response, 0, MESSAGE_BUFFER_SIZE);
 
-    int receiveResult = recv(serverSocketDescr, response, MESSAGE_BUFFER_SIZE, 0);
+    int receiveResult = recv(mClientSocket, response, MESSAGE_BUFFER_SIZE, 0);
     if (receiveResult == -1) {
         perror("Receiving response error");
         exit(EXIT_FAILURE);
     }
-
 }
 
 char *Client::getResponse() const {
     return response;
-}
-
-void Client::findSuitableAddrs() {
-    memset(&serverHint, 0, sizeof(addrinfo));
-    serverHint.ai_family = AF_UNSPEC;
-    serverHint.ai_socktype = SOCK_STREAM;
-    serverHint.ai_flags = 0;
-    serverHint.ai_protocol = 0;
-
-    serverHint.ai_addrlen = 0;
-    serverHint.ai_addr = nullptr;
-    serverHint.ai_next = nullptr;
-    serverHint.ai_canonname = nullptr;
-
-    int getAddrResult = getaddrinfo(mAddress, mPort, &serverHint, &result);
-
-    if (getAddrResult != 0) {
-        std::cerr << gai_strerror(getAddrResult) << std::endl;
-        exit(EXIT_FAILURE);
-    }
 }
