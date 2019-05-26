@@ -9,6 +9,8 @@ class server {
 
 public:
 
+    static unsigned int const REPEAT;
+
     server(std::string const &address, uint16_t port);
 
     ~server();

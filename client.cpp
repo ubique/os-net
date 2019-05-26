@@ -39,7 +39,7 @@ void client::connect(std::string const &address, uint16_t port) {
 }
 
 void client::send(std::string const &message) {
-    for (int i = 0; i < REPEAT; i++) {
+    for (unsigned int i = 0; i < REPEAT; i++) {
         if (sendto(socket_desc.get_descriptor(), message.c_str(), message.length(), 0,
                    reinterpret_cast<sockaddr *>(&server_address), sizeof(server_address)) != -1) {
             logger().success("Sent message '" + message + "'");

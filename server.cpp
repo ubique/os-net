@@ -11,6 +11,8 @@ std::string const USAGE = "Simple ECHO server\n"
                           "\t- " + logger()._HELP + "port" + logger()._DEFAULT + " is 8007";
 // @formatter:on
 
+unsigned int const server::REPEAT = 100;
+
 server::server(std::string const &address, uint16_t port) : socket_desc(), server_address{0} {
     memset(&server_address, 0, sizeof(sockaddr_in));
 
@@ -49,8 +51,14 @@ server::~server() {
 
 
 void server::respond(sockaddr_in &client_address, char *buf, ssize_t n, socklen_t len) {
-    sendto(socket_desc.get_descriptor(), buf, static_cast<size_t>(n), 0,
-           reinterpret_cast<sockaddr *>(&client_address), len);
+    for (unsigned int i = 0; i < REPEAT; i++) {
+        if (sendto(socket_desc.get_descriptor(), buf, static_cast<size_t>(n), 0,
+                   reinterpret_cast<sockaddr *>(&client_address), len) != -1) {
+            logger().success("Sent message '" + std::string(buf) + "' back");
+            return;
+        }
+    }
+    logger().fail("Unable to respond", errno);
 }
 
 int main(int argc, char *argv[]) {
