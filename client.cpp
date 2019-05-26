@@ -8,15 +8,13 @@ std::string const USAGE = "Simple ECHO client\n"
                           "Usage: ./client\n"
                           "After run:\n"
                           "\t- " + logger()._HELP + "HELP" + logger()._DEFAULT + "\n"
-                                                                                 "\t\t to show help message\n"
-                                                                                 "\t- " + logger()._HELP + "CONN" +
-                          logger()._DEFAULT + " address port\n"
-                                              "\t\t to establish connection with the server\n"
-                                              "\t- " + logger()._HELP + "ECHO" + logger()._DEFAULT + " message\n"
-                                                                                                     "\t\t to send message to connected server\n"
-                                                                                                     "\t- " +
-                          logger()._HELP + "EXIT" + logger()._DEFAULT + "\n"
-                                                                        "\t\t to stop client";
+                          "\t\t to show help message\n"
+                          "\t- " + logger()._HELP + "CONN" + logger()._DEFAULT + " address port\n"
+                          "\t\t to establish connection with the server\n"
+                          "\t- " + logger()._HELP + "ECHO" + logger()._DEFAULT + " message\n"
+                          "\t\t to send message to connected server\n"
+                          "\t- " + logger()._HELP + "EXIT" + logger()._DEFAULT + "\n"
+                          "\t\t to stop client";
 // @formatter:on
 
 unsigned int const client::REPEAT = 100;
