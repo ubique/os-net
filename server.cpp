@@ -65,8 +65,7 @@ void echo(int reader) {
     }
 }
 
-
-void wait_for_connections(fd_wrapper listener) {
+void wait_for_connections(const fd_wrapper &listener) {
 
     if (listen(listener.get(), LISTEN_BACKLOG) == -1) {
         throw std::runtime_error("Listen failed");
@@ -129,9 +128,8 @@ int main(int argc, char **argv) {
     }
 
 
-    fd_wrapper listener = 0;
     try {
-        listener = start_server(address, port);
+        fd_wrapper listener = start_server(address, port);
         wait_for_connections(listener);
     } catch (std::runtime_error &e) {
         print_err(e.what());

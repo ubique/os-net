@@ -11,7 +11,14 @@ struct fd_wrapper {
 
     fd_wrapper(int fd) : fd(fd) {}
 
-    int get() {
+    fd_wrapper(const fd_wrapper &other) = delete;
+
+    fd_wrapper(fd_wrapper &&other) {
+        fd = other.fd;
+        other.fd = -1;
+    }
+
+    int get() const {
         return fd;
     }
 

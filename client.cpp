@@ -44,7 +44,7 @@ fd_wrapper open_connection(std::string &address, uint16_t port) {
     return sfd;
 }
 
-void send_and_receive(fd_wrapper sender, std::string &message) {
+void send_and_receive(const fd_wrapper &sender, std::string &message) {
 
     auto m = message.c_str();
     int size = message.length();
