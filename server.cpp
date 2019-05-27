@@ -10,6 +10,9 @@
 #include <cstring>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <sys/epoll.h>
+
+#include "fd_wrapper.h"
 
 static const int LISTEN_BACKLOG = 50;
 static const int BUF_SIZE = 4096;
@@ -24,10 +27,10 @@ void print_help() {
     std::cout << "Usage: ./server [port] [address]" << std::endl;
 }
 
-int start_server(std::string &address, uint16_t port) {
+fd_wrapper start_server(std::string &address, uint16_t port) {
 
-    int sfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sfd == -1) {
+    fd_wrapper sfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sfd.get() == -1) {
         throw std::runtime_error("Can't create socket");
     }
 
@@ -36,7 +39,7 @@ int start_server(std::string &address, uint16_t port) {
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = inet_addr(address.c_str());
 
-    if (bind(sfd, reinterpret_cast<sockaddr *>(&addr), sizeof(sockaddr_in)) == -1) {
+    if (bind(sfd.get(), reinterpret_cast<sockaddr *>(&addr), sizeof(sockaddr_in)) == -1) {
         throw std::runtime_error("Bind failed");
     }
 
@@ -63,16 +66,16 @@ void echo(int reader) {
 }
 
 
-void wait_for_connections(int listener) {
+void wait_for_connections(fd_wrapper listener) {
 
-    if (listen(listener, LISTEN_BACKLOG) == -1) {
+    if (listen(listener.get(), LISTEN_BACKLOG) == -1) {
         throw std::runtime_error("Listen failed");
     }
 
     while (true) {
-        int reader = accept(listener, nullptr, nullptr);
+        fd_wrapper reader = accept(listener.get(), nullptr, nullptr);
 
-        if (reader == -1) {
+        if (reader.get() == -1) {
             throw std::runtime_error("Accept failed");
         }
 
@@ -83,14 +86,11 @@ void wait_for_connections(int listener) {
 
         if (pid == 0) {
             try {
-                echo(reader);
+                echo(reader.get());
             } catch (std::runtime_error &e) {
                 print_err(e.what());
             }
-            close(reader);
             exit(EXIT_SUCCESS);
-        } else {
-            close(reader);
         }
     }
 }
@@ -129,14 +129,12 @@ int main(int argc, char **argv) {
     }
 
 
-    int listener = 0;
+    fd_wrapper listener = 0;
     try {
         listener = start_server(address, port);
         wait_for_connections(listener);
-        close(listener);
     } catch (std::runtime_error &e) {
         print_err(e.what());
-        close(listener);
         return EXIT_FAILURE;
     }
 }

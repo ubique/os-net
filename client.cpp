@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+#include "fd_wrapper.h"
+
 static const int BUF_SIZE = 4096;
 
 void print_err(const std::string &);
@@ -23,10 +25,10 @@ void print_help() {
     std::cout << "Usage: ./client [port] [address]" << std::endl;
 }
 
-int open_connection(std::string &address, uint16_t port) {
+fd_wrapper open_connection(std::string &address, uint16_t port) {
 
-    int sfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sfd == -1) {
+    fd_wrapper sfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sfd.get() == -1) {
         throw std::runtime_error("Can't create socket");
     }
 
@@ -35,24 +37,24 @@ int open_connection(std::string &address, uint16_t port) {
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = inet_addr(address.c_str());
 
-    if (connect(sfd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == -1) {
+    if (connect(sfd.get(), reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == -1) {
         throw std::runtime_error("Can't connect to the server");
     }
 
     return sfd;
 }
 
-void send_and_receive(int sender, std::string &message) {
+void send_and_receive(fd_wrapper sender, std::string &message) {
 
     auto m = message.c_str();
     int size = message.length();
-    send_all(sender, m, size);
+    send_all(sender.get(), m, size);
 
     char buf[BUF_SIZE];
     int bytes_read;
     int sum = 0;
     while (sum < size) {
-        bytes_read = recv(sender, buf, BUF_SIZE, 0);
+        bytes_read = recv(sender.get(), buf, BUF_SIZE, 0);
 
         if (bytes_read == -1) {
             throw std::runtime_error("Recv failed");
@@ -78,7 +80,6 @@ int main(int argc, char **argv) {
     uint16_t port = 3456;
 
     if (argc > 1) {
-
         if (std::string(argv[1]) == "help") {
             print_help();
             return EXIT_SUCCESS;
@@ -108,9 +109,8 @@ int main(int argc, char **argv) {
     std::string message;
     while (getline(std::cin, message)) {
         try {
-            int sender = open_connection(address, port);
+            fd_wrapper sender = open_connection(address, port);
             send_and_receive(sender, message);
-            close(sender);
         } catch (std::runtime_error &e) {
             print_err(e.what());
             return EXIT_FAILURE;
