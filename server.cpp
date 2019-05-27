@@ -67,6 +67,10 @@ int main(int argc, char **argv) {
             print_error("sendto failed: ");
             continue;
         }
+        if (std::strcmp("stop", buffer) == 0) {
+            std::cout << "Server stopped" << std::endl;
+            break;
+        }
     }
     close_socket(descriptor);
     freeaddrinfo(result);
