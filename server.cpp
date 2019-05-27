@@ -22,11 +22,10 @@ int bind(int port) {
     if (status == -1) {
         std::cerr << "Error while setting option to socket " << strerror(errno) << std::endl;
     }
-    sockaddr_in address{
-            .sin_family = AF_INET,
-            .sin_port = htons(port),
-            .sin_addr.s_addr = htonl(INADDR_ANY)
-    };
+    sockaddr_in address;
+    address.sin_family = AF_INET;
+    address.sin_port = htons(port);
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
     status = bind(listenerSocket, (struct sockaddr*) &address, sizeof(address));
     if (status == -1) {
         std::cerr << "Error while binding to socket " << strerror(errno) << std::endl;
