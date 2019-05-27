@@ -32,12 +32,12 @@ Server::Server(uint16_t port) : port(port),
     socket_addr.sin_port = htons(port);
 
     if (bind(sfd, (struct sockaddr*) &socket_addr, sizeof(sockaddr_in)) == -1) {
-        close_fd(sfd);
+        closeFileDescriptor(sfd);
         throw ServerException("Bind failed");
     }
 
     if (listen(sfd, LISTEN_BACKLOG) == -1) {
-        close_fd(sfd);
+        closeFileDescriptor(sfd);
         throw ServerException("Listen failed");
     }
 
@@ -54,17 +54,17 @@ Server::~Server() {
 
 void Server::run() {
     while (true) {
-        new_client:
         struct sockaddr_in client_addr;
         socklen_t client_addr_size;
-        int cfd = accept(sfd, (struct sockaddr *) &client_addr, &client_addr_size); // podumoi
+        int cfd = accept(sfd, (struct sockaddr *) &client_addr, &client_addr_size);
         if (cfd == -1) {
             continue;
         }
 
+        clientDone = false;
         sendGreeting(cfd);
 
-        while (true) {
+        while (!clientDone) {
             if (!readSingleLineRequest(cfd)) {
                 break;
             }
@@ -76,7 +76,7 @@ void Server::run() {
             switch (token) {
                 case Token::QUIT:
                     quit(cfd);
-                    goto new_client;
+                    break;
                 case Token::POST:
                     post(cfd);
                     break;
@@ -93,12 +93,13 @@ void Server::run() {
                     unsupportedOperation(cfd);
             }
         }
+        closeFileDescriptor(cfd);
     }
 }
 
 
 
-void Server::close_fd(int fd) {
+void Server::closeFileDescriptor(int fd) {
     if (close(fd) == -1) {
         perror("File descriptor was not closed");
     }
@@ -109,6 +110,7 @@ void Server::sendMessage(std::string const &msg, int fd) {
 
     if (send(fd, msg.data(), msg.length(), 0) == -1) {
         perror("Client didn't get the message :'(");
+        clientDone = true;
     }
 }
 
@@ -121,7 +123,12 @@ bool Server::readSingleLineRequest(int cfd) {
     ssize_t read = recv(cfd, textBuffer, BUFFER_SIZE, 0);
     if (read == -1) {
         perror("Reading failed");
+        clientDone = true;
         return false;
+    } else if (read == 0) {
+        // maybe eof?
+        clientDone = true;
+        return  false;
     }
     size_t len = read;
     if (textBuffer[read - 1] == '\n') {
@@ -146,8 +153,8 @@ void Server::processSingleLineRequest(std::string const &request) {
 
 
 void Server::quit(int cfd) {
-    sendMessage("205\tclosing connection\r\n", cfd);
-    close_fd(cfd);
+    sendMessage("205\tClosing connection\r\n", cfd);
+    clientDone = true;
 }
 
 void Server::group(int fd) {

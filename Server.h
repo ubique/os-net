@@ -22,7 +22,7 @@ struct Server {
     void run();
 
 private:
-    void close_fd(int fd);
+    void closeFileDescriptor(int fd);
 
     void sendMessage(std::string const& msg, int fd);
     void sendGreeting(int fd);
@@ -42,6 +42,8 @@ private:
 
     const uint16_t port;
     const int sfd;
+
+    bool clientDone;
 
     static const int LISTEN_BACKLOG = 50;
     static const size_t BUFFER_SIZE = 256;
