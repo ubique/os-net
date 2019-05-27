@@ -69,8 +69,6 @@ void send_and_receive(const fd_wrapper &sender, std::string &message) {
         }
         sum += bytes_read;
     }
-
-    std::cout << std::endl;
 }
 
 
@@ -107,14 +105,15 @@ int main(int argc, char **argv) {
 
 
     std::string message;
-    while (getline(std::cin, message)) {
-        try {
-            fd_wrapper sender = open_connection(address, port);
+    try {
+        fd_wrapper sender = open_connection(address, port);
+        while (getline(std::cin, message)) {
+            message.push_back('\n');
             send_and_receive(sender, message);
-        } catch (std::runtime_error &e) {
-            print_err(e.what());
-            return EXIT_FAILURE;
         }
+    } catch (std::runtime_error &e) {
+        print_err(e.what());
+        return EXIT_FAILURE;
     }
 
 }
