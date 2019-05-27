@@ -5,6 +5,9 @@
 #ifndef FD_WRAPPER_H
 #define FD_WRAPPER_H
 
+#include <string>
+#include <unistd.h>
+
 void print_err(const std::string &);
 
 struct fd_wrapper {
