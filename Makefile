@@ -1,3 +1,5 @@
+all: server client
+
 server: server.cpp
 	g++ $^ -o $@
 
