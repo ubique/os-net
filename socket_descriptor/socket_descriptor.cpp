@@ -13,7 +13,9 @@ socket_descriptor::socket_descriptor() {
 socket_descriptor::socket_descriptor(int descriptor) : descriptor(descriptor) {}
 
 socket_descriptor::~socket_descriptor() {
-    close(descriptor);
+    if (descriptor != -1) {
+        close(descriptor);
+    }
 }
 
 int socket_descriptor::operator*() const {
