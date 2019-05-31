@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     struct sockaddr_in server{};
     server.sin_family = AF_INET;
-    server.sin_port = port;
+    server.sin_port = htons(port);
 
     if (inet_pton(AF_INET, argv[1], &server.sin_addr) != 1) {
         perror("Bad adress");
@@ -83,6 +83,7 @@ int main(int argc, char *argv[]) {
             }
 
             std::string message(buffer + hello.size(), buffer + hello.size() + len);
+            std::cout << message << '\n';
             if (message == "stop") {
                 working = false;
             }
