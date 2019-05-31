@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     server.sin_family = AF_INET;
     server.sin_port = port;
 
-    if (inet_pton(AF_INET, argv[2], &server.sin_addr) == -1) {
+    if (inet_pton(AF_INET, argv[1], &server.sin_addr) != 1) {
         perror("Bad adress");
         exit(EXIT_FAILURE);
     }
@@ -98,5 +98,6 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+    
     close(fd);
 }
