@@ -6,11 +6,13 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        std::cout << "Usage: " << argv[0] << " [Internet host address] [port]" << std::endl;
-        return 0;
+    const char* server_address = "127.0.0.1";
+    int port = 8080;
+    if (argc == 3) {
+        server_address = argv[1];
+        port = std::atoi(argv[2]);
     }
     server server;
-    server.start(argv[1], std::atoi(argv[2]));
+    server.start(server_address, port);
     return 0;
 }

@@ -11,19 +11,23 @@ using std::cout;
 using std::string;
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        std::cout << argv[0] << " [server address] [port]" << std::endl;
-        return 0;
+    const char* server_address = "127.0.0.1";
+    int port = 8080;
+    if (argc == 3) {
+        server_address = argv[1];
+        port = std::atoi(argv[2]);
     }
     client cl;
-    cl.connect_to(argv[1], std::atoi(argv[2]));
+    cl.connect_to(server_address, port);
     string req;
     cout << "Type your requests:" << std::endl;
     while (cin >> req) {
-        cout << cl.request(req) << std::endl;
+        string response = cl.request(req);
         if (req == "stop") {
             break;
         }
+        cout <<"[RESPONSE] " << response << std::endl;
+
     }
     return 0;
 }

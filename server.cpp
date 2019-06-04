@@ -55,7 +55,7 @@ void server::start(const char *hostAddress, const in_port_t port) {
             my_error("Cannot accept");
             return;
         }
-        cout << "New user connected" << std::endl;
+        cout << "[INFO] New user connected" << std::endl;
         while (true) {
             memset(buffer, 0, BUFFER_SIZE);
             ssize_t readed = read(client_fd, buffer, BUFFER_SIZE);
@@ -76,7 +76,7 @@ void server::start(const char *hostAddress, const in_port_t port) {
                 }
             }
         }
-        cout << "User disconnected" << std::endl;
+        cout << "[INFO] User disconnected" << std::endl;
         if (strcmp(buffer, "stop") == 0) {
             break;
         }
