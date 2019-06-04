@@ -9,20 +9,18 @@
 #include <array>
 #include <netinet/in.h>
 #include <string>
-static constexpr char response_prefix[] = "Hello, ";
+#include "my_fd.h"
 
-class hello_server
+class server
 {
 public:
-    hello_server();
+    server();
 
     void start(const char*, const in_port_t);
 private:
-    void make_response();
-private:
     static constexpr size_t BUFFER_SIZE = 4096;
-    int tcp_socket;
-    char buffer[BUFFER_SIZE + sizeof(response_prefix) + 1]; //for null terminated string
+    my_fd socket_fd;
+    char buffer[BUFFER_SIZE]; //for null terminated string
 };
 
 

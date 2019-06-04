@@ -8,6 +8,7 @@
 
 #include <netinet/in.h>
 #include <string>
+#include "my_fd.h"
 
 using std::string;
 
@@ -19,8 +20,9 @@ public:
     string request(const string& message);
     void disconnect();
 
+
 private:
-    int tcp_socket;
+    my_fd socket_fd;
     static constexpr size_t BUFFER_SIZE = 4096 * 2;
     char buffer[BUFFER_SIZE]; //for null terminated string
 };
