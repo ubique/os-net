@@ -6,7 +6,7 @@
 POP3Server::POP3Server(const std::string &host_name, int port = 110) {
     struct hostent *server;
 
-    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+    socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (socket_fd < 0) {
         print_error("ERROR opening socket");
     }
@@ -60,10 +60,10 @@ int POP3Server::run() {
                 break;
             }
             std::cout << "state: " << state << std::endl;
-            char buffer[BUFFER_LENGHT];
-            memset(buffer, 0, BUFFER_LENGHT);
-            size_t msg_len = recv(client_fd, &buffer, BUFFER_LENGHT, 0);
-            if (msg_len == -1) {
+            std::string buffer;
+            read(client_fd, buffer);
+            std::cout << "d " << buffer  << std::endl;
+            if (buffer.empty()) {
                 print_error("Error to receive a message");
                 continue;
             }
@@ -195,11 +195,24 @@ POP3Server::~POP3Server() {
 }
 
 void POP3Server::send_msg(const std::string& msg, int fd, const std::string& msg_error) {
-    if (send(fd, (msg + CRLF).c_str(), msg.size() + 1, 0) == -1) {
-        print_error(msg_error);
-        close(fd);
+    int len = msg.size() + 1;
+    int sended = 0;
+    int ost = len;
+    char buffer[len + 1];
+    strcpy(buffer, (msg + CRLF).c_str());
+    while(sended < len) {
+        int count = send(fd, buffer + sended, ost, 0);
+        if (count == -1 && errno == EINTR) {
+            continue;
+        }else if (count == -1){
+            close(fd);
+            break;
+        }
+        sended += count;
+        ost -= count;
     }
 }
+
 
 size_t POP3Server::get_size_of_vector(std::vector<Message> &messages) {
     size_t res = 0;
@@ -210,8 +223,40 @@ size_t POP3Server::get_size_of_vector(std::vector<Message> &messages) {
 }
 
 void POP3Server::stop() {
+    if (shutdown(socket_fd, SHUT_RDWR) == -1) {
+        print_error("Can't shutdown server");
+    }
     if (close(socket_fd) == -1) {
         print_error("Can't stop a server\n");
     }
-    // some operations
+}
+
+void POP3Server::read(int fd, std::string &msg) {
+    char buffer[BUFFER_LENGHT];
+    memset(buffer, 0, BUFFER_LENGHT);
+    int count = 0;
+    int trys = 10;
+    while((count = recv(fd, &buffer, BUFFER_LENGHT, 0))) {
+        if (count == -1) {
+            for (int i = 0; i < trys; i++) {
+                if (count != -1 || errno != EINTR) {
+                    break;
+                }
+                count = recv(fd, buffer, BUFFER_LENGHT, 0);
+            }
+        }
+        if (count == -1) {
+            print_error("Can't recv from client");
+            break;
+        }
+        if (count == 0) {
+            break;
+        }
+        for(int i = 0; i < count - 1; i++) {
+            msg.push_back(buffer[i]);
+        }
+        if (count < BUFFER_LENGHT) {
+            break;
+        }
+    }
 }
