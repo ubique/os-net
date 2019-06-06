@@ -95,16 +95,28 @@ int Socket::accept() {
 std::pair<ssize_t, std::unique_ptr<char[]>> Socket::read() {
     Printer::print(std::cout, "Socket::read", Symb::End);
     std::unique_ptr<char[]> buffer(new char[BUFFER_SIZE + 1]);
-    ssize_t bytes_read = ::read(data_socket, buffer.get(), BUFFER_SIZE);
-    checker(bytes_read, "Error while reading");
+    memset(buffer.get(), 1, sizeof(char) * (BUFFER_SIZE));
+    ssize_t read_size = 0;
+    while (read_size != BUFFER_SIZE) {
+        ssize_t bytes_read = ::read(data_socket, buffer.get(), BUFFER_SIZE);
+        checker(bytes_read, "Error while reading");
+        read_size += bytes_read;
+        if (buffer[read_size - 1] == '\0') {
+            break;
+        }
+    }
     buffer[BUFFER_SIZE] = 0;
-    return std::make_pair(bytes_read, std::move(buffer));
+    return std::make_pair(read_size, std::move(buffer));
 }
 
 void Socket::write(const std::string &data) {
     Printer::print(std::cout, "Socket::write", Symb::End);
-    int ret_write = ::write(data_socket, data.data(), std::min(BUFFER_SIZE, data.length() + 1));
-    checker(ret_write, "Unable to write");
+    ssize_t written = 0;
+    while ((size_t) written != std::min(BUFFER_SIZE, data.length() + 1)) {
+        ssize_t ret_write = ::write(data_socket, data.data(), std::min(BUFFER_SIZE, data.length() + 1));
+        checker(ret_write, "Unable to write");
+        written += ret_write;
+    }
 }
 
 void Socket::close() {

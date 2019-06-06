@@ -15,9 +15,19 @@ void prerror(const char *msg);
 
 std::string prerror_str(const char *msg);
 
-void checker(int, const char *, int = -1);
+template <typename T>
+void checker(T ret, const char *msg, T error_code = -1) {
+    if (ret == error_code) {
+        std::string err_msg = prerror_str(msg);
+        std::cerr << err_msg << std::endl;
+        throw std::runtime_error(err_msg);
+    }
+}
 
-void checker(int ret, const std::string &msg, int error_code = -1);
+template <typename T>
+void checker(T ret, const std::string &msg, T error_code = -1) {
+    checker(ret, msg.data(), error_code);
+}
 
 
 class Printer {
