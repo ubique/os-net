@@ -45,14 +45,6 @@ int accepting(int listener) {
     return sock;
 }
 
-void execute(int sock) {
-    char buf[BUFFER_SIZE];
-    ssize_t bytes = recv(sock, buf, BUFFER_SIZE, 0);
-    buf[bytes] = '\0';
-    send(sock, buf, bytes, 0);
-    close(sock);
-}
-
 int main(int argc, char **argv) {
     int port;
     int tries = 5;
@@ -65,11 +57,44 @@ int main(int argc, char **argv) {
     int listener;
     listener = open_socket();
     binding(listener, port);
-    listen(listener, 1);
+    if (listen(listener, 1) < 0) {
+        std::cerr << "Error while listening: " << std::strerror(errno) << std::endl;
+        exit(EXIT_FAILURE);
+    }
     for (int i = 0; i < tries; ++i) {
         int sock = accepting(listener);
-        execute(sock);
+        char buf[BUFFER_SIZE];
+        bool executionError = false;
+        while (ssize_t received = recv(sock, buf, BUFFER_SIZE, 0)) {
+            if (received == 0) {
+                break;
+            }
+            if (received == -1) {
+                std::cerr << "Receive failed: " << std::strerror(errno) << std::endl;
+                break;
+            }
+            ssize_t sent = 0;
+            while (sent != received) {
+                ssize_t delta = send(sock, buf + sent, received - sent, 0);
+                if (delta < 0) {
+                    std::cerr << "Can't send: " << std::strerror(errno) << std::endl;
+                    executionError = true;
+                    break;
+                }
+                sent += delta;
+            }
+            if (executionError) {
+                break;
+            }
+        }
+        if (close(sock) < 0) {
+            std::cerr << "Can't close socket: " << std::strerror(errno) << std::endl;
+            break;
+        }
     }
-    close(listener);
-    return 0;
+    if (close(listener) < 0) {
+        std::cerr << "Can't close socket: " << std::strerror(errno) << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    exit(EXIT_SUCCESS);
 }
