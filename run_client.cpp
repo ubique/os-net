@@ -9,14 +9,13 @@ int main(int argc, char *argv[]) {
     try {
         client client(argv[1], static_cast<uint16_t>(std::stoul(argv[2])));
         std::cout << "Print your message to get echo or <ex> to stop the program" << std::endl;
-        while (!std::cin.eof()) {
-            std::string message;
+        std::string message;
+        bool exit = false;
+        while (!std::cin.eof() && !exit) {
             getline(std::cin, message);
-            if (message == "ex") {
-                break;
-            }
+            exit = message == "ex";
 
-            std::cout << "Echo: " << client.make_request(message) << std::endl;
+            std::cout << (!exit ? "Echo: " : "") << client.make_request(message) << std::endl;
         }
     } catch (std::invalid_argument &e) {
         std::cerr << "Invalid port" << std::endl;

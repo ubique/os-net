@@ -18,17 +18,31 @@ client::client(char *address, uint16_t port) {
 }
 
 std::string client::make_request(std::string request) {
-    if (send(sock, request.data(), request.length(), 0) < 0) {
-        perror("send");
-        throw std::runtime_error("Can't send request");
+    ssize_t all_sended = 0;
+    while (all_sended < std::min(BUFFER_SIZE, request.length() + 1)) {
+        ssize_t sended = send(sock, request.data() + all_sended, std::min(BUFFER_SIZE, request.length() + 1), 0);
+        all_sended += sended;
+        if (sended == -1) {
+            perror("send");
+            throw std::runtime_error("Can't send request");;
+        }
     }
+
     std::vector<char> response(BUFFER_SIZE);
-    ssize_t read = recv(sock, response.data(), BUFFER_SIZE, 0);
-    if (read < 0) {
-        perror("recv");
-        throw std::runtime_error("Can't receive response");
+    ssize_t all_received = 0;
+    while (all_received < BUFFER_SIZE) {
+        ssize_t received = recv(sock, response.data() + all_received, BUFFER_SIZE, 0);
+        all_received += received;
+        if (received == -1) {
+            perror("recv");
+            throw std::runtime_error("Can't receive response");
+        }
+        if (response.back() == '\0') {
+            break;
+        }
     }
-    response.resize(read);
+
+    response.resize(all_received);
 
     return response.data();
 }

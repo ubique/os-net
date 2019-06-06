@@ -1,7 +1,4 @@
-//
-// Created by damtev on 19.05.19.
-//
-
+#include <strings.h>
 #include "server.h"
 
 server::server(char *address, uint16_t port) {
@@ -29,7 +26,7 @@ server::server(char *address, uint16_t port) {
     std::cout << "Server started" << std::endl;
 }
 
-void server::run() {
+int server::run() {
     while (true) {
         int sock = accept(listener, nullptr, nullptr);
         if (sock < 0) {
@@ -39,19 +36,39 @@ void server::run() {
 
         while (true) {
             std::vector<char> request(BUFFER_SIZE);
-            ssize_t read = recv(sock, request.data(), BUFFER_SIZE, 0);
-            if (read == -1) {
-                perror("recv");
-            } else if (read == 0) {
-                std::cout << "Disconnection" << std::endl;
-                break;
-            } else {
-                if (send(sock, request.data(), static_cast<size_t>(read), 0) < 0) {
-                    perror("send");
+            ssize_t all_received = 0;
+            while (all_received < BUFFER_SIZE) {
+                ssize_t received = recv(sock, request.data() + all_received, BUFFER_SIZE, 0);
+                all_received += received;
+                if (received == -1) {
+                    perror("recv");
+                    close(sock);
+                    throw std::runtime_error("Can't receive request");
                 }
+                if (request.back() == '\0') {
+                    break;
+                }
+            }
+
+            if (strcasecmp(request.data(), "ex") == 0) {
+                std::cout << "Exiting" << std::endl;
+                break;
+            }
+
+            ssize_t all_sended = 0;
+            while (all_sended < std::min(BUFFER_SIZE, request.size() + 1)) {
+                ssize_t sended = send(sock, request.data() + all_sended, BUFFER_SIZE, 0);
+                if (sended == -1) {
+                    perror("send");
+                    close(sock);
+                    throw std::runtime_error("Can't send response");
+                }
+                all_sended += sended;
             }
         }
 
         close(sock);
+
+        return 0;
     }
 }

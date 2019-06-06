@@ -21,7 +21,7 @@ public:
         close(listener);
     }
 
-    void run();
+    int run();
 
 private:
     sockaddr_in addr;
