@@ -37,19 +37,46 @@ void client::run() {
             continue;
         }
 
-        ssize_t message_length = (ssize_t) (message.length());
-        if (send(socket_client_fd.get_fd(), message.c_str(), message.length(), 0) != message_length) {
-            throw std::runtime_error("Can't send request");
+        size_t message_length = (size_t) (message.length());
+        
+        if (message_length > MAX_LEN_MESSAGE) {
+            error("Too large message", false);
+            continue;
         }
 
-        std::vector<char> response(BUF_SIZE);
-        ssize_t read_ = recv(socket_client_fd.get_fd(), response.data(), BUF_SIZE, 0);
-        if (read_ == -1) {
-            throw std::runtime_error("Can't read fd");
-        } else if (read_ == 0) {
-            break;
+        std::vector<uint8_t> for_send_len = {(uint8_t) message_length};
+        if (send(socket_client_fd.get_fd(), for_send_len.data(), 1, 0) != 1) {
+            throw std::runtime_error("Can't send message");
         }
-        response.resize(read_);
+
+        size_t message_length_sent = 0;
+        while (message_length_sent < message_length) {
+            size_t left_send = message_length - message_length_sent;
+            ssize_t cur_sent = send(socket_client_fd.get_fd(), message.c_str() + message_length_sent, left_send, 0);
+
+            if (cur_sent < 0) {
+                throw std::runtime_error("Can't send message");
+            }
+
+            message_length_sent += (size_t) cur_sent;
+        }
+
+        std::string response(message_length, ' ');
+        size_t message_length_read = 0;
+
+        while (message_length_read < message_length) {
+            size_t left_read = message_length - message_length_read;
+            ssize_t cur_read = recv(socket_client_fd.get_fd(), (void *) (response.data() + message_length_read), left_read, 0);
+            
+            if (cur_read == -1) {
+                throw std::runtime_error("Can't read fd");
+            } else if (cur_read == 0) {
+                break;
+            }
+
+            message_length_read += (size_t) cur_read;
+        }
+        //response.resize(read_);
 
         std::cout << "Response: " << response.data() << std::endl;
     }
@@ -65,7 +92,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (argc > 3) {
-        error("Wrong usage", true, true);
+        error("Wrong usage", false, true, true);
     }
 
     try {
@@ -85,7 +112,7 @@ int main(int argc, char* argv[]) {
         
         client.run();
     } catch (std::runtime_error& e) {
-        error(e.what(), false, true);
+        error(e.what(), true, false, true);
     }
 
     return 0;

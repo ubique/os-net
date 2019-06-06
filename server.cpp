@@ -40,21 +40,55 @@ void server::run() {
         std::cout << "Client connected" << std::endl;
 
         while (true) {
-            std::vector<char> buffer(BUF_SIZE);
-            ssize_t read = recv(client_fd.get_fd(), buffer.data(), BUF_SIZE, 0);
+            std::vector<uint8_t> for_read_len(1);
+            ssize_t read_message_length = recv(client_fd.get_fd(), for_read_len.data(), 1, 0);
             
-            if (read > 0) {
-                size_t attempt_number = 1;
-                while (send(client_fd.get_fd(), buffer.data(), (size_t) (read), 0) != read) {
-                    error("Can't send message");
-                    ++attempt_number;
-                    std::cerr << "Attempt number " << attempt_number << std::endl;
+            if (read_message_length > 0) {
+                size_t message_length = for_read_len[0];
+
+                std::string message(message_length, ' ');
+                size_t message_length_read = 0;
+                bool read_failed = false;
+
+                while (message_length_read < message_length) {
+                    size_t left_read = message_length - message_length_read;
+                    ssize_t cur_read = recv(client_fd.get_fd(), (void *) (message.data() + message_length_read), left_read, 0);
+                    
+                    if (cur_read == -1) {
+                        error("Can't receive message");
+                        read_failed = true;
+                        break;
+                    } else if (cur_read == 0) {
+                        break;
+                    }
+
+                    message_length_read += (size_t) cur_read;
                 }
-            } else if (read == 0) {
+
+                if (read_failed) {
+                    continue;
+                }
+
+                size_t message_length_sent = 0;
+                size_t attempt_number = 1;
+                while (message_length_sent < message_length) {
+                    size_t left_send = message_length - message_length_sent;
+                    ssize_t cur_sent = send(client_fd.get_fd(), message.c_str() + message_length_sent, left_send, 0);
+
+                    if (cur_sent < 0) {
+                        error("Can't send message part");
+                        ++attempt_number;
+                        std::cerr << "Attempt number " << attempt_number << std::endl;
+                    } else {
+                        attempt_number = 1;
+                        message_length_sent += (size_t) cur_sent;
+                    }
+                }
+            } else if (read_message_length == 0) {
                 error("Client disconnected", false);
                 break;
-            } else if (read == -1) {
-                error("Can't receive");
+            } else if (read_message_length == -1) {
+                error("Can't receive message length");
                 continue;
             }
         }
