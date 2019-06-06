@@ -14,6 +14,7 @@ void printErr(const std::string& message) {
 
 void printUsage() {
     printf("Usage: <port>\n"
+           "Server is running on default\n"
            "Default port: 8080\n\n");
 }
 
@@ -68,6 +69,25 @@ int accept(int socket) {
     return accepted;
 }
 
+bool checkSend(int socket, ssize_t received, char reply[]) {
+    ssize_t sent = 0;
+    size_t rest = received;
+
+    while (sent != received) {
+        ssize_t del = send(socket, reply + sent, rest, 0);
+
+        if (del < 0) {
+            return false;
+        } else {
+            sent += del;
+            rest -= del;
+        }
+    }
+
+    return true;
+}
+
+
 void echo(int listener, int port) {
     bind(listener, port);
 
@@ -78,18 +98,25 @@ void echo(int listener, int port) {
 
         char buffer[BUFFER_SIZE] = {};
 
-        int readed = read(acceptedFd, buffer, BUFFER_SIZE);
-        if (readed < 0) {
-            printErr("Unable to read");
-            close(acceptedFd);
+        while (ssize_t received = read(acceptedFd, buffer, BUFFER_SIZE)) {
+
+            if (received < 0) {
+                printErr("Unable to receive");
+                break;
+            } else if (received == 0) {
+                break;
+            } else {
+                if (!checkSend(acceptedFd, received, buffer)) {
+                    printErr("Unable to send reply");
+                    break;
+                }
+            }
+        }
+
+        if (close(acceptedFd) < 0) {
+            printErr("Unable to close accepted");
             exit(EXIT_FAILURE);
         }
-
-        if (send(acceptedFd, buffer, readed, 0) != readed) {
-            printErr("Unable to send");
-        }
-
-        close(acceptedFd);
 
     }
 
@@ -97,17 +124,22 @@ void echo(int listener, int port) {
 
 int main(int argc, char** argv) {
     printGreetings();
-    printUsage();
     int port = PORT;
 
     if (argc == 2) {
         port = atoi(argv[1]);
+    } else {
+        printUsage();
     }
 
     int listener = openSocket();
 
     echo(listener, port);
 
-    close(listener);
+    if (close(listener) < 0) {
+        printErr("Unable to close listener");
+        exit(EXIT_FAILURE);
+    }
+
     exit(EXIT_SUCCESS);
 }
