@@ -44,6 +44,7 @@ std::string get_request() {
 
 int main(int argc, char **argv) {
     int port;
+    int tries = 5;
     if (argc == 2) {
         port = atoi(argv[1]);
     } else {
@@ -52,14 +53,51 @@ int main(int argc, char **argv) {
     }
     int sock = open_socket();
     connecting(sock, port);
-    std::string message = get_request();
-    send(sock, message.data(), message.length(), 0);
-    char server_reply[BUFFER_SIZE];
-    if (recv(sock, server_reply, BUFFER_SIZE, 0) < 0) {
-        std::cerr << "recv failed" << std::endl;
+    bool executionError = false;
+    for (int i = 0; i < tries; ++i) {
+        std::string message = get_request();
+        ssize_t sent = 0;
+        while (sent != message.length()) {
+            ssize_t delta = send(sock, message.data() + sent, message.length() - sent, 0);
+            if (delta == -1) {
+                std::cerr << "Can't send: " << std::strerror(errno) << std::endl;
+                executionError = true;
+                break;
+            }
+            if (delta == 0) {
+                break;
+            }
+            sent += delta;
+        }
+        if (executionError) {
+            break;
+        }
+        char server_reply[BUFFER_SIZE];
+        std::cout << "Reply from server: " << std::endl;
+        ssize_t received = 0;
+        while (received != message.length()) {
+            ssize_t delta = recv(sock, server_reply, BUFFER_SIZE, 0);
+            if (delta == 0) {
+                break;
+            }
+            if (delta == -1) {
+                std::cerr << "Receive failed: " << std::strerror(errno) << std::endl;
+                executionError = true;
+                break;
+            }
+            for (int i = 0; i < delta; ++i) {
+                std::cout << server_reply[i];
+            }
+            std::cout << std::endl;
+            received += delta;
+        }
+        if (executionError) {
+            break;
+        }
     }
-    std::cout << "Reply from server: " << std::endl;
-    std::cout << server_reply << std::endl;
-    close(sock);
-    return 0;
+    if (close(sock) < 0) {
+        std::cerr << "Can't close socket: " << std::strerror(errno) << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    exit(EXIT_SUCCESS);
 }
