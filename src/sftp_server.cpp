@@ -1,4 +1,5 @@
 #include "sftp_server.h"
+#include "rwutil.h"
 #include <arpa/inet.h>
 #include <cstring>
 #include <dirent.h>
@@ -168,7 +169,6 @@ static std::string process(std::vector<std::string> const &query,
     }
     if (query[0] == "DONE") {
         state.logged_in = false;
-        state.disconnect = true;
         return "+ Good bye, " + state.uid + "!";
     }
     if (query[0] == "RETR") {
@@ -255,60 +255,41 @@ void sftp_server::run()
             throw std::runtime_error(std::string{"accept: "} + strerror(errno));
         }
         std::cout << "Connected" << std::endl;
-        char message_buffer[BUFFER_SIZE];
-        if (write(client_socket.fd, GREETING.data(), GREETING.size()) == -1) {
-            // so we can do nothing other than trying to accept new connections.
-            std::cout << "Error while sending: " << strerror(errno)
-                      << std::endl;
-            continue;
-        }
+        write_message(client_socket.fd, GREETING);
         user_state state;
-        std::string storage;
-        while (true) {
-            memset(message_buffer, 0, BUFFER_SIZE);
-            int read_size =
-                recv(client_socket.fd, message_buffer, BUFFER_SIZE, 0);
-            if (read_size == -1) {
-                std::cerr << "[ERROR]: " << strerror(errno) << std::endl;
-                break;
-            }
-            if (read_size == 0) {
-                std::cout << "[INFO] Disconnected" << std::endl;
-                break;
-            }
-            if (state.receiving_size != 0) {
-                // we are in the state of accepting new file
-                size_t write_size = std::min(static_cast<size_t>(read_size),
-                                             state.receiving_size);
-                state.receiving_size -= write_size;
-
-                storage += std::string{message_buffer, write_size};
-                if (state.receiving_size != 0) {
-                    continue;
+        try {
+            while (true) {
+                std::string message = read_message(client_socket.fd);
+                if (message.empty()) {
+                    std::cout << "[INFO] Disconnected" << std::endl;
+                    break;
                 }
-            }
-            std::string response;
-            if (state.receiving_size == 0 && storage.size() != 0) {
-                fd_wrapper new_file(open(state.receiving.data(),
-                                         O_CREAT | O_RDWR, S_IRUSR | S_IWUSR));
-                if (new_file.fd == -1 ||
-                    write(new_file.fd, storage.data(), storage.size()) == -1) {
-                    response = "-Could not save " + state.receiving + ": " +
-                               strerror(errno);
+                std::string response;
+                if (!state.receiving.empty() && state.receiving_size != 0) {
+                    fd_wrapper new_file(open(state.receiving.data(),
+                                             O_CREAT | O_RDWR,
+                                             S_IRUSR | S_IWUSR));
+                    if (new_file.fd == -1 || write(new_file.fd, message.data(),
+                                                   message.size()) < 0) {
+                        response = "-Could not save " + state.receiving + ": " +
+                                   strerror(errno);
+                    } else {
+                        response = "+Saved " + state.receiving;
+                    }
+                    state.receiving.clear();
                 } else {
-                    response = "+Saved " + state.receiving;
+                    std::cout << "[INFO] Received:" << message << std::endl;
+                    std::vector<std::string> queries = parse_string(message);
+                    response = process(queries, state, database);
                 }
-                storage.clear();
-                state.receiving.clear();
-            } else {
-                std::cout << "[INFO] Received:" << message_buffer << std::endl;
-                std::vector<std::string> queries = parse_string(message_buffer);
-                response = process(queries, state, database);
+                if (state.disconnect) {
+                    break;
+                } else {
+                    write_message(client_socket.fd, response);
+                }
             }
-            if (state.disconnect || write(client_socket.fd, response.data(),
-                                          response.size()) == -1) {
-                break;
-            }
+        } catch (std::exception const &e) {
+            std::cout << e.what() << std::endl;
         }
     }
 }
