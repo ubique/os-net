@@ -40,9 +40,9 @@ server::server(char* address, uint16_t port)
         }
         std::cout << inet_ntoa(peer.sin_addr) << " connected!" << std::endl;
         while (true) {
-            std::vector<char> buffer(BUFFER_SIZE);
-            ssize_t was_read =
-                recv(infd.value(), buffer.data(), BUFFER_SIZE, 0);
+            accumulator acc;
+            auto got = acc.read_fully(infd.value(), BUFFER_SIZE);
+            ssize_t was_read = got.first;
             if (was_read == -1) {
                 print_error("Unable to recieve");
                 continue;
@@ -50,10 +50,16 @@ server::server(char* address, uint16_t port)
                 print_error("Client disconnected");
                 break;
             } else {
-                while (send(infd.value(), buffer.data(),
-                            static_cast<size_t>(was_read), 0) != was_read) {
-                    print_error("Cannot send echo");
-                    std::cerr << "Retrying..." << std::endl;
+                got.second += "\r\n";
+                size_t was_sent = 0;
+                while (was_sent < static_cast<size_t>(was_read)) {
+                    ssize_t current =
+                        send(infd.value(), got.second.data() + was_sent,
+                             static_cast<size_t>(was_read) - was_sent, 0);
+                    if (current == -1) {
+                        throw server_exception("Unable to send");
+                    }
+                    was_sent += static_cast<size_t>(current);
                 }
             }
         }

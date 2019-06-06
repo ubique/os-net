@@ -12,30 +12,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "utils/utils.h"
+
 struct client_exception : std::runtime_error {
     client_exception(std::string cause);
-};
-
-struct fd_wrapper {
-    fd_wrapper(int fd) : fd(fd) {}
-    fd_wrapper(fd_wrapper const&) = delete;
-    fd_wrapper& operator=(fd_wrapper const&) = delete;
-    fd_wrapper& operator=(int fd) {
-        this->fd = fd;
-        return *this;
-    }
-    bool bad() { return fd == -1; }
-    int const& value() { return fd; }
-    ~fd_wrapper() { close(fd); }
-
-  private:
-    int fd;
 };
 
 struct client {
     client(char* address, uint16_t port);
 
-    std::string request(std::string text);
+    std::string request(std::string text, accumulator& acc);
 
   private:
     fd_wrapper socket_fd;

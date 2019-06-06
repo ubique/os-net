@@ -3,8 +3,8 @@
 client_exception::client_exception(std::string cause)
     : std::runtime_error(cause + ": " + strerror(errno)) {}
 
-client::client(char* address, uint16_t port) : socket_fd(-1) {
-    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+client::client(char* address, uint16_t port)
+    : socket_fd(socket(AF_INET, SOCK_STREAM, 0)) {
     if (socket_fd.bad()) {
         throw client_exception("Unable to create socket");
     }
@@ -20,19 +20,22 @@ client::client(char* address, uint16_t port) : socket_fd(-1) {
     }
 }
 
-std::string client::request(std::string text) {
-    ssize_t text_length = static_cast<ssize_t>(text.length());
-    if (send(socket_fd.value(), text.c_str(), text.length(), 0) !=
-        text_length) {
-        throw client_exception("Unable to send request");
+std::string client::request(std::string text, accumulator& acc) {
+    text += "\r\n";
+    size_t was_sent = 0;
+    while (was_sent < text.length()) {
+        ssize_t current = send(socket_fd.value(), text.data() + was_sent,
+                               text.length() - was_sent, 0);
+        if (current == -1) {
+            throw client_exception("Unable to send");
+        }
+        was_sent += static_cast<size_t>(current);
     }
 
-    std::vector<char> response(BUFFER_SIZE);
-    ssize_t was_read = recv(socket_fd.value(), response.data(), BUFFER_SIZE, 0);
-    if (was_read == -1) {
+    auto responce = acc.read_fully(socket_fd.value(), BUFFER_SIZE);
+    if (responce.first == -1) {
         throw client_exception("Unable to read from file descriptor");
     }
-    response.resize(was_read);
 
-    return std::string(response.data());
+    return responce.second;
 }

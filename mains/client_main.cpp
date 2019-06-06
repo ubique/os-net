@@ -14,12 +14,13 @@ int main(int argc, char* argv[]) {
                   << std::endl;
         std::string text;
         while (!std::cin.eof()) {
+            accumulator acc;
             std::cout << "Request: ";
             std::cout.flush();
             std::getline(std::cin, text);
             if (text == "exit")
                 break;
-            std::cout << "Responce: " << client.request(text) << std::endl;
+            std::cout << "Responce: " << client.request(text, acc) << std::endl;
         }
     } catch (client_exception& e) {
         std::cerr << e.what() << std::endl;
