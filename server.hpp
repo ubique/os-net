@@ -21,7 +21,7 @@ public:
 
 private:
 
-    void respond(socket_wrapper &client_desc, char *buf, ssize_t n);
+    void respond(socket_wrapper &client_desc, char *buf, size_t buffer_size);
 
     socket_wrapper socket_desc;
     sockaddr_in server_address;

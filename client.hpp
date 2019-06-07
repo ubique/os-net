@@ -15,6 +15,7 @@ class client {
 public:
 
     static unsigned int const REPEAT;
+    static unsigned int const BUFFER_SIZE;
 
     client();
 
@@ -27,8 +28,6 @@ public:
     void disconnect();
 
 private:
-
-    void receive();
 
     socket_wrapper socket_desc;
     sockaddr_in server_address;

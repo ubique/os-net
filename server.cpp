@@ -8,8 +8,7 @@
 std::string const USAGE = "Simple ECHO server\n"
                           "Usage: ./server [address [port]]\n"
                           "\t- " + logger()._HELP + "address" + logger()._DEFAULT + " is 127.0.0.1\n"
-                                                                                    "\t- " + logger()._HELP + "port" +
-                          logger()._DEFAULT + " is 8007";
+                          "\t- " + logger()._HELP + "port" + logger()._DEFAULT + " is 8007";
 // @formatter:on
 
 unsigned int const server::REPEAT = 100;
@@ -33,6 +32,7 @@ server::server(std::string const &address, uint16_t port) : socket_desc(), serve
     }
     if (listen(socket_desc.get_descriptor(), MAX_QUEUE) < 0) {
         logger().fail("Failed to set up a listening mode for connection", errno);
+        return;
     }
     logger().success("Server bind and set up completed");
 }
@@ -56,43 +56,20 @@ server::~server() {
         }
 
         char *buf = reinterpret_cast<char *>(malloc(BUFFER_SIZE));
-        int offset = 0;
-        ssize_t n = -1;
-        while (true) {
-            for (int i = 0; i < REPEAT && n == -1; i++) {
-                n = recv(socket_desc.get_descriptor(), reinterpret_cast<void *>(buf + offset), BUFFER_SIZE - offset, 0);
-            }
-            if (n == -1) {
-                logger().fail("Could not read message", errno);
-                continue;
-            }
-            if (buf[n - 1] == '\n') {
-                buf[n - 1] = '\0';
-                logger().success("Received '" + std::string(buf) + "' of size " + std::to_string(n));
-                respond(client_desc, buf, n - 1);
-                break;
-            } else {
-                offset += n;
-            }
-        }
+        size_t buffer_size = 0;
+        client_desc.receive_message(buf, buffer_size, BUFFER_SIZE, REPEAT);
+        respond(client_desc, buf, buffer_size);
     }
 }
 
 
-void server::respond(socket_wrapper &client_desc, char *buf, ssize_t n) {
+void server::respond(socket_wrapper &client_desc, char *buf, size_t buffer_size) {
     char response[] = {' ', '-', 'd', 'e', ' ', 'g', 'o', 'z', 'a', 'r', 'u', '!', '\n'};
-    for (int i = 0; n < BUFFER_SIZE; n++, i++) {
-        buf[n] = response[i];
+    for (int i = 0; buffer_size < BUFFER_SIZE && i < sizeof(response); buffer_size++, i++) {
+        buf[buffer_size] = response[i];
     }
-    buf[n - 1] = '\n';
-    for (unsigned int i = 0; i < REPEAT; i++) {
-        if (send(socket_desc.get_descriptor(), buf, static_cast<size_t>(n), 0) > -1) {
-            buf[n - 1] = '\0';
-            logger().success("Sent message '" + std::string(buf) + "' back");
-            return;
-        }
-    }
-    logger().fail("Unable to respond", errno);
+    buf[buffer_size - 1] = '\n';
+    client_desc.send_message(buf, buffer_size, REPEAT);
 }
 
 int main(int argc, char *argv[]) {

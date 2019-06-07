@@ -16,9 +16,16 @@ public:
 
     ~socket_wrapper();
 
+    void renew();
+
     int get_descriptor() const;
 
     bool check_valid() const;
+
+    int send_message(char const *buf, size_t buffer_size, unsigned int repeat = 1, bool log_success = true);
+
+    int receive_message(char *buf, size_t &buffer_size,
+                        unsigned int real_size, unsigned int repeat = 1, bool log_success = true);
 
     void close();
 
