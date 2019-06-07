@@ -10,6 +10,8 @@ class server {
 public:
 
     static unsigned int const REPEAT;
+    static unsigned int const MAX_QUEUE;
+    static unsigned int const BUFFER_SIZE;
 
     server(std::string const &address, uint16_t port);
 
@@ -19,7 +21,7 @@ public:
 
 private:
 
-    void respond(sockaddr_in &client_address, char *buf, ssize_t n, socklen_t len);
+    void respond(socket_wrapper &client_desc, char *buf, ssize_t n);
 
     socket_wrapper socket_desc;
     sockaddr_in server_address;

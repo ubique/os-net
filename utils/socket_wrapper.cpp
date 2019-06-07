@@ -1,6 +1,6 @@
 #include "socket_wrapper.hpp"
 
-socket_wrapper::socket_wrapper() : descriptor(socket(AF_INET, SOCK_DGRAM, 0)) {}
+socket_wrapper::socket_wrapper() : descriptor(socket(AF_INET, SOCK_STREAM, 0)) {}
 
 socket_wrapper::socket_wrapper(int descriptor) : descriptor(descriptor) {}
 
@@ -17,7 +17,7 @@ bool socket_wrapper::check_valid() const {
 }
 
 void socket_wrapper::close() {
-    if (::close(descriptor)) {
+    if (check_valid() && ::close(descriptor) < 0) {
         logger().fail("Could not close the socket properly", errno);
     }
 }
