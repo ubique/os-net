@@ -33,6 +33,19 @@ void setSocketOptions(int &socket) {
     }
 }
 
+bool sendMsg(int socket, const char* data, size_t size){
+    size_t total  = 0;
+    size_t bytes = 0;
+    while(total < size){
+        bytes = send(socket, data + total, size - total, 0);
+        if(bytes == -1){
+            return true;
+        }
+        total += bytes;
+    }
+    return false;
+}
+
 std::pair<socklen_t, sockaddr_in> genStructFields(int addr, int port) {
     struct sockaddr_in address;
     address.sin_family = AF_INET;
