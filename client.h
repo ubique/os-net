@@ -20,10 +20,10 @@ const size_t BUF_SIZE = 1 << 11;
 const ssize_t MAX_LEN_MESSAGE = 1 << 8 - 1;
 
 void error(std::string message, bool with_errno = true, bool help = false, bool need_exit = false) {
-    std::cerr << message << ". ";
+    std::cerr << message;
     
     if (with_errno) {
-        std::cerr << strerror(errno) << ".";
+        std::cerr << ". " << strerror(errno);
     }
     std::cerr << std::endl;
 

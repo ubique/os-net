@@ -59,6 +59,8 @@ void server::run() {
                         read_failed = true;
                         break;
                     } else if (cur_read == 0) {
+                        error("Client disconnected", false);
+                        read_failed = true;
                         break;
                     }
 
@@ -66,23 +68,32 @@ void server::run() {
                 }
 
                 if (read_failed) {
-                    continue;
+                    break;
                 }
 
                 size_t message_length_sent = 0;
                 size_t attempt_number = 1;
+                bool send_failed = false;
+
                 while (message_length_sent < message_length) {
                     size_t left_send = message_length - message_length_sent;
                     ssize_t cur_sent = send(client_fd.get_fd(), message.c_str() + message_length_sent, left_send, 0);
 
                     if (cur_sent < 0) {
                         error("Can't send message part");
-                        ++attempt_number;
-                        std::cerr << "Attempt number " << attempt_number << std::endl;
-                    } else {
-                        attempt_number = 1;
-                        message_length_sent += (size_t) cur_sent;
+                        send_failed = true;
+                        break;
+                    } else if (cur_sent == 0) {
+                        error("Client disconnected", false);
+                        send_failed = true;
+                        break; 
                     }
+                    
+                    message_length_sent += (size_t) cur_sent;
+                }
+
+                if (send_failed) {
+                    break;
                 }
             } else if (read_message_length == 0) {
                 error("Client disconnected", false);

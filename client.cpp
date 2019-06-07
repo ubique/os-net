@@ -46,7 +46,7 @@ void client::run() {
 
         std::vector<uint8_t> for_send_len = {(uint8_t) message_length};
         if (send(socket_client_fd.get_fd(), for_send_len.data(), 1, 0) != 1) {
-            throw std::runtime_error("Can't send message");
+            throw std::runtime_error("Can't send message length");
         }
 
         size_t message_length_sent = 0;
@@ -54,7 +54,7 @@ void client::run() {
             size_t left_send = message_length - message_length_sent;
             ssize_t cur_sent = send(socket_client_fd.get_fd(), message.c_str() + message_length_sent, left_send, 0);
 
-            if (cur_sent < 0) {
+            if (cur_sent <= 0) {
                 throw std::runtime_error("Can't send message");
             }
 
@@ -71,12 +71,12 @@ void client::run() {
             if (cur_read == -1) {
                 throw std::runtime_error("Can't read fd");
             } else if (cur_read == 0) {
+                error("Received incomplete message", false);
                 break;
             }
 
             message_length_read += (size_t) cur_read;
         }
-        //response.resize(read_);
 
         std::cout << "Response: " << response.data() << std::endl;
     }
