@@ -51,6 +51,7 @@ server::server(char* address, uint16_t port)
                 break;
             } else {
                 got.second += "\r\n";
+                was_read += 2;
                 size_t was_sent = 0;
                 while (was_sent < static_cast<size_t>(was_read)) {
                     ssize_t current =
