@@ -42,22 +42,23 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        if ((msglen = recv(clientSockd, &buf, bufferLen, 0)) == -1) {
+        if ((msglen = recv(clientSockd, &buf, bufferLen, MSG_WAITALL)) == -1) {
             perror("recv");
             continue;
         }
 
         if (strncmp(buf, "exit", msglen) == 0) {
-            if (send(clientSockd, EXIT, strlen(EXIT), 0) == -1)
+            if (sendMsg(clientSockd, EXIT, strlen(EXIT)))
                 perror("exit send");
             cout << "End of work" << endl;
             return closeSocket(clientSockd);
         }
 
-        if ((send(clientSockd, &buf, msglen, 0)) == -1) {
+        if (sendMsg(clientSockd, buf, strlen(buf))) {
             perror("send");
             continue;
         }
+
         cout << buf << endl;
     }
 }
