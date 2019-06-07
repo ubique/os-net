@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
         return 1;
     }
     auto port = atoi(argv[1]);
-    auto msg = argv[2];
+    string msg = argv[2];
 
     int sockfd = createSocket();
 
@@ -22,15 +22,14 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    size_t len = strlen(msg);
-    if (send(sockfd, msg, len, 0) == -1) {
+    if (sendMsg(sockfd, msg.data(), msg.size())) {
         perror("send");
         exit(EXIT_FAILURE);
     }
 
     char buf[bufferLen];
     bzero(buf, bufferLen);
-    if ((recv(sockfd, &buf, bufferLen, 0)) == -1) {
+    if ((recv(sockfd, &buf, bufferLen, MSG_WAITALL)) == -1) {
         perror("recv");
         exit(EXIT_FAILURE);
     }
