@@ -1,0 +1,1 @@
+/usr/bin/x86_64-pc-linux-gnu-g++  -O3 -DNDEBUG  -rdynamic CMakeFiles/test.assign.move.dir/assign.move.cpp.o  -o test.assign.move 

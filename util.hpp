@@ -4,7 +4,14 @@
 #include <unistd.h>
 #include <type_traits>
 #include <vector>
+#include <sys/socket.h>
 
+static inline int is_connected(int sock)
+{
+    unsigned char buf;
+    ssize_t err = recv(sock, &buf, 1, MSG_PEEK | MSG_DONTWAIT);
+    return err == -1 ? errno : 0;
+}
 
 template<typename R>
 using Result = eggs::variant<R, char const*>;
@@ -32,6 +39,13 @@ struct defered_close
     {
         if (fd == -1) return;
         close(fd);
+    }
+
+    void set_fd(int fd)
+    {
+        if (this->fd != -1)
+            close(this->fd);
+        this->fd = fd;
     }
 
 private:

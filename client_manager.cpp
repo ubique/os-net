@@ -1,87 +1,66 @@
+#include "socks5_session.h"
 #include "client_manager.h"
 #include "util.hpp"
 
 #include <sys/epoll.h>
 #include <sys/socket.h>
-#include <cstring>
 #include <unistd.h>
+#include <netdb.h>
+#include <cstring>
 #include <iomanip>
+#include <arpa/inet.h>
 #include <iostream>
+#include <unordered_set>
 #include <unordered_map>
 
-enum class session_status
-{
-    NOT_AUTHED,
-    AUTH_PROC,
-    AUTHED,
-    BINDED,
-    REJECTED
-};
+#include <boost/optional.hpp>
 
-struct session
-{
-    int             sock_fd;
-    defered_close   _df;
-    size_t          rejected;
-    session_status  status;
-    char            data[client_manager::session_data_start_payload];
+using all_binded_t = std::unordered_map<int, int>;
 
-    explicit session(int sock_fd)
-        : sock_fd(sock_fd),
-          _df(sock_fd),
-          rejected(0),
-          status(session_status::NOT_AUTHED)
-    {}
-};
+using all_sockets_t = std::unordered_map<int, session>;
 
-static inline int proceed_session(session& session,
-                                  char const* buff,
-                                  ssize_t sz)
+
+template<typename Container>
+static inline void socket_deleter(int sock,
+                                  all_sockets_t& sockets,
+                                  all_binded_t& binds,
+                                  int epoll_fd,
+                                  Container& deleted)
 {
-    switch (session.status)
+    std::cerr << "Deleting sock" << " " << sock << std::endl;
+    auto it = sockets.find(sock);
+    assert(it != sockets.end());
+    if (it->second.status == session_status::CONNECTED)
     {
-    case session_status::NOT_AUTHED:
-    {
-        if (2 + buff[1] > sz)
+        auto binds_iter = binds.find(it->second.dest_sock);
+        assert(binds_iter != binds.end());
+
+        if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, binds_iter->first, nullptr) == -1)
         {
-            session.status = session_status::AUTH_PROC;
-            memcpy(session.data, buff, static_cast<size_t>(sz));
-            return 0;
+            std::cerr << "Epoll_ctl del bind error: " << strerror(errno) << std::endl;
         }
 
-        bool found = false;
-        for (ssize_t i = 0; !found && i < buff[1]; ++i)
-        {
-            if (buff[i + 2] == 0x02) // username/pass
-                found = true;
-        }
-
-        if (!found)
-            return -1;
-
-        session.data[0] = 0x05;
-        session.data[1] = 0x02;
-        send(session.sock_fd, session.data, 2, MSG_DONTWAIT);
-        return 0;
+        deleted.insert(binds_iter->second);
+        binds.erase(binds_iter);
     }
-    case session_status::AUTH_PROC:
-    case session_status::BINDED:
-    case session_status::REJECTED:
-    default:
-        return -1;
+    deleted.insert(sock);
+    sockets.erase(it);
+    if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, sock, nullptr) == -1)
+    {
+        std::cerr << "Epoll_ctl del error: " << strerror(errno) << std::endl;
     }
 }
 
 void client_manager::worker(size_t const index) noexcept
 {
-    std::unordered_map<sock_desc, session> sockets;
-
     if (termination_marker) return;
 
-    char read_buffer[read_buffer_sz];
+    char                        read_buffer[read_buff_sz];
+    boost::optional<int>        new_bind;
+    struct epoll_event          event;
+    struct epoll_event          events[epoll_max_events];
+    int                         epoll_fd = epoll_create1(0);
 
-    struct epoll_event event, events[epoll_max_events];
-    int epoll_fd = epoll_create1(0);
     if (epoll_fd == -1)
     {
         std::cerr << "Failed to create epoll file descriptor: "
@@ -90,8 +69,13 @@ void client_manager::worker(size_t const index) noexcept
     }
     auto _epoll_fd_close = defered_close(epoll_fd);
 
-    while (true)
+    all_sockets_t sockets;
+    all_binded_t binds;
+
+    while (!termination_marker)
     {
+        std::unordered_set<int> deleted;
+
         if (sockets.empty())
         {
             std::unique_lock<std::mutex> lck(mut);
@@ -123,9 +107,15 @@ void client_manager::worker(size_t const index) noexcept
                     continue;
                 }
 
+                std::cerr << "New client: " << cl_sock << std::endl;
+
                 auto it = sockets.find(cl_sock);
                 assert(it == sockets.end());
                 sockets.insert(it, {cl_sock, session{cl_sock}});
+
+                auto del_it = deleted.find(cl_sock);
+                if (del_it != deleted.end())
+                    deleted.erase(del_it);
             }
         }
 
@@ -145,8 +135,7 @@ void client_manager::worker(size_t const index) noexcept
             std::cerr << "Failed to epoll_wait: "
                       << strerror(errno) << std::endl;
 
-            termination_marker = 1;
-            return;
+            continue;
         }
 
         for (ssize_t i = 0; i < nfds; ++i)
@@ -155,8 +144,11 @@ void client_manager::worker(size_t const index) noexcept
                 return;
 
             int sock_fd = events[i].data.fd;
+            if (deleted.find(sock_fd) != deleted.end())
+                continue;
 
-            ssize_t read_sz = recv(sock_fd, read_buffer, read_buffer_sz, 0);
+            ssize_t read_sz = recv(sock_fd, read_buffer, read_buff_sz, 0);
+
             if (read_sz == -1)
             {
                 switch (errno)
@@ -168,23 +160,80 @@ void client_manager::worker(size_t const index) noexcept
                 case ETIMEDOUT:
                 {
                     std::cerr << "Connection closed " << sock_fd << std::endl;
-                    auto it = sockets.find(sock_fd);
-                    assert(it != sockets.end());
-                    sockets.erase(it);
+                    assert(deleted.find(sock_fd) == deleted.end() && "WTF1");
+                    socket_deleter(sock_fd, sockets, binds, epoll_fd, deleted);
                     continue;
                 }
                 default:
                 {
                     std::cerr << "recv failed: " << strerror(errno) << std::endl;
-                    auto it = sockets.find(sock_fd);
-                    assert(it != sockets.end());
-                    sockets.erase(it);
+                    assert(deleted.find(sock_fd) == deleted.end() && "WTF2");
+                    socket_deleter(sock_fd, sockets, binds, epoll_fd, deleted);
                     continue;
                 }
                 }
             }
 
-            proceed_session(sockets[sock_fd], read_buffer, read_sz);
+            auto iter_binds = binds.find(sock_fd);
+            if (iter_binds != binds.end())
+            {
+                auto iter_socks = sockets.find(iter_binds->second);
+                if (iter_socks == sockets.end())
+                    assert(false && "Socket erased, but bind record is alive");
+                else
+                {
+                    if (iter_socks->second.forward_to_peer(read_buffer, static_cast<size_t>(read_sz)))
+                    {
+                       std::cerr << "Cannot forward to peer: " << strerror(errno) << std::endl;
+                       if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, sock_fd, nullptr) == -1)
+                       {
+                           std::cerr << "Epoll_ctl del error: " << strerror(errno) << std::endl;
+                       }
+
+                       if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, iter_binds->second, nullptr) == -1)
+                       {
+                           std::cerr << "Epoll_ctl del error: " << strerror(errno) << std::endl;
+                       }
+
+
+                       deleted.insert(sock_fd);
+                       deleted.insert(iter_binds->second);
+
+                       sockets.erase(iter_socks);
+                       binds.erase(iter_binds);
+                    }
+                }
+
+                continue;
+            }
+
+            auto it = sockets.find(sock_fd);
+            assert(it != sockets.end() && "Unrecognized descriptor found");
+            auto& session = it->second;
+            if (session.peer_buff_sz)
+                session.send_peer(session.peer_send_buff.get(), session.peer_buff_sz);
+
+            if (it != sockets.end()
+                    && session.proceed(read_buffer,
+                                       static_cast<size_t>(read_sz),
+                                       new_bind) != 0)
+            {
+                assert(deleted.find(sock_fd) == deleted.end());
+                socket_deleter(sock_fd, sockets, binds, epoll_fd, deleted);
+            }
+            else if (new_bind)
+            {
+                binds[*new_bind] = sock_fd;
+                event.events = EPOLLIN | EPOLLET;
+                event.data.fd = *new_bind;
+
+                if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, *new_bind, &event))
+                {
+                    std::cerr << "Failed to add file descriptor to epoll: "
+                              << strerror(errno) << std::endl;
+                    continue;
+                }
+            }
         }
     }
 }
@@ -201,7 +250,7 @@ void client_manager::close_socks() noexcept
 {
     for (auto&& worker_clients : new_clients_by_thread)
     {
-        while (worker_clients.empty())
+        while (!worker_clients.empty())
         {
             auto x = worker_clients.front();
             worker_clients.pop();

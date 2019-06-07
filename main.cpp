@@ -45,6 +45,5 @@ int main(int argc, char** argv)
     socks5_server server(port, termination_marker);
 
     server.run();
-
     return 0;
 }

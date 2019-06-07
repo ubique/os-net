@@ -11,11 +11,12 @@
 struct client_manager
 {
     using sock_desc = int;
+    using auth_cred_t = std::pair<char const*, char const*>;
 
-    constexpr static size_t epoll_max_events = 512;
-    constexpr static size_t read_buffer_sz = 4096 * 4;
-    constexpr static size_t session_data_start_payload = 256;
-    constexpr static size_t max_reject_num = 5;
+    constexpr static size_t epoll_max_events        = 128;
+    constexpr static size_t read_buff_sz            = 4096;
+    constexpr static size_t session_buff_sz         = 4096;
+    constexpr static auth_cred_t AUTH_CREDENTIALS   = {"kek", "cheburek"}; // 100% secure
 
     client_manager(client_manager const&) = delete;
     client_manager(client_manager&&) = delete;
@@ -37,9 +38,10 @@ private:
 private:
     sig_atomic_t volatile& termination_marker;
     size_t const threads;
-    std::vector<std::thread> workers;
 
-    std::mutex mut;
+    mutable std::mutex mut;
     std::condition_variable cond_var;
     std::vector<std::queue<sock_desc>> new_clients_by_thread;
+
+    std::vector<std::thread> workers;
 };

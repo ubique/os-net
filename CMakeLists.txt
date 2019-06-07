@@ -16,11 +16,14 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     set(CMAKE_CXX_FLAGS "-pthread ${CMAKE_CXX_FLAGS}")
 endif()
 
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
 add_executable(net
     main.cpp
     util.hpp
     server.h server.cpp
     client_manager.h client_manager.cpp
+    socks5_session.h socks5_session.cpp
 )
 
 add_executable(net_asan
@@ -28,6 +31,7 @@ add_executable(net_asan
     util.hpp
     server.h server.cpp
     client_manager.h client_manager.cpp
+    socks5_session.h socks5_session.cpp
 )
 
 add_compile_options(jit_asan PUBLIC -fsanitize=address)

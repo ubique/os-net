@@ -1,0 +1,1 @@
+/usr/bin/x86_64-pc-linux-gnu-g++  -O3 -DNDEBUG  -rdynamic CMakeFiles/test.hash.dir/hash.cpp.o  -o test.hash 

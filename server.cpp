@@ -47,9 +47,10 @@ void socks5_server::run() noexcept
     struct sockaddr_in server, client;
 
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
+    defered_close cl(socket_desc);
     if (socket_desc == -1)
     {
-        std::cerr << "Could not create socket " << strerror(errno) << std::endl;
+        std::cerr << "Could not create socket: " << strerror(errno) << std::endl;
         return;
     }
 
@@ -64,7 +65,7 @@ void socks5_server::run() noexcept
             reinterpret_cast<struct sockaddr *>(&server),
             sizeof(server)) < 0)
     {
-        std::cerr << "Could not bind server socket " << strerror(errno) << std::endl;
+        std::cerr << "Could not bind server socket: " << strerror(errno) << std::endl;
         return;
     }
 

@@ -1,0 +1,1 @@
+/usr/bin/x86_64-pc-linux-gnu-g++  -O3 -DNDEBUG  -rdynamic CMakeFiles/test.cnstr.copy.dir/cnstr.copy.cpp.o  -o test.cnstr.copy 

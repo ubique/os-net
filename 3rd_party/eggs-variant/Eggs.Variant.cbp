@@ -1,0 +1,1075 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Eggs.Variant"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\3rd_party\;CMake Files\3rd_party\eggs-variant\;CMake Files\3rd_party\eggs-variant\test\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.multiple.definitions">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.multiple.definitions" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.multiple.definitions"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.multiple.definitions/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.multiple.definitions" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.multiple.definitions/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.rel.order">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.rel.order" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.rel.order"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.rel.order/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.rel.order" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.rel.order/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.assign.emplace">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.assign.emplace" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.assign.emplace"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.assign.emplace/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.assign.emplace" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.assign.emplace/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.move">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.move" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.move"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.move/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.move" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.move/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.assign.move">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.assign.move" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.assign.move"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.assign.move/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.assign.move" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.assign.move/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.assign.copy">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.assign.copy" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.assign.copy"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.assign.copy/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.assign.copy" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.assign.copy/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.translation_unit_two">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.translation_unit_two" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.translation_unit_two"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.translation_unit_two/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.translation_unit_two" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.translation_unit_two/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.assign.conversion">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.assign.conversion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.assign.conversion"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.assign.conversion/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.assign.conversion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.assign.conversion/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="tests">
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 tests"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.swap">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.swap" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.swap"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.swap/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.swap" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.swap/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.apply">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.apply" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.apply"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.apply/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.apply" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.apply/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.helper">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.helper" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.helper"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.helper/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.helper" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.helper/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.conversion">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.conversion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.conversion"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.conversion/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.conversion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.conversion/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.hash">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.hash" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.hash"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.hash/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.hash" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.hash/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.obs.target">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.obs.target" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.obs.target"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.obs.target/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.obs.target" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.obs.target/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.copy">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.copy" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.copy"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.copy/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.copy" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.copy/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.emplace">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.emplace" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.emplace"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.emplace/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.emplace" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.emplace/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.translation_unit_one">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.translation_unit_one" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.translation_unit_one"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.translation_unit_one/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.translation_unit_one" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.translation_unit_one/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.default">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.default" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.default"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.cnstr.default/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.cnstr.default" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.cnstr.default/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.dtor">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.dtor" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.dtor"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.dtor/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.dtor" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.dtor/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.rel.equality">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.rel.equality" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.rel.equality"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.rel.equality/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.rel.equality" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.rel.equality/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.elem.get">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.elem.get" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.elem.get"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test.elem.get/fast">
+				<Option output="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/test.elem.get" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../include/c++/8.3.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 test.elem.get/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/apply.cpp">
+			<Option target="test.apply"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/assign.conversion.cpp">
+			<Option target="test.assign.conversion"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/assign.copy.cpp">
+			<Option target="test.assign.copy"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/assign.emplace.cpp">
+			<Option target="test.assign.emplace"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/assign.move.cpp">
+			<Option target="test.assign.move"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/cnstr.conversion.cpp">
+			<Option target="test.cnstr.conversion"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/cnstr.copy.cpp">
+			<Option target="test.cnstr.copy"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/cnstr.default.cpp">
+			<Option target="test.cnstr.default"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/cnstr.emplace.cpp">
+			<Option target="test.cnstr.emplace"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/cnstr.move.cpp">
+			<Option target="test.cnstr.move"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/dtor.cpp">
+			<Option target="test.dtor"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/dtor.hpp">
+			<Option target="test.dtor"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/elem.get.cpp">
+			<Option target="test.elem.get"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/hash.cpp">
+			<Option target="test.hash"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/helper.cpp">
+			<Option target="test.helper"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/obs.target.cpp">
+			<Option target="test.obs.target"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/rel.equality.cpp">
+			<Option target="test.rel.equality"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/rel.order.cpp">
+			<Option target="test.rel.order"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/swap.cpp">
+			<Option target="test.swap"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/translation_unit_one.cpp">
+			<Option target="test.multiple.definitions"/>
+			<Option target="test.translation_unit_one"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/translation_unit_two.cpp">
+			<Option target="test.multiple.definitions"/>
+			<Option target="test.translation_unit_two"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\eggs-variant\"/>
+		</Unit>
+		<Unit filename="/home/starorpheus/Devel/oshw/net/3rd_party/eggs-variant/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\eggs-variant\test\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
