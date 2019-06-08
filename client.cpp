@@ -41,10 +41,5 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    if ((recv(sockfd, &buf, bufferLen, MSG_WAITALL)) == -1) {
-        perror("recv");
-        exit(EXIT_FAILURE);
-    }
-
     return closeSocket(sockfd);
 }
