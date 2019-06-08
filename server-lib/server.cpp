@@ -1,5 +1,6 @@
 #include "server.h"
 #include "server_execption.h"
+#include "../utils/data_builder.h"
 
 server::server(char *address, uint16_t port) : d_socket(socket(AF_INET, SOCK_STREAM, 0)) {
     if (d_socket.isBroken()) {
@@ -27,8 +28,8 @@ server::server(char *address, uint16_t port) : d_socket(socket(AF_INET, SOCK_STR
         sockaddr_in peer{};
         socklen_t peer_sz;
         wrapper fd(accept(d_socket.getDiscriptor(),
-                            reinterpret_cast<sockaddr *>(&peer),
-                            &peer_sz
+                          reinterpret_cast<sockaddr *>(&peer),
+                          &peer_sz
         ));
         if (fd.isBroken()) {
             std::cerr << "Cannot accept peer";
@@ -36,18 +37,28 @@ server::server(char *address, uint16_t port) : d_socket(socket(AF_INET, SOCK_STR
         }
         std::cout << inet_ntoa(peer.sin_addr) << " connected!" << std::endl;
         while (true) {
-            std::vector<char> buffer(BZ_SZ);
-            ssize_t receivedStatus = recv(fd.getDiscriptor(), buffer.data(), BZ_SZ, 0);
-            if (receivedStatus == 0) {
+            data_builder acc;
+            auto got = acc.process(fd.getDiscriptor(), BF_SZ);
+            ssize_t received_sz = got.first;
+            if (received_sz == 0) {
                 std::cout << "Client disconnected\n";
                 break;
-            } else if (receivedStatus == 1) {
+            } else if (received_sz == -1) {
                 std::cerr << "Can't receive information";
                 continue;
             } else {
-                while (send(fd.getDiscriptor(), buffer.data(),
-                        static_cast<size_t>(receivedStatus), 0) != receivedStatus) {
-                    std::cerr << "Cannot send echo\n\"Trying to send again...\n";
+                got.second += "\r\n";
+                size_t was_sent = 0;
+                while (was_sent < static_cast<size_t>(received_sz)) {
+                    ssize_t current =
+                            send(fd.getDiscriptor(),
+                                 got.second.data() + was_sent,
+                                 static_cast<size_t>(received_sz) - was_sent,
+                                 0);
+                    if (current == -1) {
+                        throw server_exception("Unable to send");
+                    }
+                    was_sent += static_cast<size_t>(current);
                 }
             }
         }

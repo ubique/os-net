@@ -9,11 +9,18 @@ add_executable( client starter/client_starter.cpp)
 add_library(server-lib STATIC
         server-lib/server.h
         server-lib/server.cpp
-        server-lib/server_execption.h)
+        server-lib/server_execption.h
+        utils/data_builder.cpp
+        utils/wrapper.cpp
+        utils/wrapper.h)
 add_library(client-lib STATIC
         client-lib/client.h
         client-lib/client.cpp
-        client-lib/client_exception.h)
+        client-lib/client_exception.h
+        utils/data_builder.h
+        utils/data_builder.cpp
+        utils/wrapper.cpp
+        utils/wrapper.h)
 
 set_target_properties(server-lib PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(client-lib PROPERTIES LINKER_LANGUAGE CXX)

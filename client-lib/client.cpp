@@ -7,6 +7,7 @@
 #include <vector>
 #include "client.h"
 #include "client_exception.h"
+#include "../utils/data_builder.h"
 
 using namespace std;
 
@@ -27,20 +28,21 @@ client::client(char *address, uint16_t port) : d_socket(-1) {
 
 
 string client::request(string text) {
-    auto text_length = static_cast<ssize_t>(text.length());
-    if (send(d_socket.getDiscriptor(),
-             text.c_str(),
-             text.length(), 0)
-        != text_length) {
-        throw client_exception("Can't send request");
+    text += "\r\n";
+    size_t process_sz = 0;
+    while (process_sz < text.length()) {
+        ssize_t current = send(d_socket.getDiscriptor(), text.data() + process_sz,
+                               text.length() - process_sz, 0);
+        if (current == -1) {
+            throw client_exception("Can't send request");
+        }
+        process_sz += static_cast<size_t>(current);
+    }
+    data_builder builder;
+    auto recp = builder.process(d_socket.getDiscriptor(), BF_SZ);
+    if (recp.first == -1) {
+        throw client_exception("Reading from fd error");
     }
 
-    vector<char> response(BF_SZ);
-    ssize_t was_read = recv(d_socket.getDiscriptor(), response.data(), BF_SZ, 0);
-    if (was_read == -1) {
-        throw client_exception("Unable to read from file descriptor");
-    }
-    response.resize(static_cast<unsigned long>(was_read));
-
-    return string(response.data());
+    return recp.second;
 }

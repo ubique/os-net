@@ -54,7 +54,7 @@ private:
     sockaddr_in saddress;
     wrapper d_socket;
 
-    const size_t BZ_SZ = 1024;
+    const size_t BF_SZ = 1024;
 
     void fillAddress(char *address, uint16_t port);
 };
