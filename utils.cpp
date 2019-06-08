@@ -59,6 +59,7 @@ namespace utils {
         while (count < size) {
             ssize_t read = ::recv(sockfd, message, size, 0);
             if (read == -1 || read == 0) {
+                perror("Error during reading");
                 return false;
             }
             count += read;
