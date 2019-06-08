@@ -4,6 +4,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include "Client.h"
+#include <iostream>
+
 
 Client::Client(char *address, uint16_t port) {
     openSocket();
@@ -30,17 +32,38 @@ void Client::makeConnection(char *address, uint16_t port) {
 }
 
 std::string Client::makeRequest(std::string message) {
-    send(mySocket, message.data(), message.length(), 0);
-    char answer[BUFFER_SIZE];
-    ssize_t reqByteNum = recv(mySocket, answer, BUFFER_SIZE, 0);
-    if (reqByteNum < 0) {
-        throw std::runtime_error("error while getting answer from server: " + std::string(strerror(errno)));
+    ssize_t sentSize = 0;
+    while (sentSize != message.size()) {
+        ssize_t cur = send(mySocket, message.data() + sentSize,
+                           static_cast<size_t>(message.length() - sentSize), 0);
+        if (cur == 0) {
+            break;
+        }
+        if (cur < 0) {
+            throw std::runtime_error("error while getting answer from server: " + std::string(strerror(errno)));
+        }
+        sentSize += cur;
     }
-    answer[reqByteNum] = '\0';
+    char answer[BUFFER_SIZE];
+    ssize_t reqSize = 0;
+    while (reqSize != message.length()) {
+        ssize_t cur = recv(mySocket, answer, BUFFER_SIZE, 0);
+        if (cur == 0) {
+            break;
+        }
+        if (cur < 0) {
+            throw std::runtime_error("error while getting answer from server: " + std::string(strerror(errno)));
+        }
+        reqSize += cur;
+    }
+    answer[reqSize] = '\0';
     return answer;
+
 }
 
 Client::~Client() {
-    close(mySocket);
+    if (close(mySocket) < 0) {
+        std::cerr << "socket close error" << std::endl;
+    };
 }
 

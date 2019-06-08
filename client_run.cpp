@@ -23,6 +23,9 @@ int main(int argc, char **argv) {
         while (!std::cin.eof()) {
             std::cout << "your request: " << std::endl;
             std::getline(std::cin, message);
+            if(message.empty()){
+                continue;
+            }
             if (message == "ex") {
                 break;
             }

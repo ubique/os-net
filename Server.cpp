@@ -44,25 +44,35 @@ void Server::start() {
     }
     while (true) {
         char request[BUFFER_SIZE];
-        ssize_t reqBytesNum = recv(acceptSocket, request, BUFFER_SIZE, 0);
-        if (reqBytesNum == 0) {
+        ssize_t reqSize = recv(acceptSocket, request, BUFFER_SIZE, 0);
+        if (reqSize == 0) {
             std::cout << "no more data from client" << std::endl;
             break;
-        } else if (reqBytesNum < 0) {
+        } else if (reqSize < 0) {
             std::cerr << "cannot receive data from client" << std::endl;
             continue;
         }
-        request[reqBytesNum] = '\0';
+        request[reqSize] = '\0';
         std::cout << "got from client: " << request << std::endl;
-        if (send(acceptSocket, request, static_cast<size_t >(reqBytesNum), 0) < 0) {
-            std::cerr << "cannot send to client" << std::endl;
-        } else {
-            std::cout << "data sent to client" << std::endl;
+        ssize_t sentSize = 0;
+        while (sentSize != reqSize) {
+            ssize_t cur = send(acceptSocket, request + sentSize,
+                               static_cast<size_t>(reqSize - sentSize), 0);
+            if (cur == 0) {
+                break;
+            }
+            if (cur < 0) {
+                std::cerr << "cannot send to client" << std::endl;
+                break;
+            }
+            sentSize += cur;
         }
     }
 }
 
 Server::~Server() {
-    close(mySocket);
+    if (close(mySocket) < 0) {
+        std::cerr << "socket close error" << std::endl;
+    };
 }
 
