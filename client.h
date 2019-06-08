@@ -18,9 +18,10 @@ public:
 
     void connect_to(const char *hostAddress, const in_port_t port);
     string request(const string& message);
-    void disconnect();
 
-
+private:
+    void receive_response();
+    void do_request(const string& msg);
 private:
     my_fd socket_fd;
     static constexpr size_t BUFFER_SIZE = 4096 * 2;
