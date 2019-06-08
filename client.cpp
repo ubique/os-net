@@ -1,98 +1,44 @@
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-
-#include <iostream>
+#include "utils.h"
 #include <cstring>
 
-#define BUF_SIZE 1000
-
-using std::string;
-using std::cin;
-using std::cout;
-using std::endl;
-
-void resolve(const string& addr, const string& port) {
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1) {
-        perror("Cannot create socket");
-        return;
-    }
+void resolve(const std::string& addr, const std::string& port) {
+    int sockfd;
     struct sockaddr_in server;
-    server.sin_family = AF_INET;
-    if (inet_aton(addr.data(), &server.sin_addr) == 0) {
-        cout << "Server's address is invalid" << endl;
-        return;
-    }
-    try {
-        server.sin_port = std::stoul(port);
-    } catch (std::invalid_argument& e) {
-        cout << "Server's port is invalid" << endl;
-        return;
-    }
-
-    if (connect(sockfd, reinterpret_cast<sockaddr*>(&server), sizeof(sockaddr_in)) == -1) {
-        perror("Cannot connect to server");
-        return;
-    }
-    cout << "Connected to server" << endl;
-
-    cout << "Write request message and wait for response (to exit - just press ENTER)" << endl;
+    utils::init(sockfd, server, addr, port);
+    utils::connect(sockfd, server);
+    printf("Connected to server\n");
     while (true) {
-        cout << "Request: ";
-        string request;
-        getline(cin, request);
-        if (request.empty()) {
+        printf("Request: ");
+        char buffer[utils::BUF_SIZE];
+        if (scanf("%255s", buffer) == EOF) {
+            printf("\n");
             break;
         }
-        if (send(sockfd, request.c_str(), request.length(), 0) != request.length()) {
-            perror("Cannot send message");
+        char size = strlen(buffer) + 1;
+        if (!utils::send(sockfd, &size, 1)) {
+            printf("Aborting connection\n");
             break;
         }
-        char buffer[BUF_SIZE];
-        memset(buffer, 0, sizeof(buffer));
-        ssize_t read = recv(sockfd, buffer, BUF_SIZE, 0);
-        if (read == -1) {
-            perror("Error during receiving message");
-            continue;
-        } else if (read == 0) {
-            cout << "Cannot receive message, server is down" << endl;
+        if (!utils::send(sockfd, buffer, size)) {
+            printf("Aborting connection\n");
             break;
         }
-        cout << "Response: " << string(buffer) << endl;
+        printf("Message is sent\n");
+        if (!utils::recv(sockfd, buffer, size)) {
+            printf("Aborting connection\n");
+            break;
+        }
+        printf("Response: %s\n", buffer);
     }
-    while (close(sockfd) == -1) {
-        perror("Cannot close socket, trying again");
-    }
-    cout << "Disconnected from server" << endl;
+    utils::close(sockfd);
+    printf("Disconnected from server\n");
 }
 
-int main() {
-    while (true) {
-        cout << "Write address and port of server to connect (or exit)" << endl;
-        cout << "Example: 127.0.0.1:8888" << endl;
-        string s;
-        getline(cin, s);
-        if (cin.eof()) {
-            break;
-        }
-        if (s == "exit") {
-            break;
-        }
-        size_t del_pos = s.find(":");
-        if (del_pos == string::npos) {
-            cout << "Wrong format" << endl;
-            continue;
-        }
-        string addr = s.substr(0, del_pos);
-        string port = s.substr(del_pos + 1);
-        if (addr.empty() || port.empty()) {
-            cout << "Wrong format" << endl;
-            continue;
-        } else {
-            resolve(addr, port);
-        }
+int main(int argc, char* argv[]) {
+    if (argc != 3) {
+        printf("Usage: %s [addr] [port]\n", argv[0]);
+        return 0;
     }
+    resolve(argv[1], argv[2]);
 }
 
