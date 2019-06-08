@@ -1,4 +1,5 @@
 #include "EchoServer.h"
+#include <vector>
 
 EchoServer::EchoServer(int port, char *ip) {
 	openListener();
@@ -11,7 +12,10 @@ EchoServer::EchoServer(int port, char *ip) {
 }
 
 EchoServer::~EchoServer() {
-	close(listener);
+	if (close(listener) < 0) {
+		perror("Closing the socket failed");
+		exit(EXIT_FAILURE);
+	}
 }
 
 void EchoServer::openListener() {
@@ -28,6 +32,46 @@ void EchoServer::setAddress(int port, char *ip) {
 	inet_pton(AF_INET, ip, &(addr.sin_addr));
 }
 
+bool EchoServer::readRequest(int socket, int length, string& request) {
+	char buffer[length];
+	int received = 0;
+
+	while (received != length) {
+		int read = recv(socket, buffer + received, length - received, 0);
+
+		if (read <= 0) {
+			std::cerr << "Failed to receive request" << endl;
+			return false;
+		}
+
+		received += read;
+	}
+
+	buffer[received] = '\0';
+	request = buffer;
+	return true;
+}
+
+bool EchoServer::sendResponse(int socket, string message) {
+	const char* response = message.c_str();
+	int offset = 0;
+	int len = message.length();
+
+	while (offset != message.length()) {
+		int sent = send(socket, response + offset, len, 0);
+
+		if (sent <= 0) {
+			std::cerr << "Failed to send response" << endl;
+			return false;
+		}
+
+		len -= sent;
+		offset += sent;
+	}
+
+	return true;
+}
+
 void EchoServer::launch() {
 	int socket;
 	while (1) {
@@ -37,19 +81,33 @@ void EchoServer::launch() {
 			exit(EXIT_FAILURE);
 		}
 
-		int bytesRead;
 		while (1) {
-			char buffer[1024];
-			bytesRead = recv(socket, buffer, 1024, 0);
-			if (bytesRead <= 0) {
+			std::vector <uint8_t> request_length(1);
+
+			int read_length = recv(socket, request_length.data(), 1, 0);
+
+			if (read_length != 1) {
+				std::cerr << "Failed to receive length of the request" << endl;
 				break;
 			}
-			buffer[bytesRead] = '\0';
-			string str = buffer;
-			cout << "Client's request: " << str << endl;
-			send(socket, buffer, bytesRead, 0);
+
+			int length = request_length[0];
+
+			string request;
+			if (!readRequest(socket, length, request)) {
+				break;
+			}
+
+			cout << "Client's request: " << request << endl;
+			
+			if (!sendResponse(socket, request)) {
+				break;
+			}
 		}
 
-		close(socket);
+		if (close(socket) < 0) {
+			perror("Closing the socket failed");
+			exit(EXIT_FAILURE);
+		}
 	}
 }

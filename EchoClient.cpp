@@ -1,4 +1,5 @@
 #include "EchoClient.h"
+#include <vector>
 
 EchoClient::EchoClient(int port, char *ip) {
 	openSocket();
@@ -7,7 +8,10 @@ EchoClient::EchoClient(int port, char *ip) {
 }
 
 EchoClient::~EchoClient() {
-	close(sock);
+	if (close(sock) < 0) {
+		perror("Closing the socket failed");
+		exit(EXIT_FAILURE);
+	}
 }
 
 
@@ -33,11 +37,50 @@ void EchoClient::setAddress(int port, char *ip) {
 }
 
 void EchoClient::sendRequest(string request) {
+	sendReq(request);
+	readResponse(request);
+}
+
+void EchoClient::sendReq(string message) {
+	uint8_t len = (uint8_t) message.length();
+	const char* request = message.c_str();
+	int offset = 0;
+
+	std::vector <uint8_t> length = { len };
+	if (send(sock, length.data(), 1, 0) != 1) {
+		std::cerr << "Failed to send length of a message" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	while (offset != message.length()) {
+		int sent = send(sock, request + offset, len, 0);
+
+		if (sent <= 0) {
+			std::cerr << "Failed to send request" << endl;
+			exit(EXIT_FAILURE);
+		}
+		
+		len -= sent;
+		offset += sent;
+	}
+}
+
+void EchoClient::readResponse(string message) {
 	char buffer[1024];
-	send(sock, request.c_str(), request.length(), 0);
-	int bytesRead = recv(sock, buffer, 1024, 0);
-	buffer[bytesRead] = '\0';
-	string str = buffer;
+	int received = 0;
+
+	while (received != message.length()) {
+		int read = recv(sock, buffer + received, message.length() - received, 0);
+
+		if (read <= 0) {
+			std::cerr << "Failed to receive response" << endl;
+			exit(EXIT_FAILURE);
+		}
+		
+		received += read;
+	}
+
+	buffer[received] = '\0';
 	cout << "Server response: " << buffer << endl;
 }
 

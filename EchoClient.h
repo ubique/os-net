@@ -28,4 +28,6 @@ class EchoClient {
 	private:
 		int sock;
 		struct sockaddr_in addr;
+		void sendReq(string);
+		void readResponse(string);
 };

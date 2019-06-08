@@ -24,5 +24,7 @@ class EchoServer {
 	private:
 		int listener;
 		struct sockaddr_in addr;
+		bool sendResponse(int, string);
+		bool readRequest(int, int, string&);
 	
 };
