@@ -50,7 +50,7 @@ void server::start() {
             break;
         }
 
-        int ret, len;
+        int len;
         len = read(data_socket, buffer, BUFFER_SIZE);
         if (len == -1) {
             error("Server: unable to receive data");
@@ -60,11 +60,15 @@ void server::start() {
         std::string message(buffer, buffer + len);
         std::cout << "Server received:\n" << message << std::endl;
 
-        ret = write(data_socket, buffer, len);
-        if (ret == -1) {
-            error("Server: unable to send data");
+        size_t ptr = 0;
+        while (ptr < message.size()) {
+            len = write(data_socket, message.c_str() + ptr, message.size() - ptr);
+            if (len == -1) {
+                error("Server: unable to send data");
+            }
+            std::cout << "Server sent:\n" << message.substr(ptr, len) << "\n" << std::endl;
+            ptr += len;
         }
-        std::cout << "Server sent:\n" << message << "\n" << std::endl;
 
         if (!strncmp(buffer, "SHUTDOWN", 8)) {
             down_flag = true;

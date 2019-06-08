@@ -15,14 +15,14 @@ int main(int argc, char* argv[]) {
     try {
         client client(argv[1]);
         std::cout << "This is echo client. Send something to the server and it will return back.\n"
-                     "Send \"SHUTDOWN\" to shutdown server. Type \"exit\" to exit." << std::endl;
+                     "Send \"SHUTDOWN\" to shutdown server. Type \"exit\" or \"EXIT\" to exit.\n" << std::endl;
         std::string message;
         while (true) {
             std::cin >> message;
-            if (message == "exit") {
+            if (message == "exit" || message == "EXIT") {
                 break;
             }
-            std::string ret = client.send(message);
+            std::string ret = client.sendAndReceive(message);
 
             if (message != ret) {
                 std::cout << "Oh, sh#t!" << std::endl;

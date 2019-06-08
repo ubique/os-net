@@ -13,15 +13,12 @@ class client {
 public:
     client() = default;
     client(char* socket_name);
-    ~client();
+    ~client() = default;
 
-    std::string send(const std::string& message);
+    std::string sendAndReceive(const std::string &message);
 
 private:
     struct sockaddr_un address;
-    int data_socket = -1;
-    std::string sock_name;
-
     static const size_t BUFFER_SIZE;
 };
 
