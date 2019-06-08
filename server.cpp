@@ -60,17 +60,22 @@ public:
 
             while(true) {
                 std::vector<char> ans(static_cast<unsigned long>(BUFFER_SIZE));
-                ssize_t sz = recv(connection, ans.data(), (size_t) BUFFER_SIZE, 0);
-                if (sz == -1) {
-                    std::cerr << "Cannot read" << std::endl;
-                    continue;
-                } else if (sz == 0) {
-                    std::cout << "Client disconnected" << std::endl;
-                    break;
-                } else {
-                    while (send(connection, ans.data(), static_cast<size_t>(sz), 0) != sz) {
+                size_t readen_size = 0;
+                while (readen_size == 0 || ans[readen_size - 1] != '\0') {
+                    ssize_t sz = recv(connection, ans.data() + readen_size, (size_t) BUFFER_SIZE, 0);
+                    if (sz == -1) {
+                        throw server_exception("Cannot read");
+                    }
+                    readen_size += sz;
+                }
+                ans.resize(readen_size);
+                size_t written_size = 0;
+                while (written_size != ans.size()) {
+                    ssize_t cur = send(connection, ans.data() + written_size, ans.size() - written_size, 0);
+                    if (cur == -1) {
                         std::cerr << "Cannot send the answer\n" << "Retrying" << std::endl;
                     }
+                    written_size += cur;
                 }
             }
         }

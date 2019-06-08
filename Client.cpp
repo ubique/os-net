@@ -36,16 +36,25 @@ public:
     }
 
     std::string request(const std::string &text) {
-        if (send(socket_fd, text.c_str(),  text.length(), 0) == -1) {
-            throw client_exception("Cannot send request");
+        size_t writen_size = 0;
+        while (writen_size != text.length() + 1) {
+            ssize_t cur = send(socket_fd, text.c_str() + writen_size, text.length() + 1 - writen_size, 0);
+            if (cur == -1) {
+                throw client_exception("Cannot send request");
+            }
+            writen_size += cur;
         }
 
         std::vector<char> ans((unsigned long) BUFFER_SIZE);
-        ssize_t sz = recv(socket_fd, ans.data(), (size_t) BUFFER_SIZE, 0);
-        if (sz == -1) {
-            throw client_exception("Cannot read from socket");
+        size_t readen_size = 0;
+        while (readen_size == 0 || ans[readen_size - 1] != '\0') {
+            ssize_t sz = recv(socket_fd, ans.data() + readen_size, (size_t) BUFFER_SIZE, 0);
+            if (sz == -1) {
+                throw client_exception("Cannot read from socket");
+            }
+            readen_size += sz;
         }
-        ans.resize(static_cast<unsigned long>(sz));
+        ans.resize(static_cast<unsigned long>(readen_size));
 
         return std::string(ans.data());
     }
