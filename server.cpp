@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sys/socket.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <strings.h>
@@ -44,35 +43,55 @@ int main(int argc, char** argv)
         static sockaddr_in client_addr{};
         static unsigned int client_len;
         static int clientSockd;
-        static int msglen;
+        static int n;
         char buffer[1024];
         bzero(buffer, 1024);
-        std::cout << "Server is running..\n";
+        std::cout << "Server is running.." << std::endl;
+
         if ((clientSockd = accept(sockd, (sockaddr*) &client_addr, &client_len)) == -1)
         {
             perror("accept");
             continue;
         }
 
-        if ((msglen = recv(clientSockd, &buffer, sizeof(buffer), 0)) == -1)
-        {
-            perror("recv");
-            continue;
-        }
+        n = recv(clientSockd, &buffer, sizeof(buffer), 0);
 
-        if (strncmp(buffer, "exit", msglen) == 0)
+        while (n)
         {
-            if ((send(clientSockd, "Server has stopped.\n", 21, 0)) == -1)
+            if (n == -1)
             {
-                perror("send");
+                perror("recv");
+                exit(EXIT_FAILURE);
             }
-            close(clientSockd);
-            std::cout << "Shutdown server.\n";
-            return 0;
-        }
-        if ((send(clientSockd, &buffer, msglen, 0)) == -1)
-        {
-            perror("send");
+            size_t sent = 0;
+            while (sent != n)
+            {
+
+                int num = send(clientSockd, buffer +  sent, n - sent, 0);
+                if (num == -1)
+                {
+                    perror("send");
+
+                    exit(EXIT_FAILURE);
+                }
+                if (!num)
+                {
+                    break;
+                }
+                sent += num;
+            }
+            if (!strcmp(buffer, "exit"))
+            {
+                if (close(clientSockd) == -1)
+                {
+                    perror("close");
+                    exit(EXIT_FAILURE);
+                }
+                std::cout << "Shutdown server.\n";
+                return 0;
+            }
+            bzero(buffer, 1024);
+            n = recv(clientSockd, &buffer, sizeof(buffer), 0);
         }
     }
 }
