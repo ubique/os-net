@@ -91,8 +91,18 @@ string get_message(int socket_fd, char *buffer) {
 }
 
 void send_message(int socket_fd, const string &message) {
-    if (write(socket_fd, message.c_str(), message.size()) == -1) {
-        throw std::runtime_error(get_error_message("Could not write to socket"));
+    size_t length = message.size();
+    const char* ptr = message.c_str();
+
+    while (length > 0) {
+        ssize_t written = write(socket_fd, ptr, length);
+
+        if (written == -1) {
+            throw std::runtime_error(get_error_message("Could not write to socket"));
+        }
+
+        length -= written;
+        ptr += written;
     }
 }
 
@@ -147,7 +157,7 @@ int main(int argc, char* argv[]) {
 
         cout << get_message(socket_fd, buffer);
 
-        cout << "Input password:" << endl;;
+        cout << "Input password:" << endl;
         memset(buffer, 0, BUFFER_SIZE);
         cin.getline(buffer, 256);
         send_message(socket_fd, "pass " + string(buffer) + "\r\n");

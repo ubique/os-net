@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <cstring>
+#include <sstream>
 
 using std::cerr;
 using std::endl;
@@ -19,7 +20,7 @@ std::string get_error_message(const std::string &comment) {
     return comment + ": " + strerror(errno);
 }
 
-POP_server::POP_server(std::string address, std::string port) : state(State::WAIT), socket_fd(), current_user(), mail_db() {
+POP_server::POP_server(const std::string& address, const std::string& port) : state(State::WAIT), socket_fd(), current_user(), mail_db(), buffer() {
     char* working_dir = get_current_dir_name();
     if (working_dir == nullptr) {
         throw std::runtime_error(get_error_message("Could not get name of current directory"));
@@ -55,8 +56,6 @@ POP_server::POP_server(std::string address, std::string port) : state(State::WAI
 }
 
 [[noreturn]] void POP_server::run(){
-    char buffer[BUFFER_SIZE];
-
     for(;;) {
         sockaddr_in client{};
         socklen_t sz = sizeof(sockaddr_in);
@@ -72,17 +71,7 @@ POP_server::POP_server(std::string address, std::string port) : state(State::WAI
         write(client_socket, greeting.c_str(), greeting.size());
 
         while (state != State::WAIT && state != State::UPDATE) {
-            memset(buffer, 0, BUFFER_SIZE);
-            ssize_t bytes_read = read(client_socket, buffer, BUFFER_SIZE);
-            if (bytes_read == -1) {
-                cerr << get_error_message("Could not read data from client") << endl;
-                state = State::WAIT;
-                break;
-            } else if (bytes_read == BUFFER_SIZE) {
-                send_ERR("Command is too long");
-                state = State::WAIT;
-            }
-            process_command(buffer);
+            process_command();
         }
 
         if (state == State::UPDATE) {
@@ -98,7 +87,13 @@ POP_server::POP_server(std::string address, std::string port) : state(State::WAI
     }
 }
 
-void POP_server::process_command(std::string command_line) {
+void POP_server::process_command() {
+    auto command_line = receive_command();
+
+    if (state == State::WAIT) {
+        return;
+    }
+
     auto pos = command_line.find(' ');
     auto command = command_line.substr(0, pos);
     auto argument = (pos == std::string::npos) ? "" : command_line.substr(pos + 1);
@@ -162,7 +157,7 @@ void POP_server::process_command(std::string command_line) {
                 } catch (std::logic_error& error) {
                     send_ERR(argument + " is not a valid email number");
                 }
-            };
+            }
         } else if (command == "retr") {
             try {
                 size_t n = std::stoul(argument);
@@ -227,4 +222,23 @@ void POP_server::send_all(const char *data, size_t size) {
         size -= written;
         ptr += written;
     } while (size > 0);
+}
+
+std::string POP_server::receive_command() {
+    std::stringstream stream;
+    ssize_t last = 0;
+
+    do {
+        memset(buffer, 0, BUFFER_SIZE);
+        last = read(client_socket, buffer, BUFFER_SIZE);
+        if (last == -1) {
+            cerr << get_error_message("Could not read from socket") << endl;
+            state = State ::WAIT;
+            break;
+        }
+
+        stream.write(buffer, last);
+    } while (buffer[last - 1] != '\n');
+
+    return stream.str();
 }
