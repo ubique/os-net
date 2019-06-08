@@ -10,6 +10,8 @@
 #include <netinet/in.h>
 #include <cstring>
 
+const int BUFFER_SIZE = 1024;
+
 int connect(int port) {
     int openedSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (openedSocket < 0) {
@@ -35,20 +37,58 @@ int connect(int port) {
     return openedSocket;
 }
 
+void closeSocket(int socket) {
+	if (close(socket) == -1) {
+		std::cerr << "Error while closing socket" << strerror(errno) << std::endl;
+        exit(EXIT_FAILURE);
+	}
+}
+
 int main(int argc, char **argv) {
     if (argc != 3) {
         std::cerr << "You are expected to enter 2 arguments: <port> <message>" << std::endl;
         exit(EXIT_FAILURE);
     }
     int connectedSocket = connect(atoi(argv[1]));
-    std::string requestMessage = argv[2];
-    send(connectedSocket, requestMessage.data(), requestMessage.length(), 0);
-    char replyBuffer[1024];
-    ssize_t status = recv(connectedSocket, &replyBuffer, sizeof(replyBuffer), 0);
-    if (status == -1) {
-        std::cerr << "Error while reading receiving message from socket" << std::endl;
-        exit(EXIT_FAILURE);
+    const char* requestMessage = argv[2];
+	
+    char replyBuffer[BUFFER_SIZE];
+	ssize_t dataSent = 0;
+    size_t requestMessageSize = strlen(requestMessage);
+    ssize_t leftDataToSend = requestMessageSize;
+
+    while (dataSent < requestMessageSize) {
+        ssize_t curSent = send(connectedSocket, requestMessage + dataSent, leftDataToSend, 0);
+        if (curSent < 0) {
+            std::cerr << "Error while sending message" << strerror(errno) << std::endl;
+			closeSocket(connectedSocket);
+			exit(EXIT_FAILURE);
+        } else if (curSent == 0) {
+            break;
+        } else {
+            dataSent += curSent;
+            leftDataToSend -= curSent;
+        }
     }
-    std::cout << "Reply: \n" << replyBuffer << std::endl;
-    close(connectedSocket);
+	
+    std::cout << "Reply:" << std::endl;
+	ssize_t receivedData = 0;
+    while (receivedData < requestMessageSize) {
+        ssize_t curReceived = read(connectedSocket, replyBuffer, BUFFER_SIZE);
+
+        if (curReceived < 0) {
+            std::cerr << "Error while reading receiving message from socket" << strerror(errno) << std::endl;
+			closeSocket(connectedSocket);
+			exit(EXIT_FAILURE);
+        } else if (curReceived == 0) {
+            break;
+        } else {
+            for (int i = 0; i < curReceived; ++i) {
+                std::cout << replyBuffer[i];
+            }
+            receivedData += curReceived;
+            std::cout << std::endl;
+        }
+    }
+	closeSocket(connectedSocket);
 }
