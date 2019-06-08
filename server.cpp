@@ -56,19 +56,32 @@ int main(int argc, char *argv[])
             continue;
         }
         char buf[101];
-        int sz = recv(new_fd, buf, 100, 0);
-        if (sz < 0) {
+        int recv_cnt = 0;
+        int cnt;
+        while ((cnt = recv(new_fd, buf + recv_cnt, 100 - recv_cnt, 0)) > 0) {
+            recv_cnt += cnt;
+            if (buf[recv_cnt - 1] == '\n')
+                break;
+        }
+        if (cnt < 0) {
             perror("Receiving failed");
             close_socket(new_fd);
             continue;
         }
-        buf[sz] = '\0';
+        buf[recv_cnt - 1] = '\0';
         string message;
         if (strcmp(buf, "close") != 0)
-            message = "Hello, " + string(buf) + "!";
+            message = "Hello, " + string(buf) + "!\n";
         else
-            message = "Bye!";
-        if (send(new_fd, message.data(), message.size(), 0) < 0) {
+            message = "Bye!\n";
+
+        int send_cnt = 0;
+        cnt = 1;
+        while (send_cnt != message.size() && cnt > 0) {
+            cnt = send(new_fd, message.data() + send_cnt, message.size() - send_cnt, 0);
+            send_cnt += cnt;
+        }
+        if (cnt < 0) {
             perror("Sending failed");
             close_socket(new_fd);
             continue;
