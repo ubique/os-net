@@ -2,30 +2,33 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define BUF_SIZE 32
+#define BUF_SIZE (1024)
 
 #define FATAL_ERROR(msg) {perror(msg);exit(EXIT_FAILURE);}
 
 /** Send msg to server and recieve answer. */
 void client_send_msg(const int fd, const char* msg) {
     unsigned int msg_len = strlen(msg);
-    int received = 0;
     char buf[BUF_SIZE];
+    int received = 0;
+    int sent = 0;
+    int tmp;
 
-    if (send(fd, msg, msg_len, 0) != msg_len) FATAL_ERROR("Number of sent bytes not equals to <TEXT> length.")
+    while (sent < msg_len) {
+        if ((tmp = send(fd, msg + sent, msg_len - sent, 0)) < 0) FATAL_ERROR("Failed to send bytes to server.")
+        sent += tmp;
+    }
 
     fprintf(stdout, "Received: ");
     while (received < msg_len) {
-        int bytes = 0;
-        if ((bytes = recv(fd, buf, BUF_SIZE - 1, 0)) < 1) FATAL_ERROR("Failed to receive bytes from server.")
-        received += bytes;
-        buf[bytes] = '\0';
+        if ((tmp = recv(fd, buf, BUF_SIZE - 1, 0)) < 1) FATAL_ERROR("Failed to receive bytes from server.")
+        received += tmp;
+        buf[tmp] = '\0';
         fprintf(stdout, "%s", buf);
     }
     fprintf(stdout, "\n");
@@ -51,7 +54,8 @@ int client_connect(const char* ip, const char* port) {
             break;
     }
 
-    if (connect(sfd, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) FATAL_ERROR("Failed to connect with server.")
+    if (connect(sfd, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) FATAL_ERROR(
+            "Failed to connect with server.")
 
     return sfd;
 }

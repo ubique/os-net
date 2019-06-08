@@ -2,25 +2,31 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define MAX_CONNECTIONS_QUEUE_LENGTH 10
-#define BUF_SIZE 32
+#define MAX_CONNECTIONS_QUEUE_LENGTH (100)
+#define BUF_SIZE (1024)
 
 #define FATAL_ERROR(msg) {perror(msg);exit(EXIT_FAILURE);}
+#define SOFT_ERROR(msg) {perror(msg);return;}
 
 /** Work with client. */
 void server_client_serve(int fd) {
     char buf[BUF_SIZE];
-    int received;
-    if ((received = recv(fd, buf, BUF_SIZE, 0)) < 0) FATAL_ERROR("Failed to receive initial bytes from client.")
-    while (received > 0) {
-        if (send(fd, buf, received, 0) != received) FATAL_ERROR("Failed to send bytes to client.")
-        if ((received = recv(fd, buf, BUF_SIZE, 0)) < 0) FATAL_ERROR("Failed to receive additional bytes from client.")
+    int received = 1;
+    int sent;
+    int tmp;
+
+    while (0 < received) {
+        if ((received = recv(fd, buf, BUF_SIZE, 0)) < 0) SOFT_ERROR("Failed to receive bytes from client.")
+        sent = 0;
+        while (sent < received) {
+            if ((tmp = send(fd, buf + sent, received - sent, 0)) < 0) SOFT_ERROR("Failed to send bytes to client.")
+            sent += tmp;
+        }
     }
 }
 
@@ -30,7 +36,8 @@ void server_loop(const int sfd) {
         int cfd;
         struct sockaddr_in client_addr;
         socklen_t client_addr_len = sizeof(client_addr);
-        if ((cfd = accept(sfd, (struct sockaddr*) &client_addr, &client_addr_len)) < 0) FATAL_ERROR("Failed to accept client connection.")
+        if ((cfd = accept(sfd, (struct sockaddr*) &client_addr, &client_addr_len)) < 0) FATAL_ERROR(
+                "Failed to accept client connection.")
         fprintf(stdout, "Client connected:%s:%hu\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
         server_client_serve(cfd);
         fprintf(stdout, "Client disconnected:%s:%hu\n\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
