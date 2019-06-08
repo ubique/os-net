@@ -97,8 +97,8 @@ std::pair<ssize_t, std::unique_ptr<char[]>> Socket::read() {
     std::unique_ptr<char[]> buffer(new char[BUFFER_SIZE + 1]);
     memset(buffer.get(), 1, sizeof(char) * (BUFFER_SIZE));
     ssize_t read_size = 0;
-    while (read_size != BUFFER_SIZE) {
-        ssize_t bytes_read = ::read(data_socket, buffer.get(), BUFFER_SIZE);
+    while (read_size < BUFFER_SIZE) {
+        ssize_t bytes_read = ::read(data_socket, buffer.get() + read_size, BUFFER_SIZE - read_size);
         checker(bytes_read, "Error while reading");
         read_size += bytes_read;
         if (buffer[read_size - 1] == '\0') {
@@ -113,7 +113,8 @@ void Socket::write(const std::string &data) {
     Printer::print(std::cout, "Socket::write", Symb::End);
     ssize_t written = 0;
     while ((size_t) written != std::min(BUFFER_SIZE, data.length() + 1)) {
-        ssize_t ret_write = ::write(data_socket, data.data(), std::min(BUFFER_SIZE, data.length() + 1));
+        ssize_t ret_write = ::write(data_socket, data.data() + written,
+                                    std::min(BUFFER_SIZE, data.length() + 1) - written);
         checker(ret_write, "Unable to write");
         written += ret_write;
     }
