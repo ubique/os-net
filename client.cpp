@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sys/socket.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <cstring>
@@ -11,7 +10,7 @@ int main(int argc, char** argv)
 {
     if (argc != 4)
     {
-        std::cout << "Wrong arguments: <host> <port> <message> expected\n";
+        std::cout << "Wrong arguments: <host> <port> <message> expected" << std::endl;
         return 0;
     }
 
@@ -28,21 +27,50 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
-    if (send(sockd, argv[3], strlen(argv[3]), 0) == -1)
+    size_t sent = 0;
+    while (sent != strlen(argv[3]))
     {
-        perror("send");
-        exit(EXIT_FAILURE);
+        int n = send(sockd, argv[3] +  sent, strlen(argv[3]) - sent, 0);
+        if (n == -1)
+        {
+            perror("send");
+            exit(EXIT_FAILURE);
+        }
+        if (!n)
+        {
+            break;
+        }
+        sent += n;
     }
 
     char buffer[1024];
-    bzero(buffer, 1024);
 
-    if ((recv(sockd, &buffer, sizeof(buffer), 0)) == -1)
+    size_t received = 0;
+    std::cout << "answer from the server: ";
+    while (received != strlen(argv[3]))
     {
-        perror("recv");
+        bzero(buffer, sizeof(buffer));
+        int n = recv(sockd, &buffer, sizeof(buffer), 0);
+        if (n == -1)
+        {
+            perror("recv");
+            exit(EXIT_FAILURE);
+        }
+        if (!n)
+        {
+            break;
+        }
+        received += n;
+        for (size_t i = 0; i < n; ++i)
+        {
+            std::cout << buffer[i];
+        }
+    }
+    std::cout << std::endl;
+    if (close(sockd) == -1)
+    {
+        perror("close");
         exit(EXIT_FAILURE);
     }
-    std::cout << "answer from the server: " << buffer << std::endl;
-    close(sockd);
     return 0;
 }
