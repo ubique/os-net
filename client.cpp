@@ -29,6 +29,18 @@ int main(int argc, char **argv) {
 
     char buf[bufferLen];
     bzero(buf, bufferLen);
+
+    auto buffSize = getSize(sockfd);
+    if (buffSize == nullptr) {
+        perror("size recv");
+        exit(EXIT_FAILURE);
+    }
+
+    if(recvAll(sockfd, buf, sizeof(buffSize))) {
+        perror("msg recv");
+        exit(EXIT_FAILURE);
+    }
+
     if ((recv(sockfd, &buf, bufferLen, MSG_WAITALL)) == -1) {
         perror("recv");
         exit(EXIT_FAILURE);
