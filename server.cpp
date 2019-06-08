@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     }
 
     struct sockaddr_in client{};
-    socklen_t addrlen;
+    socklen_t addrlen = sizeof(client);
 
     bool working = true;
     while (working) {
@@ -72,17 +72,29 @@ int main(int argc, char *argv[]) {
 
         while (working) {
             bzero(buffer + hello.size(), BUFFER_SIZE);
-            ssize_t len = recv(client_fd, buffer + hello.size(), BUFFER_SIZE, 0);
-            if (len == -1) {
-                perror("Can't receive a message");
-                continue;
+
+            ssize_t len;
+            char last_received = 'a';
+
+            while (last_received != 3) {
+                len = recv(client_fd, buffer + hello.size(), BUFFER_SIZE, 0);
+                if (len == -1) {
+                    perror("Can't receive a message");
+                    continue;
+                }
+
+                if (len == 0) {
+                    break;
+                }
+                
+                last_received = buffer[hello.size() + len - 1];
             }
 
-            if (len == 0) {
+            if(len == 0){
                 continue;
             }
-
-            std::string message(buffer + hello.size(), buffer + hello.size() + len);
+            
+            std::string message(buffer + hello.size(), buffer + hello.size() + len - 1);
             std::cout << message << '\n';
             if (message == "stop") {
                 working = false;
@@ -99,6 +111,6 @@ int main(int argc, char *argv[]) {
             }
         }
     }
-    
+
     close(fd);
 }

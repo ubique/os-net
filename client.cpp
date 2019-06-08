@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::cout << "Enter your name and mister Server will say hello to you!\n";
-	std::cout << "Enter stop if you want to stop!\n";
+    std::cout << "Enter stop if you want to stop!\n";
 
     if (connect(fd, (sockaddr *) (&server), sizeof(server)) == -1) {
         perror("Can't connect.");
@@ -55,6 +55,8 @@ int main(int argc, char *argv[]) {
             working = false;
         }
 
+        message += 3;
+
         size_t sended = 0;
         while (sended < message.size()) {
             ssize_t curr_portion = send(fd, message.data(), message.length(), 0);
@@ -65,11 +67,23 @@ int main(int argc, char *argv[]) {
             sended += curr_portion;
         }
 
-        ssize_t len = recv(fd, buffer, BUFFER_SIZE, 0);
-        if (len == -1) {
-            perror("Can't read response./");
-            continue;
+        size_t received = 0;
+        char last_received = 'a';
+
+        while (last_received != 3) {
+            ssize_t len = recv(fd, buffer, BUFFER_SIZE, 0);
+            if (len == -1) {
+                perror("Can't read response./");
+                continue;
+            }
+            if (len == 0) {
+                break;
+            }
+            received += len;
+            last_received = buffer[len - 1];
         }
+
+        buffer[received - 1] = 0;
 
         std::cout << buffer << '\n';
     }
