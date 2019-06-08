@@ -57,9 +57,7 @@ int main(int argc, char **argv) {
             exit(EXIT_FAILURE);
         }
         char buffer[BUFFER_SIZE];
-
         while (ssize_t dataReceived = recv(connectionSocket, buffer, BUFFER_SIZE, 0)) {
-
             if (dataReceived < 0) {
                 std::cerr << "Error while receiving message" << strerror(errno) << std::endl;
                 closeSocket(connectionSocket);
