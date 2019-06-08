@@ -30,35 +30,42 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    char buf[bufferLen];
+    char buff[bufferLen];
     struct sockaddr_in addr;
     int clientSockd;
-    size_t msglen;
+    size_t msglen = 0;
     socklen_t addrlen;
     while (true) {
-        bzero(buf, bufferLen);
+        bzero(buff, bufferLen);
+
         if ((clientSockd = accept(sockfd, (sockaddr *) &addr, &addrlen)) == -1) {
             perror("accept");
             continue;
         }
 
-        if ((msglen = recv(clientSockd, &buf, bufferLen, MSG_WAITALL)) == -1) {
-            perror("recv");
+        auto buffSize = getSize(clientSockd);
+        if (buffSize == nullptr) {
+            perror("size recv");
             continue;
         }
 
-        if (strncmp(buf, "exit", msglen) == 0) {
+        if(recvAll(clientSockd, buff, sizeof(buffSize))) {
+            perror("msg recv");
+            continue;
+        }
+
+        if (strncmp(buff, "exit", msglen) == 0) {
             if (sendMsg(clientSockd, EXIT, strlen(EXIT)))
                 perror("exit send");
             cout << "End of work" << endl;
             return closeSocket(clientSockd);
         }
 
-        if (sendMsg(clientSockd, buf, strlen(buf))) {
+        if (sendMsg(clientSockd, buff, strlen(buff))) {
             perror("send");
             continue;
         }
 
-        cout << buf << endl;
+        cout << buff << endl;
     }
 }
