@@ -33,6 +33,32 @@ void setSocketOptions(int &socket) {
     }
 }
 
+bool recvAll (int socket, char* data, size_t size) {
+    size_t total = 0;
+    size_t bytes = 0;
+    while (bytes < size) {
+        bytes = recv(socket, data + total, size - total, MSG_WAITALL);
+        if (bytes == -1)
+            return true;
+        total += bytes;
+    }
+    return false;
+}
+
+int* getSize (int socket) {
+    size_t total = 0;
+    size_t bytes = 0;
+    int *data = nullptr;
+    size_t size = sizeof(data);
+    while (bytes < size) {
+        bytes = recv(socket, data + total, size - total, MSG_WAITALL);
+        if (bytes == -1)
+            return nullptr;
+        total += bytes;
+    }
+    return data;
+}
+
 bool sendMsg(int socket, const char* data, size_t size){
     size_t total  = 0;
     size_t bytes = 0;
