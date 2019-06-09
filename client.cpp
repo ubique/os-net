@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <stdexcept>
+#include "utils.h"
 
 client::client(uint32_t address, in_port_t port) : address(address), port(port), sock(-1) {}
 
@@ -34,18 +35,7 @@ void client::echo(std::string &str) {
     if (sock == -1) {
         connect_to_server();
     }
-
-    const char *message = str.c_str();
-    size_t str_len = sizeof(message);
-
-    if (send(sock, message, str_len, 0) != str_len) {
-        throw std::runtime_error("Sending error");
-    }
-
-    char buf[BUFFER_SIZE];
-    if (recv(sock, buf, BUFFER_SIZE, 0) == -1) {
-        throw std::runtime_error("Reading error");
-    }
-
-    printf("%s\n", buf);
+    socket_send(sock, str, true);
+    auto read = socket_read(sock, true);
+    printf("%s\n", read.first.c_str());
 }

@@ -7,17 +7,18 @@
 class server {
 public:
     server(in_port_t port);
+
     ~server();
 
-    server(const server& other) = delete;
-    server& operator=(const server& other) = delete;
+    server(const server &other) = delete;
+
+    server &operator=(const server &other) = delete;
 
     void start();
+
 private:
     const in_port_t port;
     int sock;
-
-    static const size_t BUFFER_SIZE = 1 << 16;
 };
 
 

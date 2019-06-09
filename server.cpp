@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <stdexcept>
+#include "utils.h"
 
 server::server(in_port_t port) : port(port), sock(-1) {}
 
@@ -39,18 +40,17 @@ void server::start() {
             continue;
         }
 
-        char buf[BUFFER_SIZE];
         while (true) {
-            int bytes_read = recv(temp_sock, buf, BUFFER_SIZE, 0);
-            if (bytes_read <= 0) {
+            auto read = socket_read(temp_sock);
+            if (read.second == -1) {
                 perror("Reading error");
                 close(temp_sock);
                 break;
             }
-
-            if (send(temp_sock, buf, bytes_read, 0) != bytes_read) {
-                perror("Sending error");
+            if (read.second == 0) {
+                break;
             }
+            socket_send(temp_sock, read.first);
         }
 
         close(temp_sock);
