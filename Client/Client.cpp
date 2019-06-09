@@ -70,19 +70,34 @@ void Client::createConnection() {
 }
 
 void Client::sendInfo() {
-    int sendResult = send(mClientSocket, message.c_str(), message.length() + 1, 0);
-    if (sendResult == -1) {
-        perror("Send message error");
-        exit(EXIT_FAILURE);
+    size_t sentPart = 0;
+    while (sentPart < std::min<size_t>(MESSAGE_BUFFER_SIZE, message.length() + 1)) {
+        size_t sendResult = send(mClientSocket, message.c_str(), message.length() + 1, 0);
+        sentPart += sendResult;
+
+        if (sendResult == -1) {
+            perror("Send message error");
+            exit(EXIT_FAILURE);
+        }
     }
 
+
+    size_t receivedPart = 0;
     response = new char[MESSAGE_BUFFER_SIZE];
     memset(response, 0, MESSAGE_BUFFER_SIZE);
 
-    int receiveResult = recv(mClientSocket, response, MESSAGE_BUFFER_SIZE, 0);
-    if (receiveResult == -1) {
-        perror("Receiving response error");
-        exit(EXIT_FAILURE);
+    while (receivedPart < MESSAGE_BUFFER_SIZE) {
+        int receiveResult = recv(mClientSocket, response, MESSAGE_BUFFER_SIZE, 0);
+        receivedPart += receiveResult;
+
+        if (receiveResult == -1) {
+            perror("Receiving response error");
+            exit(EXIT_FAILURE);
+        }
+
+        if (response[receivedPart - 1] == '\0') {
+            break;
+        }
     }
 }
 

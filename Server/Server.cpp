@@ -97,20 +97,34 @@ void Server::run() {
         char message[MESSAGE_BUFFER_SIZE];
         memset(message, 0, MESSAGE_BUFFER_SIZE);
 
-        int receiveResult = recv(receivedSocket, message, MESSAGE_BUFFER_SIZE, 0);
-        if (receiveResult == -1) {
-            perror("Receive message error");
-            continue;
+        size_t receivedPart = 0;
+        while (receivedPart < MESSAGE_BUFFER_SIZE) {
+            int receiveResult = recv(receivedSocket, message, MESSAGE_BUFFER_SIZE, 0);
+            receivedPart += receiveResult;
+
+            if (receiveResult == -1) {
+                perror("Receive message error");
+                continue;
+            }
+
+            if (message[receiveResult - 1] == '\0') {
+                break;
+            }
         }
 
         std::cout << "Client sent to server: " << message << std::endl;
 
         std::string response = processGivenCommand(message);
 
-        int sendResult = send(receivedSocket, response.c_str(), response.length() + 1, 0);
-        if (sendResult == -1) {
-            perror("Send response error");
-            continue;
+        size_t sentPart = 0;
+        while (sentPart < std::min<size_t>(MESSAGE_BUFFER_SIZE, response.length() + 1)) {
+            int sendResult = send(receivedSocket, response.c_str(), response.length() + 1, 0);
+            sentPart += sendResult;
+
+            if (sendResult == -1) {
+                perror("Send response error");
+                continue;
+            }
         }
 
         shutdown(receivedSocket, SHUT_RDWR);
