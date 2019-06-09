@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 
         size_t sended = 0;
         while (sended < message.size()) {
-            ssize_t curr_portion = send(fd, message.data(), message.length(), 0);
+            ssize_t curr_portion = send(fd, message.data() + sended, message.length() - sended, 0);
             if (curr_portion == -1) {
                 perror("Can't send message.");
                 continue;

@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 
             int written = 0;
             while (written < len + hello.size()) {
-                int currWrtitten = write(client_fd, buffer, len + hello.size());
+                int currWrtitten = write(client_fd, buffer + written, len + hello.size() - written);
                 if (currWrtitten == -1) {
                     perror("Can't send message.");
                     continue;
