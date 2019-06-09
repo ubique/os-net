@@ -107,7 +107,7 @@ void server::run() {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc == 2 && argv[1] != nullptr && argv[1] == "-help") {
+    if (argc == 2 && argv[1] != nullptr && (strcmp(argv[1], "-help") == 0)) {
         std::cerr << HELP << std::endl;
         return 0;
     }
