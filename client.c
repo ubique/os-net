@@ -16,6 +16,9 @@ int main (int argc, char const *argv[]) {
 	struct sockaddr_in addr;
 	char message[MAX_BUFF_SIZE];
 	char buff[MAX_BUFF_SIZE];
+	int message_len;
+	int recv_len;
+	int buff_len;
 
 	if (argc != 3) {
 		fprintf(stderr, "usage: %s <ip_address> <port>\n", argv[0]);
@@ -29,24 +32,30 @@ int main (int argc, char const *argv[]) {
 	addr.sin_addr.s_addr = inet_addr(argv[1]);
 
 	if (connect(sock, (struct sockaddr*) &addr, sizeof(addr)) < 0) {
-		fprintf(stderr, "connect erro r\n");
+		fprintf(stderr, "connect error\n");
 		exit(1);
 	}
 
 	printf("enter a message:\n");
 	fgets(message, MAX_BUFF_SIZE, stdin);
-	send(sock, message, strlen(message), 0);
+	message_len = strlen(message);
+
+	if (send(sock, message, message_len, 0) < 0) {
+		fprintf(stderr, "send error\n");
+		exit(4);
+	}
 
 	bzero(buff, MAX_BUFF_SIZE);
+	buff_len = 0;
 
-	if ((recv(sock, &buff, sizeof(buff), 0)) < 0) {
-		fprintf(stderr, "recv\n");
-		exit(2);
+	while (message_len > buff_len) {
+		if ((recv_len = recv(sock, buff + buff_len, sizeof(buff) - buff_len, 0)) < 0) {
+			fprintf(stderr, "recv error\n");
+			exit(2);
+		}
+		buff_len += recv_len;
 	}
-
-	if (strncmp(buff, "exit", strlen(buff)) != 0) {
-		printf("server answered: %s\n", buff);
-	}
+	printf("server answered: %s\n", buff);
 
 	close(sock);
 }

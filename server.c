@@ -22,7 +22,7 @@ int main (int argc, char const*argv[]) {
 		exit(0);
 	}
 
-	sock = socket(AF_INET, SOCK_STREAM, 0);
+	sock = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
 	bzero(&server_addr, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(atoi(argv[2]));
@@ -52,26 +52,28 @@ int main (int argc, char const*argv[]) {
 
 		if ((client_sock = accept(sock, (struct sockaddr*) NULL, NULL)) < 0) {
 			fprintf(stderr, "accept error\n");
+			exit(3);
 		}
 
-		if ((message_len = recv(client_sock, &message, sizeof(message), 0)) < 0) {
-			fprintf(stderr, "recv error\n");
-		}
+		printf("\nclient is connected\n");
 
-		while (message_len > 0) {
-
-			if (strcmp(message, "exit\n") == 0) {
-				close(client_sock);
-				printf("Server stopped\n");
-				close(sock);
-				return 0;
+		while (1) {
+			if ((message_len = recv(client_sock, &message, sizeof(message), 0)) < 0) {
+				fprintf(stderr, "recv error\n");
+				exit(2);
 			}
-			if ((send_len = send(client_sock, message, sizeof(message), 0)) < 0) {
+
+			if (message_len == 0) {
+				break;
+			}
+
+			if ((send(client_sock, message, message_len, 0)) < 0) {
 				fprintf(stderr, "send error");
+				exit(4);
 			}
-			message_len -= send_len;
 		}
 
+		printf("client is disconnected\n");
 		close(client_sock);
 	}
 }
