@@ -1,6 +1,7 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include <strings.h>
+#include <cstring>
 #include <unistd.h>
 
 
@@ -49,7 +50,7 @@ int main(int argc, char** argv){
     int size = message.size();
 
     while(sent < size) {
-        int cur = send(fileDes, message.data() + sent, message.size() - sent, 0)
+        int cur = send(fileDes, message.data() + sent, message.size() - sent, 0);
         if (cur == -1){
             cerr << "Error while sending " + message + "\n";
             exit(EXIT_FAILURE);
@@ -69,7 +70,7 @@ int main(int argc, char** argv){
             exit(EXIT_FAILURE);
         }
         got += cur;
-        last = buffer(got - 1);
+        last = buffer[got - 1];
     }
 
     std::cout << "You sent: " << buffer << std::endl;
