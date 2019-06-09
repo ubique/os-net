@@ -14,10 +14,6 @@
 
 #include "Server.h"
 
-struct ClientSocketClosed: std::runtime_error {
-    ClientSocketClosed(std::string cause);
-};
-
 
 Server::Server(uint16_t port) : port(port),
         sfd(socket(AF_INET, SOCK_STREAM, 0 /* or IPPROTO_TCP*/)) {
@@ -108,9 +104,15 @@ void Server::closeFileDescriptor(int fd) {
 void Server::sendMessage(std::string const &msg, int fd) {
     std::cout << "[S] " << msg << std::endl;
 
-    if (send(fd, msg.data(), msg.length(), 0) == -1) {
-        perror("Client didn't get the message :'(");
-        clientDone = true;
+    int sent = 0;
+    int curSent = 0;
+    while (sent < msg.size()) {
+        if ((curSent = send(fd, msg.substr(sent).data(), msg.size() - sent, 0)) == -1) {
+            perror("Client didn't get the correct message :'(");
+            clientDone = true;
+            break;
+        }
+        sent += curSent;
     }
 }
 
@@ -120,25 +122,26 @@ void Server::sendGreeting(int fd) {
 }
 
 bool Server::readSingleLineRequest(int cfd) {
-    ssize_t read = recv(cfd, textBuffer, BUFFER_SIZE, 0);
-    if (read == -1) {
-        perror("Reading failed");
-        clientDone = true;
-        return false;
-    } else if (read == 0) {
-        // maybe eof?
-        clientDone = true;
-        return  false;
+    ssize_t received = 0;
+    ssize_t read = 0;
+    std::string request;
+    while (received < 2 ||
+        request[received - 2] != '\r' || request[received - 1] != '\n') {
+        if ((read = recv(cfd, textBuffer, BUFFER_SIZE, 0)) == -1) {
+            perror("Reading failed");
+            clientDone = true;
+            return false;
+        } else if (read == 0) {
+            // maybe eof?
+            clientDone = true;
+            return false;
+        }
+        received += read;
+        request.append(std::string(textBuffer, read));
     }
-    size_t len = read;
-    if (textBuffer[read - 1] == '\n') {
-        len--;
-    }
-    if (textBuffer[read - 1] == '\r') {
-        len--;
-    }
-    std::cout << "[C] " << std::string(textBuffer, len) << std::endl;
-    processSingleLineRequest(std::string(textBuffer, len)); // request must ends with \r\n
+    request = request.substr(0, request.length() - 2);
+    std::cout << "[C] " << request << std::endl;
+    processSingleLineRequest(request); // request must ends with \r\n
     return true;
 }
 
@@ -212,29 +215,36 @@ void Server::unsupportedOperation(int fd) {
 
 void Server::post(int cfd) {
     sendMessage("340\tInput article; end with <CR-LF>.<CR-LF>\r\n", cfd);
-    ssize_t read = recv(cfd, articleBuffer, ARTICLE_SIZE, 0);
-    if (read == -1) {
-        sendMessage("441\tPosting failed\r\n", cfd);
-        return;
-    }
-    std::string articleText(articleBuffer, read);
-    articles.push_back(articleText);
-    const size_t id = articles.size();
-    size_t groupsPos = articleText.find("Newsgroups:");
-    if (groupsPos != std::string::npos) {
-        size_t endGroupsPos = articleText.find("\r\n", groupsPos);
-        std::stringstream groupsList(articleText.substr(groupsPos + 11, endGroupsPos - groupsPos - 11));
-        std::string group;
-        while (groupsList >> group) {
-            auto it = groups.find(group);
-            if (it == groups.end()) {
-                groups.insert({group, {id}});
-            } else {
-                it->second.push_back(id);
+
+    std::string articleText;
+    while (true) {
+        ssize_t read = recv(cfd, articleBuffer, ARTICLE_SIZE, 0);
+        if (read == -1) {
+            sendMessage("441\tPosting failed\r\n", cfd);
+            return;
+        }
+        articleText.append(std::string(textBuffer, read));
+        const size_t id = articles.size() + 1;
+        size_t groupsPos = articleText.find("Newsgroups:");
+        if (groupsPos != std::string::npos) {
+            size_t endGroupsPos = articleText.find("\r\n", groupsPos);
+            std::stringstream groupsList(articleText.substr(groupsPos + 11, endGroupsPos - groupsPos - 11));
+            std::string group;
+            while (groupsList >> group) {
+                auto it = groups.find(group);
+                if (it == groups.end()) {
+                    groups.insert({group, {id}});
+                } else {
+                    it->second.push_back(id);
+                }
+                std::cout << "Article " << id << " added to group " << group << std::endl;
             }
-            std::cout << "Article " << id << " added to group " << group << std::endl;
+        }
+        if (articleText.find("\r\n.\r\n")) {
+            break;
         }
     }
+    articles.push_back(articleText);
     sendMessage("240\tArticle received OK\r\n", cfd);
 }
 

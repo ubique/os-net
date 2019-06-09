@@ -37,16 +37,27 @@ void Client::run() {
 }
 
 void Client::sendRequest(std::string const& data) {
-    if (send(sfd, data.data(), data.length(), 0) == -1) {
-        std::cout << "ERROR: Request was not sent" << std::endl;
+    int sent = 0;
+    int curSent = 0;
+
+    while (sent < data.size()) {
+        if ((curSent = send(sfd, data.substr(sent).data(), data.size() - sent, 0)) == -1) {
+            std::cout << "ERROR: Request was not sent" << std::endl;
+            break;
+        }
+        sent += curSent;
     }
 }
 
 std::string Client::getResponse() {
     ssize_t received;
-    if ((received = recv(sfd, buffer, BUFFER_SIZE, 0)) != -1) {
-        return std::string(buffer, received);
-    } else {
-        return "ERROR: Response was not received";
+    std::string response;
+    while (response.size() < 2 || response[response.size() - 2] != '\r' || response[response.size() - 1] != '\n') {
+        if ((received = recv(sfd, buffer, BUFFER_SIZE, 0)) != -1) {
+            response.append(std::string(buffer, received));
+        } else {
+            return "ERROR: Response was not received";
+        }
     }
+    return response;
 }
