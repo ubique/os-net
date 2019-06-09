@@ -12,8 +12,8 @@
 #include <iostream>
 #include <cstring>
 
-const size_t bufSize = 4096;
-char buf[bufSize];
+extern const size_t buf_size = 2048;
+char buf[buf_size + 1];
 
 int main() {
     int sock;
@@ -33,27 +33,57 @@ int main() {
         exit(2);
     }
 
-    char message[bufSize];
+//    char message[buf_size];
 
     std::cout << "Print exit to close program" << std::endl;
 
     while (true) {
 
-        std::cin.getline(message, bufSize);
-        if (strcmp(message, "exit") == 0) {
+        std::cin.getline(buf, buf_size);
+        ssize_t bytes_read = std::cin.gcount();
+        buf[bytes_read - 1] = '\0';
+
+        if (strcmp(buf, "exit") == 0) {
             break;
         }
 
-        if (send(sock, message, sizeof(message), 0) == -1) {
-            std::cerr << "Can't send message" << std::endl;
-            break;
+        ssize_t bytes_send = 0;
+        while (true) {
+            ssize_t nbytes_send = send(sock, buf + bytes_send, bytes_read - bytes_send, 0);
+            bytes_send += nbytes_send;
+            if (nbytes_send == -1) {
+                std::cerr << "Send error";
+                break;
+            }
+            if (bytes_send == bytes_read || nbytes_send == 0) {
+                break;
+            }
         }
+
         memset(buf, 0, sizeof(buf));
-        if (recv(sock, buf, bufSize, 0) == -1) {
-            std::cerr << "Can't read" << std::endl;
+        bytes_read = 0;
+        bool isOk = true;
+        while (true) {
+            ssize_t nbytes_read = recv(sock, buf + bytes_read, buf_size - bytes_read, 0);
+            if (nbytes_read <= 0) {
+                std::cerr << "Can't read";
+                isOk = false;
+                break;
+            }
+            bytes_read += nbytes_read;
+            if (bytes_read == buf_size || buf[bytes_read - 1] == '\0') {
+                buf[bytes_read] = '\0';
+                ++bytes_read;
+                break;
+            }
+        }
+
+        if (isOk) {
+            std::cout << buf << std::endl;
+        } else {
             break;
         }
-        std::cout << buf << std::endl;
+
     }
 
     close(sock);

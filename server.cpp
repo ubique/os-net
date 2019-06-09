@@ -10,14 +10,14 @@
 #include <unistd.h>
 #include <string.h>
 #include <netdb.h>
+#include <iostream>
 
-const size_t bufSize = 4096;
+const size_t buf_size = 2048;
 
 int main() {
     int sock, listener;
     struct sockaddr_in addr;
-    char buf[bufSize];
-    int bytes_read;
+    char buf[buf_size + 1];
 
     listener = socket(AF_INET, SOCK_STREAM, 0);
     if (listener < 0) {
@@ -44,13 +44,46 @@ int main() {
         }
 
         while (true) {
-            bytes_read = recv(sock, buf, bufSize, 0);
-            if (bytes_read <= 0) break;
-            send(sock, buf, bufSize, 0);
+            ssize_t bytes_read = 0;
+            bool isOk = true;
+            while (true) {
+                ssize_t nbytes_read = recv(sock, buf + bytes_read, buf_size - bytes_read, 0);
+                if (nbytes_read <= 0) {
+                    std::cerr << "Error in read";
+                    isOk = false;
+                    break;
+                }
+                bytes_read += nbytes_read;
+                if (bytes_read == buf_size || buf[bytes_read - 1] == '\0') {
+                    buf[bytes_read] = '\0';
+                    break;
+                }
+            }
+
+            if (!isOk) {
+                break;
+            }
+
+            ssize_t bytes_send = 0;
+            while (true) {
+                ssize_t nbytes_send = send(sock, buf + bytes_send, bytes_read - bytes_send, 0);
+                bytes_send += nbytes_send;
+                if (nbytes_send == -1) {
+                    std::cerr << "Send error";
+                    isOk = false;
+                    break;
+                }
+                if (bytes_send == bytes_read || nbytes_send == 0) {
+                    break;
+                }
+            }
+
+            if (!isOk) {
+                break;
+            }
+
         }
 
         close(sock);
     }
-
-    return 0;
 }
