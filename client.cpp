@@ -9,14 +9,12 @@
 #include <iostream>
 #include <zconf.h>
 #include <vector>
-#include <random>
 #include <chrono>
 #include "utils.h"
 
 using std::cout;
 using std::endl;
 using std::string;
-using std::mt19937;
 using std::vector;
 
 void wrong_usage() {

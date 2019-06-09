@@ -2,7 +2,7 @@
 // Created by Yaroslav on 04/06/2019.
 //
 
-//#include<bits/stdc++.h>
+#include<bits/stdc++.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -53,11 +53,9 @@ int main(int argc, char **argv) {
         check_error(s, "accept");
         char size;
         char code;
-//        fun_recv(&code, 1, s, "server");
         fun_recv(&size, 1, s, "server");
         code = size % 2 == 1 ? 1 : 0;
         size = size / 2;
-        fun_recv(&size, 1, s, "server");
         cout << static_cast<int>(size) << endl;
         vector<char> data(size);
         vector<char> copy(size);
@@ -78,7 +76,6 @@ int main(int argc, char **argv) {
             }
         }
         fun_send(&copy[0], size, s, "server");
-        check_error(shutdown(s, SHUT_RDWR), "shutdown");
         check_error(close(s), "close");
     }
 }
