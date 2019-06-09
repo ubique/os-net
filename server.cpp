@@ -100,7 +100,7 @@ void server::run() {
                 break;
             } else if (read_message_length == -1) {
                 error("Can't receive message length");
-                continue;
+                break;
             }
         }
     }
