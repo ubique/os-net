@@ -1,13 +1,14 @@
 //
 // Created by Yaroslav on 04/06/2019.
 //
-//#include<bits/stdc++.h>
+#include<bits/stdc++.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <iostream>
 #include <zconf.h>
+#include <cstring>
 #include <vector>
 #include <chrono>
 #include "utils.h"
@@ -77,9 +78,9 @@ int main(int argc, char **argv) {
         size++;
     }
     fun_send(&size, 1, s, "client");
+    size /= 2;
     fun_send(&message[0], size, s, "client");
     fun_recv(&message[0], size, s, "client");
-    size /= 2;
     print_vec(message, size - 1);
     check_error(close(s), "close");
     return 0;

@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
         fun_recv(&data[0], size, s, "server");
         cout << &data[0] << endl;
         for (int i = 0; i < data.size(); i++) {
-            copy[i] = data[i + 1];
+            copy[i] = data[i];
         }
         copy[size - 1] = '\0';
 
