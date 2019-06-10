@@ -36,27 +36,33 @@ void client::establish_connection(std::string const& address, int port) {
 }
 
 std::string client::request(std::string const& message) {
-    send(*socket_fd, message);
-    return read(*socket_fd);
+    return read(*socket_fd, send(*socket_fd, message));
 }
 
-std::string client::read(int desc) {
-    std::string message = utils::read(desc);
-    if (message.length() == 0) {
-        throw client_exception("Failed to read respond");
+std::string client::read(int desc, size_t expected) {
+    std::string message = utils::read(desc, expected);
+    if (message.size() != expected) {
+        throw client_exception("Failed to receive full message");
     }
+
     log("Read message successfully: " + message);
     return message;
 }
 
-void client::send(int desc, std::string const& message) {
+size_t client::send(int desc, std::string const& message) {
     log("Sending message " + message + "...");
     size_t was_sent = utils::send(desc, message);
 
     if (was_sent == 0) {
         throw client_exception("Failed to send request");
     }
-    log("Send message successfully");
+    if (was_sent != message.size()) {
+        log("Not full message was sent");
+    } else {
+        log("Send message successfully");
+    }
+
+    return was_sent;
 }
 
 void client::log(std::string const& msg) {

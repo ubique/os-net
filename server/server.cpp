@@ -68,7 +68,7 @@ void server::handle_connection(socket_descriptor const& client_socket, sockaddr_
         try {
             send(*client_socket, read(*client_socket));
         } catch (server_exception& e) {
-            std::cout << e.what() << std::endl;
+            log(e.what());
         }
     }
 
@@ -92,7 +92,11 @@ void server::send(int desc, std::string const& message) {
         alive = false;
         throw server_exception("Client disconnected");
     }
-    log("Send message successfully");
+    if (was_sent != message.size()) {
+        log("Not full message was sent");
+    } else {
+        log("Send message successfully");
+    }
 }
 
 

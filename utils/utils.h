@@ -9,7 +9,7 @@
 #include <cstddef>
 
 namespace utils {
-    std::string read(int desc);
+    std::string read(int desc, size_t expected = 0);
     size_t send(int desc, std::string const& message);
     const size_t BUFFER_SIZE = 10 * 4096;
     const size_t TRIES_NUMBER = 10;

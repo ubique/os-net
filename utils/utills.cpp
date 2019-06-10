@@ -6,35 +6,35 @@
 #include <string>
 #include <vector>
 #include <sys/socket.h>
+#include <zconf.h>
 
-std::string utils::read(int desc) {
-    std::vector<char> buffer(BUFFER_SIZE);
-    ssize_t was_read = 0;
+std::string utils::read(int desc, size_t expected) {
+    std::vector<char> buffer;
     size_t tries_to_read = TRIES_NUMBER;
-    while (tries_to_read) {
-        ssize_t cnt = ::recv(desc, buffer.data(), static_cast<size_t>(buffer.size()), 0);
-        if (cnt == -1) {
-            tries_to_read--;
-            continue;
+    std::string res;
+    do {
+        buffer.resize(BUFFER_SIZE);
+        ssize_t cnt = ::read(desc, buffer.data(), static_cast<size_t>(buffer.size()));
+        if (cnt == 0) {
+            break;
         }
-        was_read += cnt;
-        break;
-    }
+        if (cnt != -1) {
+            buffer.resize((size_t) cnt);
+            res.append(buffer.data());
+        }
+    } while (res.size() < expected && tries_to_read--);
 
-    buffer.resize((size_t) was_read);
-    return std::string(buffer.data());
+    return res;
 }
 
 size_t utils::send(int desc, std::string const& message) {
     ssize_t was_sent = 0;
     size_t tries_to_send = TRIES_NUMBER;
-    while (was_sent < message.size() && tries_to_send) {
-        ssize_t cnt = ::send(desc, message.data() + was_sent, static_cast<size_t>(message.size() - was_sent), 0);
-        if (cnt == -1) {
-            tries_to_send--;
-            continue;
+    while (was_sent < message.size() && tries_to_send--) {
+        ssize_t cnt = ::write(desc, message.data() + was_sent, static_cast<size_t>(message.size() - was_sent));
+        if (cnt != -1) {
+            was_sent += cnt;
         }
-        was_sent += cnt;
     }
 
     return (size_t) was_sent;
