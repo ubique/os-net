@@ -15,6 +15,8 @@ public:
     client();
     void establish_connection(std::string const& address, int port);
     std::string request(std::string const& message);
+    std::string read(int desc);
+    void send(int desc, std::string const& message);
     void log(std::string const& msg);
     void run();
 

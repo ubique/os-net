@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "../utils/utils.h"
 
 client_exception::client_exception(std::string const& msg) : std::runtime_error(msg + ": " + strerror(errno)) {}
 
@@ -35,38 +36,27 @@ void client::establish_connection(std::string const& address, int port) {
 }
 
 std::string client::request(std::string const& message) {
-    log("Request server, message: " + message);
+    send(*socket_fd, message);
+    return read(*socket_fd);
+}
 
-    std::vector<char> buffer(BUFFER_SIZE);
-    std::string respond;
-
-    size_t tries_to_send = TRIES_NUMBER;
-    while (tries_to_send) {
-        ssize_t was_sent = send(*socket_fd, message.data(), message.size(), 0);
-        if (was_sent == -1) {
-            tries_to_send--;
-            log("Failed to send message" + std::string(tries_to_send ? "trying again..." : ""));
-            continue;
-        }
-
-        log("Request was sent successfully");
-
-        ssize_t cnt = recv(*socket_fd, buffer.data(), static_cast<size_t>(was_sent), 0);
-        if (cnt == -1) {
-            log("Couldn't receive respond");
-        } else {
-            respond = std::string(buffer.data());
-            std::cout << "Respond: " + respond << std::endl;
-        }
-        break;
-
+std::string client::read(int desc) {
+    std::string message = utils::read(desc);
+    if (message.length() == 0) {
+        throw client_exception("Failed to read respond");
     }
+    log("Read message successfully: " + message);
+    return message;
+}
 
-    if (tries_to_send == 0) {
-        std::cout << "Request was declined" << std::endl;
+void client::send(int desc, std::string const& message) {
+    log("Sending message " + message + "...");
+    size_t was_sent = utils::send(desc, message);
+
+    if (was_sent == 0) {
+        throw client_exception("Failed to send request");
     }
-
-    return respond;
+    log("Send message successfully");
 }
 
 void client::log(std::string const& msg) {
@@ -85,7 +75,11 @@ void client::run() {
             break;
         }
 
-        request(req);
+        try {
+            request(req);
+        } catch (client_exception& e) {
+            log(e.what());
+        }
     }
 }
 

@@ -13,6 +13,7 @@
 #include <vector>
 #include <sys/types.h>
 #include "../socket_descriptor/socket_descriptor.h"
+#include "../utils/utils.h"
 
 server_exception::server_exception(std::string const& msg) : std::runtime_error(msg + ": " + strerror(errno)) {}
 
@@ -62,43 +63,38 @@ void server::run() {
 
 void server::handle_connection(socket_descriptor const& client_socket, sockaddr_in const& client_addr) {
     log("Accepted socket from client with address " + std::string(inet_ntoa(client_addr.sin_addr)));
-    while (true) {
-        std::vector<char> buffer(BUFFER_SIZE);
-
-        ssize_t message_len = recv(*client_socket, buffer.data(), BUFFER_SIZE, 0);
-        if(message_len == -1) {
-            //log("Failed to receive message");
-            continue;
-        }
-
-        if(message_len == 0) {
-            log("Client disconnected");
-            return;
-        }
-
-        if(message_len > 0) {
-            respond(client_socket, buffer, message_len);
+    alive = true;
+    while (alive) {
+        try {
+            send(*client_socket, read(*client_socket));
+        } catch (server_exception& e) {
+            std::cout << e.what() << std::endl;
         }
     }
 
 }
 
-void server::respond(socket_descriptor const& client_socket, std::vector<char>& buffer, ssize_t message_len) {
-    log("Received message successfully");
-
-    ssize_t was_sent = 0;
-    size_t tries_to_send = TRIES_NUMBER;
-    while (was_sent < message_len && tries_to_send) {
-        ssize_t cnt = send(*client_socket, buffer.data() + was_sent, static_cast<size_t>(message_len - was_sent), 0);
-        if (cnt == -1) {
-            tries_to_send--;
-            continue;
-        }
-        was_sent += cnt;
+std::string server::read(int desc) {
+    std::string message = utils::read(desc);
+    if (message.length() == 0) {
+        alive = false;
+        throw server_exception("Client disconnected");
     }
-
-    log(was_sent == message_len ? "Responded successfully" : "Failed to respond");
+    log("Read message successfully: " + message);
+    return message;
 }
+
+void server::send(int desc, std::string const& message) {
+    log("Sending message " + message + "...");
+    size_t was_sent = utils::send(desc, message);
+
+    if (was_sent == 0) {
+        alive = false;
+        throw server_exception("Client disconnected");
+    }
+    log("Send message successfully");
+}
+
 
 int main(int argc, char* argv[]) {
     std::string address = "127.0.0.1";

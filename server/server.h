@@ -19,7 +19,8 @@ public:
     server(std::string const& address, int port);
     void log(std::string const& msg);
     void handle_connection(socket_descriptor const& client_socket, sockaddr_in const& client_addr);
-    void respond(socket_descriptor const& client_socket, std::vector<char>& buffer, ssize_t message_len);
+    std::string read(int desc);
+    void send(int desc, std::string const& message);
     void run();
 
 private:
@@ -29,6 +30,7 @@ private:
     const int BACKLOG_QUEUE_SIZE = 5;
     const size_t BUFFER_SIZE = 4096;
     const size_t TRIES_NUMBER = 10;
+    bool alive;
 };
 
 
