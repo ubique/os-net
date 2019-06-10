@@ -17,4 +17,5 @@ add_executable(os-net-server
 
 install(TARGETS os-net-client
         os-net-server
-        RUNTIME DESTINATION bin)
+        RUNTIME DESTINATION bin
+        )

@@ -3,17 +3,12 @@
 //
 
 #include "Client.h"
-#include <iostream>
-#include <sstream>
-#include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <fcntl.h>
 
 bool Client::run(std::string const& argument) {
-    char serverResponse[1024];
+    char serverResponse[BUFFER_SIZE];
     int address = parseInt(argument);
     int sock = openSocket();
     connectSocket(sock, address);
@@ -22,15 +17,48 @@ bool Client::run(std::string const& argument) {
     std::cout << "Request: ";
     getline(std::cin, request);
 
-    send(sock, request.data(), request.length(), 0);
+    ssize_t sent = 0;
+    ssize_t left = request.size();
 
-    if (recv(sock, serverResponse, BUFFER_SIZE, 0) < 0) {
-        printErrorMessage("can't receive message from socket");
+    while (sent < request.size()) {
+        ssize_t currentMessage = send(sock, request.data() + sent, left, 0);
+        if (currentMessage == -1) {
+            printErrorMessage("sending failure");
+            if (close(sock) == -1) {
+                printErrorMessage("Fail to close");
+            }
+            exit(EXIT_FAILURE);
+        } else {
+            sent += currentMessage;
+            left -= currentMessage;
+        }
+    }
+    ssize_t received = 0;
+
+    std::cout << "Server response:" << std::endl;
+    while (received < request.size()) {
+        ssize_t res = recv(sock, serverResponse, BUFFER_SIZE, 0);
+        if (res == 0) {
+            break;
+        }
+        if (res == -1) {
+            printErrorMessage("Receiving failure");
+            if (close(sock) == -1) {
+                printErrorMessage("Fail to close");
+            }
+            exit(EXIT_FAILURE);
+        }
+        for (int i = 0; i < res; ++i) {
+            std::cout << serverResponse[i];
+        }
+        received += res;
     }
 
-    std::cout << "Server response: " << serverResponse << std::endl;
+    std::cout << std::endl;
 
-    close(sock);
+    if (close(sock) == -1) {
+        printErrorMessage("Fail to close");
+    }
 
     return true;
 }
@@ -61,7 +89,7 @@ void printHelpMessage() {
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     if (argc < 2) {
         printErrorMessage("incorrect number of arguments", false);
         printHelpMessage();
