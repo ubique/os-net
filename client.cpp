@@ -48,7 +48,7 @@ void client::send(std::string const &message) {
         return;
     }
     socket_desc.send_message(msg.c_str(), msg.length(), REPEAT);
-    char *buf = reinterpret_cast<char *>(malloc(BUFFER_SIZE));
+    char buf[BUFFER_SIZE];
     size_t buffer_size = 0;
     socket_desc.receive_message(buf, buffer_size, BUFFER_SIZE, REPEAT);
 }

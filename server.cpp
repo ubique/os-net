@@ -55,7 +55,7 @@ server::~server() {
             continue;
         }
 
-        char *buf = reinterpret_cast<char *>(malloc(BUFFER_SIZE));
+        char buf[BUFFER_SIZE];
         size_t buffer_size = 0;
         client_desc.receive_message(buf, buffer_size, BUFFER_SIZE, REPEAT);
         respond(client_desc, buf, buffer_size);
