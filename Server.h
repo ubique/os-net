@@ -15,7 +15,7 @@ public:
 private:
     int openSocket();
     bool bindSocket(int, int);
-    void execute(int);
+    bool process(int);
 
     const int BUFFER_SIZE = 1024;
 };

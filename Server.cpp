@@ -31,12 +31,25 @@ bool Server::bindSocket(int listener, int address) {
     return bind(listener, (struct sockaddr *) &addr, sizeof(addr)) >= 0;
 }
 
-void Server::execute(int socket) {
-    char buf[1024];
-    ssize_t bytes = recv(socket, buf, 1024, 0);
-    buf[bytes] = '\0';
-    send(socket, buf, bytes, 0);
-    close(socket);
+bool Server::process(int socket) {
+    char buf[BUFFER_SIZE];
+    while (ssize_t received = recv(socket, buf, BUFFER_SIZE, 0)) {
+        if (received == -1) {
+            printErrorMessage("failure while receiving");
+            return false;
+        }
+        ssize_t sent = 0;
+        while (sent != received) {
+            ssize_t result = send(socket, buf + sent, received - sent, 0);
+            if (result < 0) {
+                printErrorMessage("sending failure");
+
+                break;
+            }
+            sent += result;
+        }
+
+    }
 }
 
 bool Server::run(std::string const& argument) {
@@ -57,19 +70,33 @@ bool Server::run(std::string const& argument) {
         return false;
     }
 
-    listen(listener, 1);
+    if (listen(listener, 1) == -1) {
+        printErrorMessage("listen failed");
+        if (close(listener) == -1) {
+            printErrorMessage("Fail to close");
+        }
+        return false;
+    };
 
+    bool socketCloseNotFailed = true;
     for (size_t i = 0; i < 7; ++i) {
         int sock = accept(listener, nullptr, nullptr);
         if (sock < 0) {
             printErrorMessage("can't accept connection on a socket");
             return false;
         }
-        execute(sock);
+        process(sock);
+        if (close(sock) == -1) {
+            printErrorMessage("Fail to close");
+            socketCloseNotFailed = false;
+        }
     }
 
-    close(listener);
-    return true;
+    if (close(listener) == -1) {
+        printErrorMessage("Fail to close");
+        return false;
+    }
+    return socketCloseNotFailed;
 }
 
 void printHelpMessage() {
