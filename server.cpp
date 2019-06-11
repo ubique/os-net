@@ -4,7 +4,7 @@
 #include "utils.h"
 #include <cstring>
 
-const size_t BUFFER_SIZE = 65508;
+const size_t BUFFER_SIZE = 65536;
 
 void print_help() {
     std::cout << "Usage: ./server PORT" << std::endl;
@@ -25,14 +25,14 @@ int main(int argc, char **argv) {
     struct addrinfo hints{};
     struct addrinfo *result, *chosen = nullptr;
     hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
     if ((status = getaddrinfo(nullptr, argv[1], &hints, &result)) != 0) {
         std::cerr << "getaddrinfo failed: " << gai_strerror(status);
         freeaddrinfo(result);
         return EXIT_FAILURE;
     }
-    int descriptor = -1;
+    descriptor_wrapper descriptor = -1;
     for (chosen = result; chosen != nullptr; chosen = chosen->ai_next) {
         descriptor = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
         if (descriptor == -1) {
@@ -41,7 +41,6 @@ int main(int argc, char **argv) {
         }
         if (::bind(descriptor, result->ai_addr, result->ai_addrlen) == -1) {
             print_error("Can't bind socket, trying next: ");
-            close_socket(descriptor);
             continue;
         }
         break;
@@ -51,27 +50,33 @@ int main(int argc, char **argv) {
         freeaddrinfo(result);
         return EXIT_FAILURE;
     }
+    if (listen(descriptor, SOMAXCONN) == -1) {
+        print_error("listen failed: ");
+        freeaddrinfo(result);
+        return EXIT_FAILURE;
+    }
     char buffer[BUFFER_SIZE];
-    while (true) {
-        struct sockaddr_in client_address{};
-        socklen_t len =  sizeof (client_address);
-        auto request_len = recvfrom(descriptor, buffer, BUFFER_SIZE - 1, 0, (struct sockaddr *)&client_address, &len);
-        if (request_len < 0) {
-            print_error("recvfrom failed: ");
-            continue;
-        }
-        buffer[request_len] = 0;
-        std::cout << "received: " << buffer << std::endl;
-        auto response_len = sendto(descriptor, buffer, request_len, 0, (struct sockaddr *)&client_address, len);
-        if (response_len == -1) {
-            print_error("sendto failed: ");
-            continue;
-        }
-        if (std::strcmp("stop", buffer) == 0) {
-            std::cout << "Server stopped" << std::endl;
-            break;
+    bool alive = true;
+    while (alive) {
+        struct sockaddr client_addr;
+        socklen_t len = sizeof(client_addr);
+        descriptor_wrapper client_descriptor = accept(descriptor, (sockaddr *)&client_addr, &len);
+        std::cout << "Connected to the client with descriptor " << client_descriptor << std::endl;
+        while (true) {
+            auto received = recv_all(client_descriptor, buffer, BUFFER_SIZE);
+            if (received == "") {
+                break;
+            }
+            std::cout << "received from " << client_descriptor << ": " << received << std::endl;
+            if (received == "exit") {
+                break;
+            }
+            if (received == "stop") {
+                alive = false;
+                break;
+            }
+            send_all(received.c_str(), received.size() + 1, client_descriptor);
         }
     }
-    close_socket(descriptor);
     freeaddrinfo(result);
 }

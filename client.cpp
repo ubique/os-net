@@ -4,14 +4,14 @@
 #include <netdb.h>
 #include "utils.h"
 
-const size_t BUFFER_SIZE = 65508;
+const size_t BUFFER_SIZE = 65536;
 
 void print_help() {
-    std::cout << "Usage: ./client IP PORT message" << std::endl;
+    std::cout << "Usage: ./client IP PORT" << std::endl;
 }
 
 int main(int argc, char **argv) {
-    if (argc != 4) {
+    if (argc != 3) {
         std::cerr << "Wrong number of arguments\n";
         print_help();
         return EXIT_FAILURE;
@@ -24,14 +24,14 @@ int main(int argc, char **argv) {
     struct addrinfo hints{};
     struct addrinfo *result, *chosen;
     hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
     if ((status = getaddrinfo(argv[1], argv[2], &hints, &result)) != 0) {
         std::cerr << "getaddrinfo failed: " << gai_strerror(status);
         freeaddrinfo(result);
         return EXIT_FAILURE;
     }
-    int descriptor = -1;
+    descriptor_wrapper descriptor = -1;
     for (chosen = result; chosen != nullptr; chosen = chosen->ai_next) {
         descriptor = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
         if (descriptor == -1) {
@@ -45,24 +45,33 @@ int main(int argc, char **argv) {
         freeaddrinfo(result);
         return EXIT_FAILURE;
     }
+    descriptor_wrapper server_descriptor = connect(descriptor, chosen->ai_addr, chosen->ai_addrlen);
+    if (server_descriptor == -1) {
+        print_error("connect failed: ");
+        freeaddrinfo(result);
+        return EXIT_FAILURE;
+    }
+    std::cout << "Connected to server\nType exit to exit\nType stop to stop server" << std::endl;
     char buffer[BUFFER_SIZE];
-    std::cout << "Sending \"" << argv[3] << "\" to " << argv[1] << ":" << argv[2] << std::endl;
-    auto response_len = sendto(descriptor, argv[3], std::strlen(argv[3]), 0, chosen->ai_addr, chosen->ai_addrlen);
-    if (response_len == -1) {
-        freeaddrinfo(result);
-        close_socket(descriptor);
-        return EXIT_FAILURE;
+    while (true) {
+        std::string line;
+        std::cout << "Enter message to send: ";
+        getline(std::cin, line);
+        if (std::cin.eof()) {
+            break;
+        }
+        if (line == "") {
+            continue;
+        }
+        send_all(line.c_str(), line.size() + 1, descriptor);
+        if (line == "exit" || line == "stop") {
+            break;
+        }
+        auto response = recv_all(descriptor, buffer, BUFFER_SIZE);
+        if (response == "") {
+            break;
+        }
+        std::cout << "response: " << response << std::endl;
     }
-    std::cout << "Message has been sent" << std::endl;
-    auto request_len = recv(descriptor, &buffer, BUFFER_SIZE - 1, 0);
-    if (request_len == -1) {
-        freeaddrinfo(result);
-        close_socket(descriptor);
-        return EXIT_FAILURE;
-    }
-    buffer[request_len] = 0;
-    std::cout << "Response received: " << buffer << std::endl;
     freeaddrinfo(result);
-    close_socket(descriptor);
-
 }
