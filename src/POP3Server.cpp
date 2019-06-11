@@ -235,28 +235,19 @@ void POP3Server::read(int fd, std::string &msg) {
     char buffer[BUFFER_LENGHT];
     memset(buffer, 0, BUFFER_LENGHT);
     int count = 0;
-    int trys = 10;
-    while((count = recv(fd, &buffer, BUFFER_LENGHT, 0))) {
+    while(true) {
+        count = recv(fd, &buffer, BUFFER_LENGHT, 0);
         if (count == -1) {
-            for (int i = 0; i < trys; i++) {
-                if (count != -1 || errno != EINTR) {
-                    break;
-                }
-                count = recv(fd, buffer, BUFFER_LENGHT, 0);
+            if (errno == EINTR || errno == EAGAIN) {
+                return;
             }
+            return;
         }
-        if (count == -1) {
-            print_error("Can't recv from client");
-            break;
+        if (count ==  0 && errno == EAGAIN) {
+            return;
         }
-        if (count == 0) {
-            break;
-        }
-        for(int i = 0; i < count - 1; i++) {
+        for(int i = 0; i < count; i++) {
             msg.push_back(buffer[i]);
-        }
-        if (count < BUFFER_LENGHT) {
-            break;
         }
     }
 }
