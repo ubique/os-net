@@ -67,7 +67,6 @@ int main(int argc, char** argv) {
         if (buffer[total_recv - 1] == '\n') {
             break;
         }
-        cout << "total_recv = " << total_recv << endl;
     }
     check_error(current_recv, "recv");
     buffer[total_recv] = '\0';
