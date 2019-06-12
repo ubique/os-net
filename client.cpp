@@ -6,7 +6,6 @@
 #include <sys/socket.h>
 
 const unsigned int BUFFER_SIZE = 1024, DEFAULT_PORT = 8080;
-const char* TERMINATION_STRING = "Good bye\n";
 
 int getNumericValue(std::string value)
 {
@@ -65,24 +64,39 @@ int main(int argc, char* argv[], char *envp[])
         std::cout << "Unable to connect client socket\n";
         return -1;
     }
-    if (send(curSocket, message, strlen(message), 0) == -1)
+    int responseSize = 0;
+    while (responseSize < strlen(message))
     {
-        std::cout << "Error occurred on sending the message\n";
-        return -1;
+        int sended = send(curSocket, message + responseSize, strlen(message) - responseSize, 0);
+        if (sended == -1)
+        {
+            std::cout << "Error occurred on sending the message\n";
+            exit(-1);
+        } else if (sended == 0) {
+            break;
+        }
+        responseSize += sended;
     }
+    std::cout << "Response for " << message << " is: ";
     char response[BUFFER_SIZE] = {};
-    if (recv(curSocket, &response, sizeof(response), 0) == -1)
+    int requestSize = 0;
+    while (requestSize < strlen(message))
     {
-        std::cout << "Error occurred while receiving a message\n";
-        return -1;
+        int received = recv(curSocket, response, BUFFER_SIZE, 0);
+        if (received == -1)
+        {
+            std::cout << "Error occurred while receiving a message\n";
+            exit(-1);
+        } else if (received == 0) {
+            break;
+        }
+        requestSize += received;
+        for (int i = 0; i < received; ++i)
+        {
+            std::cout << response[i];
+        }
     }
-    std::cout << "Response for " << message << " is: " << response;
-    if (strncmp(response, TERMINATION_STRING, strlen(TERMINATION_STRING)) == 0)
-    {
-        std::cout << " _____ \n/ O O \\ \n|     | \n\\ \\_/ / \n ----- \n";
-    } else {
-        std::cout << '\n';
-    }
+    std::cout << '\n';
     if (close(curSocket) == -1)
     {
         std::cout << "Error occurred while closing the socket\n";

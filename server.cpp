@@ -8,7 +8,6 @@
 #include <sys/socket.h>
 
 const unsigned int BUFFER_SIZE = 1024, DEFAULT_PORT = 8080;
-const char* TERMINATION_STRING = "Good bye\n";
 
 int getNumericValue(std::string value)
 {
@@ -68,45 +67,47 @@ int main(int argc, char* argv[], char *envp[])
     {
         std::cout << "Unable to set listening for socket\n";
         return -1;
-    };
+    }
     while (true)
     {
         int client = accept(curSocket, nullptr, nullptr);
         if (client == -1)
         {
             std::cout << "Error during receiving request from client\n";
-            continue;
-        }
-        char request[BUFFER_SIZE] = {};
-        int requestSize = recv(client, request, BUFFER_SIZE, 0);
-        if (requestSize == -1)
-        {
-            std::cout << "Error occurred while receiving a message\n";
-            continue;
-        }
-        if (strncmp(request, "shutdown", requestSize) == 0)
-        {
-            if (send(client, TERMINATION_STRING, strlen(TERMINATION_STRING), 0) == -1)
-            {
-                std::cout << "Error occurred on sending the message\n";
-            }
-            if (close(client) == -1)
-            {
-                std::cout << "Error occurred while closing the client socket\n";
-                return -1;
-            }
-            std::cout << "Server has been shut down by client\n";
             break;
         }
-        for (int i = 0; i < requestSize / 2; ++i)
+        char request[BUFFER_SIZE] = {};
+        while (true)
         {
-            char temp = request[i];
-            request[i] = request[requestSize - 1 - i];
-            request[requestSize - 1 - i] = temp;
+            int requestSize = recv(client, request, BUFFER_SIZE, 0);
+            if (requestSize == -1)
+            {
+                std::cout << "Error occurred while receiving a message\n";
+                break;
+            } else if (requestSize == 0) {
+                break;
+            }
+            int responseSize = 0, tries = 5;
+            while (responseSize < requestSize)
+            {
+                int sended = send(client, request + responseSize, requestSize - responseSize, 0);
+                if (sended == -1)
+                {
+                    std::cout << "Error occurred on sending the message\n";
+                    --tries;
+                }
+                responseSize += sended;
+                if (tries == 0)
+                {
+                    std::cout << "Unable to send the message\n";
+                    exit(-1);
+                }
+            }
         }
-        if (send(client, request, requestSize, 0) == -1)
+        if (close(client) == -1)
         {
-            std::cout << "Error occurred on sending the message\n";
+            std::cout << "Error occurred while closing the socket\n";
+            exit(-1);
         }
     }
     if (close(curSocket) == -1)

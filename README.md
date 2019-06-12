@@ -1,6 +1,6 @@
 # Sockets
 
-Modified version of echo.
+Simple echo server
 
 ## Usage:
 
@@ -17,7 +17,5 @@ Modified version of echo.
 + 1 argument case: client will send your string by default port `8080`
 + 2 argument case: client will take first argument as port number (integer) and send second argument (string)
 ### Expected behavior:
-+ server returns reversed copy of received string
-+ if sended string is `shutdown` - shuts down server (it returns terminating string and notifies user through the console)
++ server returns same string
 + client shows taken string and server response
-+ client exclusively reacts on server termination ☺
