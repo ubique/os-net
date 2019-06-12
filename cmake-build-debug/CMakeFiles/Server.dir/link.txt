@@ -1,2 +1,0 @@
-/usr/bin/ar qc libServer.a  CMakeFiles/Server.dir/src/POP3Server.cpp.o CMakeFiles/Server.dir/src/User.cpp.o CMakeFiles/Server.dir/src/Message.cpp.o CMakeFiles/Server.dir/src/Session.cpp.o CMakeFiles/Server.dir/src/DBase.cpp.o CMakeFiles/Server.dir/src/Utils.cpp.o
-/usr/bin/ranlib libServer.a

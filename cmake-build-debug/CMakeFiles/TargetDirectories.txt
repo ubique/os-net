@@ -1,5 +1,0 @@
-/home/utusi/os/os-net/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/utusi/os/os-net/cmake-build-debug/CMakeFiles/server.dir
-/home/utusi/os/os-net/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/utusi/os/os-net/cmake-build-debug/CMakeFiles/Server.dir
-/home/utusi/os/os-net/cmake-build-debug/CMakeFiles/client.dir
