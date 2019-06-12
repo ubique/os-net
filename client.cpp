@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <sys/socket.h>
 #include <cstring>
@@ -59,9 +60,20 @@ int main(int argc, char** argv) {
     char buffer[BUFFER_SIZE];
     memset(buffer, 0, BUFFER_SIZE);
 
-    check_error(recv(file_descriptor, &buffer, sizeof(buffer), 0), "recv");
+    int total_recv = 0;
+    int current_recv;
+    while ((current_recv = recv(file_descriptor, buffer + total_recv, sizeof(buffer) - total_recv, 0)) > 0) {
+        total_recv += current_recv;
+        if (buffer[total_recv - 1] == '\n') {
+            break;
+        }
+        cout << "total_recv = " << total_recv << endl;
+    }
+    check_error(current_recv, "recv");
+    buffer[total_recv] = '\0';
+
 
     cout << "answer from the server: " << buffer;
     close(file_descriptor);
     return 0;
-}
+} 
