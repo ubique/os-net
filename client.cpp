@@ -30,6 +30,7 @@ int main(int argc, char** argv) {
     cout << "Enter a message:";
     string message;
     cin >> message;
+    message += '\n';
 
 
     int file_descriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -43,7 +44,16 @@ int main(int argc, char** argv) {
     inet_pton(AF_INET, argv[1], &server.sin_addr);
 
     check_error(connect(file_descriptor, (sockaddr *) (&server), sizeof(server)), "connect");
-    check_error(send(file_descriptor, message.data(), message.size(), 0), "send");
+
+
+
+
+    int total_send = 0;
+    while (total_send < message.size()) {
+        int status = send(file_descriptor, message.data() + total_send, message.size() - total_send, 0);
+        check_error(status, "send");
+        total_send += status;
+    }
 
 
     char buffer[BUFFER_SIZE];
@@ -51,7 +61,7 @@ int main(int argc, char** argv) {
 
     check_error(recv(file_descriptor, &buffer, sizeof(buffer), 0), "recv");
 
-    std::cout << "answer from the server: " << buffer << std::endl;
+    cout << "answer from the server: " << buffer;
     close(file_descriptor);
     return 0;
 }
