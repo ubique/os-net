@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fcntl.h>
 #include "POP3Server.h"
 #include "Utils.h"
 #include "DBase.h"
@@ -54,8 +55,9 @@ int POP3Server::run() {
         }
         while (true) {
             if (state == UPDATE) {
-                send_msg("+OK, all messages updated", client_fd, "Error in updating");
                 data_base.update(user.get_login());
+                send_msg("+OK, all messages updated", client_fd, "Error in updating");
+                shutdown(client_fd, SHUT_RDWR);
                 close(client_fd);
                 break;
             }
@@ -195,21 +197,20 @@ POP3Server::~POP3Server() {
 }
 
 void POP3Server::send_msg(const std::string& msg, int fd, const std::string& msg_error) {
-    int len = msg.size() + 1;
+    int len = msg.size() + CRLF.size() + 1;
     int sended = 0;
-    int ost = len;
-    char buffer[len + 1];
+    char buffer[len];
     strcpy(buffer, (msg + CRLF).c_str());
     while(sended < len) {
-        int count = send(fd, buffer + sended, ost, 0);
+        int count = send(fd, buffer + sended, len - sended, 0);
         if (count == -1 && errno == EINTR) {
             continue;
         }else if (count == -1){
             close(fd);
             break;
         }
+        //std::cerr << "s count: " << count << std::endl;
         sended += count;
-        ost -= count;
     }
 }
 
@@ -235,27 +236,17 @@ void POP3Server::read(int fd, std::string &msg) {
     char buffer[BUFFER_LENGHT];
     memset(buffer, 0, BUFFER_LENGHT);
     int count = 0;
-    int trys = 10;
-    while((count = recv(fd, &buffer, BUFFER_LENGHT, 0))) {
-        if (count == -1) {
-            for (int i = 0; i < trys; i++) {
-                if (count != -1 || errno != EINTR) {
-                    break;
-                }
-                count = recv(fd, buffer, BUFFER_LENGHT, 0);
-            }
-        }
-        if (count == -1) {
-            print_error("Can't recv from client");
-            break;
-        }
+    while((count = recv(fd, &buffer, BUFFER_LENGHT, 0)) != -1) {
         if (count == 0) {
             break;
         }
-        for(int i = 0; i < count - 1; i++) {
-            msg.push_back(buffer[i]);
+       // std::cerr << buffer << " " << count << std::endl;
+        for(int i = 0; i < count; i++) {
+            if (buffer[i] != '\0') {
+                msg.push_back(buffer[i]);
+            }
         }
-        if (count < BUFFER_LENGHT) {
+        if (count == BUFFER_LENGHT || buffer[count - 1] == '\0') {
             break;
         }
     }

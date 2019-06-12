@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <Utils.h>
+#include <fcntl.h>
+#include <fcntl.h>
 
 void print_error(const std::string &msg) {
     perror(msg.c_str());
@@ -19,11 +21,10 @@ void print_error(const std::string &msg) {
 int send_msg(const std::string& msg, int fd, const std::string& msg_error) {
     int len = msg.size() + 1;
     int sended = 0;
-    int ost = len;
     char buffer[len];
-    strcpy(buffer, msg.c_str());
+    strcpy(buffer, (msg).c_str());
     while(sended < len) {
-        int count = send(fd, buffer + sended, ost, 0);
+        int count = send(fd, buffer + sended, len - sended, 0);
         if (count == -1 && errno == EINTR) {
             continue;
         }else if (count == -1){
@@ -31,7 +32,6 @@ int send_msg(const std::string& msg, int fd, const std::string& msg_error) {
             return -1;
         }
         sended += count;
-        ost -= count;
     }
     return 0;
 }
@@ -41,31 +41,21 @@ int read(int fd, std::string &msg) {
     char buffer[BUFFER_LENGHT];
     memset(buffer, 0, BUFFER_LENGHT);
     int count = 0;
-    int trys = 10;
-    while((count = recv(fd, &buffer, BUFFER_LENGHT, 0))) {
-        if (count == -1) {
-            for (int i = 0; i < trys; i++) {
-                if (count != -1 || errno != EINTR) {
-                    break;
-                }
-                count = recv(fd, buffer, BUFFER_LENGHT, 0);
+    while((count = recv(fd, &buffer, BUFFER_LENGHT, 0)) != -1) {
+        if (count == 0) {
+            return 0;
+        }
+        //std::cerr << buffer << " " << count << std::endl;
+        for(int i = 0; i < count; i++) {
+            if (buffer[i] != '\0') {
+                msg.push_back(buffer[i]);
             }
         }
-        if (count == -1) {
-            print_error("Can't recv from client");
-            break;
-        }
-        if (count == 0) {
-            break;
-        }
-        for(int i = 0; i < count - 1; i++) {
-            msg.push_back(buffer[i]);
-        }
-        if (count < BUFFER_LENGHT) {
-            break;
+        if (count == BUFFER_LENGHT || buffer[count - 1] == '\0') {
+            return 0;
         }
     }
-    return 0;
+    return -1;
 }
 
 int main(int argc, char** argv) {
