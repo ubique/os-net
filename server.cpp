@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <errno.h>
 #include <array>
 #include <cstring>
 #include <iostream>
@@ -30,27 +31,46 @@ void server::accept_connection() {
 }
 
 void server::work() {
-    const std::string hello = "hello, client";
     std::array<char, 1024> buffer;
-    read(new_socket, buffer.data(), buffer.size());
+    buffer.fill(0);
+    const int flags = 0;
+
+    int res = 1, revc_data_cnt = 0;
+    while ((res = recv(new_socket, buffer.data() + revc_data_cnt, buffer.size() - revc_data_cnt - 1, 0)) > 0) {
+        revc_data_cnt += res;
+        if (buffer[revc_data_cnt] == '\0') {
+            break;
+        }
+    }
+    if (res < 0) {
+        detach(server_fd);
+        print_fatal_error("receiving failed", false);
+    }
     std::cout << buffer.data() << std::endl;
 
-    const int flags = 0;
-    send(new_socket, hello.c_str(), hello.size(), flags);
-    std::cout << "server: sent" << std::endl;
+    const std::string hello = "hello, client";
+    res = 1, revc_data_cnt = 0;
+    while (revc_data_cnt != hello.size() && res > 0) {
+        res = send(new_socket, hello.data() + revc_data_cnt, hello.size() - revc_data_cnt, flags);
+        revc_data_cnt += res;
+    }
+    if (res < 0) {
+        detach(server_fd);
+        print_fatal_error("sending failed", false);
+    }
+    std::cout << "server: respond has been sent" << std::endl;
 }
 
 void server::check_ipv4(const std::string &address) {
     struct sockaddr_in sa;
     if (inet_pton(AF_INET, address.c_str(), &(sa.sin_addr)) == 0) {
-        std::cerr << "server: invalid ipv4 address" << std::endl;
-        throw std::runtime_error("invalid ipv4 address");
+        print_fatal_error("invalid ipv4 address", false);
     }
 }
 
 void server::create_socket() {
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("socket failed");
+        print_fatal_error("socket failed");
     }
 }
 
@@ -80,7 +100,7 @@ void server::detach(int fd) {
     }
 }
 
-void server::print_fatal_error(const std::string &err) {
-    perror(err.c_str());
-    throw std::runtime_error("server: " + err);
+void server::print_fatal_error(const std::string &err, bool perr) {
+    throw std::runtime_error("server error: " + err +
+                             (perr ? std::string(": ") + strerror(errno) : ""));
 }

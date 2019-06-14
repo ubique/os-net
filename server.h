@@ -20,7 +20,7 @@ private:
     void bind_to_address();
     void detach(int fd);
 
-    void print_fatal_error(const std::string &err);
+    void print_fatal_error(const std::string &err, bool perr = true);
 
     int server_fd;
     int new_socket;
