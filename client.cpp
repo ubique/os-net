@@ -41,19 +41,25 @@ bool send(int sock_fd, const std::string &msg) {
     return was_sent == size;
 }
 
-bool get_response(int sock_fd, std::string &response) {
+bool get_response(int sock_fd, size_t msg_len, std::string &response) {
     char buffer[BUF_SIZE];
     bzero(buffer, BUF_SIZE);
 
-    ssize_t r = read(sock_fd, buffer, BUF_SIZE);
-    if (r == -1) {
-         return false;
-    }
-    for (ssize_t i = 0; i < r; ++i) {
-        response += (char) buffer[i];
-     }
+    ssize_t got = 0;
+    int tries = 5;
 
-    return true;
+    while (got != msg_len && tries > 0) {
+        ssize_t r = read(sock_fd, buffer, BUF_SIZE);
+        if (r == -1) return false;
+        if (r == 0) --tries;
+
+        for (ssize_t i = 0; i < r; ++i) {
+            response += buffer[i];
+         }
+        got += r;
+
+    }
+    return msg_len == got;
 }
 
 int main(int argc, char* argv[]) {
@@ -87,12 +93,11 @@ int main(int argc, char* argv[]) {
         };
         std::string response = "Server: \n";
 
-        if (!get_response(sock_fd, response)) {
+        if (!get_response(sock_fd, msg.size(), response)) {
             ext("get_response failed: ", sock_fd);
         }
         std::cout << response;
 
         close(sock_fd);
         return 0;
-
 }
